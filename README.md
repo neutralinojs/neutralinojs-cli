@@ -7,6 +7,6 @@ neu cli for Neutralinojs
 
 Synopsis
 
-- `neu create --template ts | js | angular | react ...`
+- `neu create myapp --template ts`
 - `neu build`
 
