@@ -1,0 +1,23 @@
+{
+  "name": "neutralinojs-cli",
+  "version": "1.0.0",
+  "description": "neu cli for Neutralinojs",
+  "main": "bin/neu.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neutralinojs/neutralinojs-cli.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/neutralinojs/neutralinojs-cli/issues"
+  },
+  "homepage": "https://github.com/neutralinojs/neutralinojs-cli#readme",
+  "dependencies": {
+    "commander": "^4.0.1",
+    "git-clone": "^0.1.0"
+  }
+}
