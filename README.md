@@ -1,8 +1,12 @@
 # neutralinojs-cli
 neu cli for Neutralinojs
 
+```
+  $ npm i @neutralinojs/neu
+```
 
-# Intial Roadmap
+Synopsis
 
 - `neu create --template ts | js | angular | react ...`
 - `neu build`
+
