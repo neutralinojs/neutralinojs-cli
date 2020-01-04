@@ -2,7 +2,7 @@
 neu cli for Neutralinojs
 
 ```
-  $ npm i @neutralinojs/neu
+  $ npm i -g @neutralinojs/neu
 ```
 
 Synopsis
