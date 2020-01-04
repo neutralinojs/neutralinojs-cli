@@ -2,7 +2,7 @@
   "name": "neutralinojs-cli",
   "version": "1.0.0",
   "description": "neu cli for Neutralinojs",
-  "main": "bin/neu.js",
+  "main": "./bin/neu.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,6 +18,10 @@
   "homepage": "https://github.com/neutralinojs/neutralinojs-cli#readme",
   "dependencies": {
     "commander": "^4.0.1",
+    "figlet": "^1.2.4",
     "git-clone": "^0.1.0"
+  },
+  "bin": {
+    "neu": "./bin/neu.js"
   }
 }
