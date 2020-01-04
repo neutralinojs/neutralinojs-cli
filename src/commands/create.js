@@ -11,7 +11,7 @@ module.exports.register = (program) => {
             if(command.template in contants.templates) {
                 let template = contants.templates[command.template];
                 clone(template.githubUrl, `./${name}`, {}, () => {
-                    exec(`npm i --prefix ${name}`, (err, stdout, stderr) => {
+                    exec(`cd ${name} && npm i`, (err, stdout, stderr) => {
                         console.log(stdout);
                         if (err) {
                             console.error(stderr);
