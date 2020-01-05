@@ -8,12 +8,12 @@ module.exports.register = (program) => {
         .action((name, command) => {
             
             exec('npm run build', (err, stdout, stderr) => {
-                console.log(stdout);
                 if (err) {
                     console.error(stderr);
                     return;
                 }
                 else {
+                    console.log('App build was successful!');
                     commons.figlet();
                 }
               });

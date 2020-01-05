@@ -12,13 +12,13 @@ module.exports.register = (program) => {
                 let template = contants.templates[command.template];
                 clone(template.githubUrl, `./${name}`, {}, () => {
                     exec(`cd ${name} && npm i`, (err, stdout, stderr) => {
-                        console.log(stdout);
                         if (err) {
                             console.error(stderr);
                             return;
                         }
                         else {
                             commons.figlet();
+                            console.log(`Enter 'cd ${name} && neu build' to build the app.`);
                         }
                       });
                 });
