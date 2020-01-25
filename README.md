@@ -7,6 +7,16 @@ neu cli for Neutralinojs
 
 Synopsis
 
-- `neu create myapp --template ts`
+- `neu create myapp --template <templateName>`
 - `neu build`
 
+Supported templates
+
+Generic
+
+- Javascript `--template js`
+- Typescript `--template ts`
+
+Frameworks/Libraries
+
+- Angularjs `--template angularjs`
