@@ -6,6 +6,9 @@ module.exports = {
         js: {
             githubUrl: 'https://github.com/neutralinojs/neutralinojs-javascript.git'
         },
+        kotlin: {
+            githubUrl: 'https://github.com/neutralinojs/neutralinojs-kotlin.git'
+        },
         angularjs: {
             githubUrl: 'https://github.com/neutralinojs/neutralinojs-angularjs-template.git'
         }
