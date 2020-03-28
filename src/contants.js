@@ -13,8 +13,8 @@ module.exports = {
       githubUrl:
         "https://github.com/neutralinojs/neutralinojs-angularjs-template.git"
     },
-    reactjs: {
-      githubUrl: "https://github.com/99xt-incubator/react-for-neu-cli.git"
+    react: {
+      githubUrl: "https://github.com/neutralinojs/neutralinojs-react"
     }
   }
 };
