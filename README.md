@@ -1,4 +1,5 @@
 # neutralinojs-cli
+
 neu cli for Neutralinojs
 
 ```
@@ -20,4 +21,5 @@ Generic
 
 Frameworks/Libraries
 
+- React `--template react`
 - Angularjs `--template angularjs`
