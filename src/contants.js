@@ -14,7 +14,7 @@ module.exports = {
         "https://github.com/neutralinojs/neutralinojs-angularjs-template.git"
     },
     react: {
-      githubUrl: "https://github.com/neutralinojs/neutralinojs-react"
+      githubUrl: "https://github.com/neutralinojs/neutralinojs-react.git"
     }
   }
 };
