@@ -1,7 +1,10 @@
-const contants = require('../contants');
-var clone = require('git-clone');
-const commons = require('../commons');
 const { exec } = require('child_process');
+const fs = require('fs');
+const contants = require('../contants');
+const  clone = require('git-clone');
+const commons = require('../commons');
+const settings = require('../modules/settings');
+
 
 module.exports.register = (program) => {
     program
@@ -17,6 +20,10 @@ module.exports.register = (program) => {
                             return;
                         }
                         else {
+                            fs.renameSync(`${name}/neutralino-win.exe`, `${name}/${name}-win.exe`);
+                            fs.renameSync(`${name}/neutralino-linux`, `${name}/${name}-linux`);
+                            fs.renameSync(`${name}/neutralino-mac`, `${name}/${name}-mac`);
+                            settings.update('appname', name, name);
                             commons.figlet();
                             console.log(`Enter 'cd ${name} && neu build' to build the app.`);
                         }
