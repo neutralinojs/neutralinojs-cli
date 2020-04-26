@@ -13,5 +13,5 @@ module.exports.update = (key, value, appName) => {
 
 module.exports.get = () => {
     let file = editJsonFile(SETTINGS_FILE);
-    return file;
+    return file.get();
 };
