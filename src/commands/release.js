@@ -11,7 +11,7 @@ module.exports.register = (program) => {
             let settingsObj = settings.get();
             bundler.bundleApp(settingsObj);
             commons.figlet(() => {
-                console.log(`${settings.appname} was release to dist`);
+                console.log(`app was released to dist`);
             });
         });
 }
