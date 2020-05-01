@@ -22,4 +22,3 @@ Generic
 Frameworks/Libraries
 
 - React `--template react`
-- Angularjs `--template angularjs`
