@@ -10,6 +10,8 @@ Synopsis
 
 - `neu create myapp --template <templateName>`
 - `neu build`
+- `neu run`
+- `neu release`
 
 Supported templates
 
