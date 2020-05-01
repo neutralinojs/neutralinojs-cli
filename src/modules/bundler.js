@@ -1,7 +1,6 @@
 const fse = require('fs-extra');
 const fs = require('fs');
 const archiver = require('archiver');
-const commons = require('../commons');
 
 module.exports.bundleApp = (settings) => {
     try {
@@ -16,9 +15,6 @@ module.exports.bundleApp = (settings) => {
         archive.pipe(output);
         archive.directory(`dist/${settings.appname}-release`, false);
         archive.finalize();
-        commons.figlet(() => {
-            console.log(`${settings.appname} was release to dist`);
-        });
     }
     catch (e) {
         console.error(e);
