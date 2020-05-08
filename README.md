@@ -1,4 +1,6 @@
 # neutralinojs-cli
+![npm](https://img.shields.io/npm/v/@neutralinojs/neu)
+![npm](https://img.shields.io/npm/dt/@neutralinojs/neu)
 
 neu cli for Neutralinojs
 
