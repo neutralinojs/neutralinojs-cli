@@ -12,6 +12,7 @@ Synopsis
 - `neu build`
 - `neu run`
 - `neu release`
+- `neu update`
 
 Supported templates
 
