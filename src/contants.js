@@ -1,4 +1,7 @@
 module.exports = {
+  binaries: {
+    url: "https://github.com/neutralinojs/neutralinojs/releases/download/v1.4.0/neutralinojs-v1.4.0.zip"
+  },
   templates: {
     ts: {
       githubUrl: "https://github.com/neutralinojs/neutralinojs-typescript.git"

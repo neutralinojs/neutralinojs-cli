@@ -21,8 +21,10 @@
     "commander": "^4.0.1",
     "edit-json-file": "^1.4.0",
     "figlet": "^1.2.4",
+    "follow-redirects": "^1.11.0",
     "fs-extra": "^9.0.0",
-    "git-clone": "^0.1.0"
+    "git-clone": "^0.1.0",
+    "unzipper": "^0.10.11"
   },
   "bin": {
     "neu": "./bin/neu.js"
