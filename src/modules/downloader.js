@@ -34,7 +34,7 @@ module.exports.downloadAndUpdateBinaries = (callback, name) => {
     }
         
     downloadBinaries(() => {
-        console.log('Finalizing app creation and cleaning temp. files.');
+        console.log('Finalizing and cleaning temp. files.');
         fse.copySync(`${pathPrefix}temp/neutralino-win.exe`, `${pathPrefix}${name}-win.exe`);
         fse.copySync(`${pathPrefix}temp/neutralino-linux`, `${pathPrefix}${name}-linux`);
         fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}${name}-mac`);
