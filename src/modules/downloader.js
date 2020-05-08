@@ -9,9 +9,11 @@ let downloadBinaries = (callback, name = null) => {
     let pathPrefix = name ? `${name}/` : '';
     fs.mkdirSync(`${pathPrefix}temp`, { recursive: true });
     const file = fs.createWriteStream(`${pathPrefix}temp/binaries.zip`);
+    console.log('Downloading latest Neutralino binaries..');
     https.get(constants.binaries.url, function (response) {
         response.pipe(file);
         response.on('end', () => {
+            console.log('Extracting zip file..');
             fs.createReadStream(`${pathPrefix}temp/binaries.zip`)
                 .pipe(unzipper.Extract({ path: `${pathPrefix}temp/` }))
                 .promise().then(() => { callback(name) });
@@ -32,6 +34,7 @@ module.exports.downloadAndUpdateBinaries = (callback, name) => {
     }
         
     downloadBinaries(() => {
+        console.log('Finalizing app creation and cleaning temp. files.');
         fse.copySync(`${pathPrefix}temp/neutralino-win.exe`, `${pathPrefix}${name}-win.exe`);
         fse.copySync(`${pathPrefix}temp/neutralino-linux`, `${pathPrefix}${name}-linux`);
         fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}${name}-mac`);

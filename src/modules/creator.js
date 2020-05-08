@@ -18,12 +18,12 @@ module.exports.createApp = (name, command) => {
                     downloader.downloadAndUpdateBinaries(() => {
                         settings.update('appname', name, name);
                         commons.figlet();
-                        console.log(`Enter 'cd ${name} && neu build' to build the app.`);
+                        console.log(`\n----\nEnter 'cd ${name} && neu build' to build the app.`);
                     }, name);
                 }
             });
         });
-        console.log(`Creating project ${name}...`);
+        console.log(`Downloading app template to ${name}...`);
     }
     else {
         console.log('Unable to find template');
