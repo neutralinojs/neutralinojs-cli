@@ -1,6 +1,6 @@
 {
   "name": "@neutralinojs/neu",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "neu cli for Neutralinojs",
   "main": "./bin/neu.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/neutralinojs/neutralinojs-cli/issues"
   },
-  "homepage": "https://github.com/neutralinojs/neutralinojs-cli#readme",
+  "homepage": "https://neutralino.js.org/docs/#/tools/cli",
   "dependencies": {
     "archiver": "^4.0.1",
     "commander": "^4.0.1",
