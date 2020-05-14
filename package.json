@@ -18,6 +18,7 @@
   "homepage": "https://neutralino.js.org/docs/#/tools/cli",
   "dependencies": {
     "archiver": "^4.0.1",
+    "chalk": "^4.0.0",
     "commander": "^4.0.1",
     "edit-json-file": "^1.4.0",
     "figlet": "^1.2.4",

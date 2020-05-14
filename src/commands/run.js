@@ -2,6 +2,7 @@ const contants = require('../contants');
 const { exec } = require('child_process');
 const commons = require('../commons');
 const settings = require('../modules/settings');
+const logwatcher = require('../modules/logwatcher');
 
 module.exports.register = (program) => {
     program
@@ -24,8 +25,10 @@ module.exports.register = (program) => {
                 if (err) {
                     console.error(stderr);
                 }
+                logwatcher.stop();
                 console.log(`${settingsObj.appname} was terminated.`);
             });
+            logwatcher.start();
 
 
         });
