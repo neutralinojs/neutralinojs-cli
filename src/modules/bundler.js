@@ -1,6 +1,7 @@
 const fse = require('fs-extra');
 const fs = require('fs');
 const archiver = require('archiver');
+const { exec } = require('child_process');
 
 module.exports.bundleApp = (settings) => {
     try {
@@ -11,7 +12,7 @@ module.exports.bundleApp = (settings) => {
         fse.copySync(`${settings.appname}-mac`, `dist/${settings.appname}-release/${settings.appname}-mac`);
 
         let output = fs.createWriteStream(`dist/${settings.appname}-release.zip`);
-        let archive = archiver('zip', {zlib: { level: 9 }});
+        let archive = archiver('zip', { zlib: { level: 9 } });
         archive.pipe(output);
         archive.directory(`dist/${settings.appname}-release`, false);
         archive.finalize();
@@ -19,4 +20,17 @@ module.exports.bundleApp = (settings) => {
     catch (e) {
         console.error(e);
     }
+}
+
+module.exports.buildApp = (buildSuccessCallback = null) => {
+    exec('npm run build', (err, stdout, stderr) => {
+        if (err) {
+            console.error(stderr);
+            return;
+        }
+        else {
+            if(buildSuccessCallback)
+                buildSuccessCallback();
+        }
+    });
 }

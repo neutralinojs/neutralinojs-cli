@@ -5,9 +5,9 @@ const commons = require('../commons');
 const settings = require('../modules/settings');
 const downloader = require('./downloader');
 
-module.exports.createApp = (name, command) => {
-    if (command.template in constants.templates) {
-        let template = constants.templates[command.template];
+module.exports.createApp = (name, templateName) => {
+    if (templateName in constants.templates) {
+        let template = constants.templates[templateName];
         clone(template.githubUrl, `./${name}`, {}, () => {
             exec(`cd ${name} && npm i`, (err, stdout, stderr) => {
                 if (err) {
@@ -23,9 +23,9 @@ module.exports.createApp = (name, command) => {
                 }
             });
         });
-        console.log(`Downloading app template to ${name}...`);
+        console.log(`Downloading ${templateName} template to ${name} directory...`);
     }
     else {
-        console.log('Unable to find template');
+        console.log(`Unable to find template ${templateName}`);
     }
 }

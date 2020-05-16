@@ -9,7 +9,7 @@ module.exports.register = (program) => {
             let settingsObj = settings.get();
             bundler.bundleApp(settingsObj);
             commons.figlet(() => {
-                console.log(`app was released to dist`);
+                console.log(`${settingsObj.appname} was released to dist`);
             });
         });
 }
