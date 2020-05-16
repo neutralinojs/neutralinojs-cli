@@ -1,6 +1,5 @@
 const commons = require('../commons');
 const downloder = require('../modules/downloader');
-const settings = require('../modules/settings');
 
 module.exports.register = (program) => {
     program

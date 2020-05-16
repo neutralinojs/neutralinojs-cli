@@ -1,8 +1,7 @@
-const contants = require('../contants');
 const { exec } = require('child_process');
-const commons = require('../commons');
 const settings = require('../modules/settings');
 const logwatcher = require('../modules/logwatcher');
+const chmod = require('chmod');
 
 module.exports.register = (program) => {
     program
@@ -16,9 +15,11 @@ module.exports.register = (program) => {
                     break;
                 case 'linux':
                     binaryCmd = `./${settingsObj.appname}-linux`;
+                    chmod(`${settingsObj.appname}-linux`, 777);
                     break;
                 case 'darwin':
                     binaryCmd = `./${settingsObj.appname}-mac`;
+                    chmod(`${settingsObj.appname}-mac`, 777);
                     break;
             }
             exec(binaryCmd, (err, stdout, stderr) => {
@@ -29,7 +30,6 @@ module.exports.register = (program) => {
                 console.log(`${settingsObj.appname} was terminated.`);
             });
             logwatcher.start();
-
 
         });
 }

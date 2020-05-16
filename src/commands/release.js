@@ -1,5 +1,3 @@
-const contants = require('../contants');
-const { exec } = require('child_process');
 const commons = require('../commons');
 const settings = require('../modules/settings');
 const bundler = require('../modules/bundler');

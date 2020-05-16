@@ -2,7 +2,6 @@ const fs = require('fs');
 const chalk = require('chalk');
 const LOG_FILE = 'neutralinojs.log';
 
-
 let watcher = null;
 
 let formalLine = (line) => {
