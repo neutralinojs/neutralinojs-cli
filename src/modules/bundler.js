@@ -10,6 +10,8 @@ module.exports.bundleApp = (settings) => {
         fse.copySync(`${settings.appname}-win.exe`, `dist/${settings.appname}-release/${settings.appname}-win.exe`);
         fse.copySync(`${settings.appname}-linux`, `dist/${settings.appname}-release/${settings.appname}-linux`);
         fse.copySync(`${settings.appname}-mac`, `dist/${settings.appname}-release/${settings.appname}-mac`);
+        if(settings.window && settings.window.iconfile)
+            fse.copySync(`${settings.window.iconfile}`, `dist/${settings.appname}-release/${settings.window.iconfile}`);
 
         let output = fs.createWriteStream(`dist/${settings.appname}-release.zip`);
         let archive = archiver('zip', { zlib: { level: 9 } });
