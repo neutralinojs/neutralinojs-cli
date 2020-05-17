@@ -1,5 +1,5 @@
 const { exec } = require('child_process');
-const constants = require('../contants');
+const constants = require('../constants');
 const clone = require('git-clone');
 const commons = require('../commons');
 const settings = require('../modules/settings');

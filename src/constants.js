@@ -19,6 +19,5 @@ module.exports = {
     react: {
       githubUrl: "https://github.com/neutralinojs/neutralinojs-react.git"
     }
-  },
-  plugins: ['neutralinojs-cli-appify']
+  }
 };

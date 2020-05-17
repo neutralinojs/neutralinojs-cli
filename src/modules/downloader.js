@@ -1,7 +1,7 @@
 const fs = require('fs');
 const fse = require('fs-extra');
 const { https } = require('follow-redirects');
-const constants = require('../contants');
+const constants = require('../constants');
 const unzipper = require('unzipper');
 const settings = require('../modules/settings');
 
