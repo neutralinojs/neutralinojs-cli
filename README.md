@@ -47,7 +47,7 @@ module.exports = {
 }
 ```
 
-`command` is the cli command with options and actions. `register` will be called when plugin is being registered with `neu-cli`. Thus, it has the command object and standard modules. Please check [commander](https://www.npmjs.com/package/commander) for more information about commands and objects.
+`command` is the cli command with options and actions. `register` will be called when plugin is being registered with `neu-cli`. Thus, it has the command object and [standard modules object](https://github.com/neutralinojs/neutralinojs-cli/blob/master/src/modules/index.js) as parameters. Please check [commander](https://www.npmjs.com/package/commander) for more information about commands and objects.
 
 #### Publishing the plugin
 
