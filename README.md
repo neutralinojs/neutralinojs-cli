@@ -33,7 +33,7 @@ Frameworks/Libraries
 
 Neutralinojs app developers are able to write custom `neu-cli` plugins to add their own commands to the main CLI. Plugins can be developed as per below.
 
-##### Implementing the plugin
+#### Implementing the plugin
 
 `neu-cli` will register plugins using `index.js` as an interface.
 
