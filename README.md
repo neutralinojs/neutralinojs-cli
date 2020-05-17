@@ -15,6 +15,7 @@ Synopsis
 - `neu run`
 - `neu release`
 - `neu update`
+- `neu plugins [pluginName] [--remove, --add]`
 
 Supported templates
 
