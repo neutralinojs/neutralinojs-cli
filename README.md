@@ -57,7 +57,7 @@ module.exports = {
 Once you publish your `neu-cli` plugin to npm directory anyone will be able to use it using,
 
 ```bash
- $ neu pluigns --add <packageName>
+ $ neu plugins --add <packageName>
 ```
 
 and it can be removed using,
