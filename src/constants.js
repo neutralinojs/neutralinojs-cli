@@ -1,6 +1,6 @@
 module.exports = {
   binaries: {
-    url: "https://github.com/neutralinojs/neutralinojs/releases/download/v1.4.0/neutralinojs-v1.4.0.zip"
+    url: "https://github.com/neutralinojs/neutralinojs/releases/download/v1.5.0/neutralinojs-v1.5.0.zip"
   },
   templates: {
     ts: {
