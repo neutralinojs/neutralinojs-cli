@@ -5,7 +5,7 @@ const commons = require('../commons');
 const settings = require('../modules/settings');
 const downloader = require('./downloader');
 
-module.exports.createApp = (name, templateName) => {
+module.exports.createApp = (name, templateName, callback) => {
     if (templateName in constants.templates) {
         let template = constants.templates[templateName];
         clone(template.githubUrl, `./${name}`, {}, () => {
@@ -19,6 +19,8 @@ module.exports.createApp = (name, templateName) => {
                         settings.update('appname', name, name);
                         commons.figlet();
                         console.log(`\n----\nEnter 'cd ${name} && neu build' to build the app.`);
+                        if(callback)
+                            callback();
                     }, name);
                 }
             });
