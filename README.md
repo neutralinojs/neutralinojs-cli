@@ -28,6 +28,7 @@ Generic
 Frameworks/Libraries
 
 - React `--template react`
+- Svelte `--template svelte`
 
 ### Plugins
 
