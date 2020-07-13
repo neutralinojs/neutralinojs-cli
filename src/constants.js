@@ -20,7 +20,7 @@ module.exports = {
       githubUrl: "https://github.com/neutralinojs/neutralinojs-react.git"
     },
     svelte: {
-      githubUrl: "https://github.com/malipetek/neutralinojs-svelte.git"
+      githubUrl: "https://github.com/neutralinojs/neutralinojs-svelte.git"
     }
   }
 };
