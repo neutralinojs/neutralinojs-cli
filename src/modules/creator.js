@@ -6,6 +6,8 @@ const settings = require('../modules/settings');
 const downloader = require('./downloader');
 
 module.exports.createApp = (name, templateName, callback) => {
+    if(!templateName)
+        templateName = 'js';
     if (templateName in constants.templates) {
         let template = constants.templates[templateName];
         clone(template.githubUrl, `./${name}`, {}, () => {
