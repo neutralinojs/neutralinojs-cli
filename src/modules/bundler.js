@@ -1,7 +1,7 @@
 const fse = require('fs-extra');
 const fs = require('fs');
 const archiver = require('archiver');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 
 module.exports.bundleApp = (settings) => {
     try {
@@ -24,15 +24,12 @@ module.exports.bundleApp = (settings) => {
     }
 }
 
-module.exports.buildApp = (buildSuccessCallback = null) => {
-    exec('npm run build', (err, stdout, stderr) => {
-        if (err) {
-            console.error(stderr);
-            return;
-        }
-        else {
-            if(buildSuccessCallback)
-                buildSuccessCallback();
-        }
+module.exports.buildApp = (buildSuccessCallback = null, verbose = false) => {
+    const proc = spawn('npm run build', {
+        shell: true,
+        stdio: ['inherit', verbose ? 'inherit' : 'ignore', 'inherit'],
+    });
+    proc.on('exit', function (code) {
+        if (code == 0 && buildSuccessCallback) buildSuccessCallback();
     });
 }
