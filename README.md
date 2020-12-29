@@ -70,4 +70,5 @@ and it can be removed using,
 
 ### License
 
-MIT
+
+[MIT](LICENSE)
