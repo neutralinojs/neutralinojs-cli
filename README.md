@@ -70,5 +70,12 @@ and it can be removed using,
 
 ### License
 
-
 [MIT](LICENSE)
+
+### Contributors
+
+<a href="https://github.com/neutralinojs/neutralinojs-cli/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=neutralinojs/neutralinojs-cli" />
+</a>
+
+Made with [contributors-img](https://contrib.rocks).
