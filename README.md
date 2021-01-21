@@ -13,6 +13,7 @@ Synopsis
 - `neu create myapp --template <templateName>`
 - `neu build`
 - `neu run`
+- `neu listen`
 - `neu release`
 - `neu update`
 - `neu plugins [packageName] [--remove, --add]`
