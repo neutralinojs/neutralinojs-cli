@@ -12,7 +12,7 @@ module.exports.register = (program) => {
                 logwatcher.stop();
                 filewatcher.stop();
                 console.log(`${settingsObj.appname} was terminated.`);
-            });
+            }, "--debug-mode");
             logwatcher.start();
             filewatcher.start();
         });
