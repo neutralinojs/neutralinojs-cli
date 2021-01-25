@@ -5,11 +5,11 @@ const constants = require('../constants');
 const unzipper = require('unzipper');
 const settings = require('../modules/settings');
 
-let downloadBinaries = (callback, name = null) => {
+let downloadFromRelease = (callback, name = null) => {
     let pathPrefix = name ? `${name}/` : '';
     fs.mkdirSync(`${pathPrefix}temp`, { recursive: true });
     const file = fs.createWriteStream(`${pathPrefix}temp/binaries.zip`);
-    console.log('Downloading latest Neutralino binaries..');
+    console.log('Downloading latest Neutralinojs binaries and the client library..');
     https.get(constants.binaries.url, function (response) {
         response.pipe(file);
         response.on('end', () => {
@@ -33,11 +33,13 @@ module.exports.downloadAndUpdateBinaries = (callback, name) => {
         name = settings.get().appname;
     }
         
-    downloadBinaries(() => {
+    downloadFromRelease(() => {
         console.log('Finalizing and cleaning temp. files.');
         fse.copySync(`${pathPrefix}temp/neutralino-win.exe`, `${pathPrefix}${name}-win.exe`);
         fse.copySync(`${pathPrefix}temp/neutralino-linux`, `${pathPrefix}${name}-linux`);
         fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}${name}-mac`);
+        fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}${name}-mac`);
+        fse.copySync(`${pathPrefix}temp/app/assets/neutralino.js`, `${pathPrefix}app/assets/neutralino.js`);
         clearDownloadCache(pathPrefix);
         if(callback)
             callback();
