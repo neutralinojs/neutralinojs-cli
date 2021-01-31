@@ -9,10 +9,10 @@ let watcher = null;
 let appSourceWatcher = null;
 let isBuilding = false;
 
-module.exports.start = (autoBind = false) => {
+module.exports.start = (autoBuild = false) => {
     startAppWatcher();
     devServer.start();
-    if(autoBind)
+    if(autoBuild)
         startSourceWatcher();
 }
 
