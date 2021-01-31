@@ -6,7 +6,8 @@ const settings = require('../modules/settings');
 module.exports.register = (program) => {
     program
         .command('listen')
-        .action(() => {
+        .option('--auto-build')
+        .action((command) => {
             let settingsObj = settings.get();
             runner.runApp(settingsObj, () => {
                 logwatcher.stop();
@@ -14,7 +15,7 @@ module.exports.register = (program) => {
                 console.log(`${settingsObj.appname} was terminated.`);
             }, "--debug-mode");
             logwatcher.start();
-            filewatcher.start();
+            filewatcher.start(command.autoBuild);
         });
 }
 
