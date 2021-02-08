@@ -5,12 +5,11 @@ const bundler = require('../modules/bundler');
 module.exports.register = (program) => {
     program
         .command('release')
-        .action(() => {
+        .action(async () => {
             let settingsObj = settings.get();
-            bundler.bundleApp(settingsObj);
-            commons.figlet(() => {
-                console.log(`${settingsObj.appname} was released to dist`);
-            });
+            await bundler.bundleApp(settingsObj);
+            console.log(`${settingsObj.appname} was released to dist`);
+            commons.figlet();
         });
 }
 

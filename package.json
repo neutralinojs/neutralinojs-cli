@@ -18,6 +18,7 @@
   "homepage": "https://neutralino.js.org/docs/#/tools/cli",
   "dependencies": {
     "archiver": "^4.0.2",
+    "asar": "^3.0.3",
     "chalk": "^4.1.0",
     "chmod": "^0.2.1",
     "chokidar": "^3.5.1",
