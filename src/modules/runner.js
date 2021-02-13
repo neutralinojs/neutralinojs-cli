@@ -1,10 +1,11 @@
 const { exec } = require('child_process');
 const chmod = require('chmod');
 
-module.exports.runApp = (settingsObj, runSuccessCallback = null, args = "") => {
+module.exports.runApp = (settingsObj, runSuccessCallback = null, argsOpt = "") => {
     let binaryCmd;
-    if(args.length > 0)
-        args = " " + args;
+    let args = " --load-dir-res";
+    if(argsOpt.length > 0)
+        args += " " + argsOpt;
     switch (process.platform) {
         case 'win32':
             binaryCmd = `${settingsObj.appname}-win.exe${args}`;

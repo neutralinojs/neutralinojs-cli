@@ -10,7 +10,7 @@ module.exports.register = (program) => {
             runner.runApp(settingsObj, () => {
                 logwatcher.stop();
                 console.log(`${settingsObj.appname} was terminated.`);
-            }, '--load-dir-res');
+            });
             logwatcher.start();
         });
 }
