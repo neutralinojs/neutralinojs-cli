@@ -25,6 +25,26 @@ let clearDownloadCache = (pathPrefix) => {
     fse.removeSync(`${pathPrefix}temp`);
 }
 
+module.exports.downloadTemplate = (template, callback, name = null) => {
+    let pathPrefix = name ? `${name}/` : '';
+    let templateUrl = `https://github.com/neutralinojs/${template.repoId}/archive/master.zip`;
+    fs.mkdirSync(`${pathPrefix}temp`, { recursive: true });
+    const file = fs.createWriteStream(`${pathPrefix}temp/template.zip`);
+    https.get(templateUrl, function (response) {
+        response.pipe(file);
+        response.on('end', () => {
+            console.log('Extracting template zip file..');
+            fs.createReadStream(`${pathPrefix}temp/template.zip`)
+                .pipe(unzipper.Extract({ path: `${pathPrefix}temp/` }))
+                .promise().then(() => {
+                    fse.copySync(`${pathPrefix}temp/${template.repoId}-master`, `${pathPrefix}`);
+                    clearDownloadCache(pathPrefix);
+                    callback(name);
+                });
+        });
+    });
+}
+
 module.exports.downloadAndUpdateBinaries = (callback, name) => {
     let pathPrefix = name ? `${name}/` : '';
     let appNameFromSettings = false;
@@ -32,12 +52,11 @@ module.exports.downloadAndUpdateBinaries = (callback, name) => {
         appNameFromSettings = true;
         name = settings.get().appname;
     }
-        
+
     downloadFromRelease(() => {
         console.log('Finalizing and cleaning temp. files.');
         fse.copySync(`${pathPrefix}temp/neutralino-win.exe`, `${pathPrefix}${name}-win.exe`);
         fse.copySync(`${pathPrefix}temp/neutralino-linux`, `${pathPrefix}${name}-linux`);
-        fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}${name}-mac`);
         fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}${name}-mac`);
         fse.copySync(`${pathPrefix}temp/app/assets/neutralino.js`, `${pathPrefix}app/assets/neutralino.js`);
         clearDownloadCache(pathPrefix);

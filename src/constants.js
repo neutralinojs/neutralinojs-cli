@@ -4,23 +4,22 @@ module.exports = {
   },
   templates: {
     ts: {
-      githubUrl: "https://github.com/neutralinojs/neutralinojs-typescript.git"
+      repoId: "neutralinojs-typescript"
     },
     js: {
-      githubUrl: "https://github.com/neutralinojs/neutralinojs-javascript.git"
+      repoId: "neutralinojs-javascript"
     },
     kotlin: {
-      githubUrl: "https://github.com/neutralinojs/neutralinojs-kotlin.git"
+      repoId: "neutralinojs-kotlin"
     },
     angularjs: {
-      githubUrl:
-        "https://github.com/neutralinojs/neutralinojs-angularjs-template.git"
+      repoId: "neutralinojs-angularjs-template"
     },
     react: {
-      githubUrl: "https://github.com/neutralinojs/neutralinojs-react.git"
+      repoId: "neutralinojs-react"
     },
     svelte: {
-      githubUrl: "https://github.com/neutralinojs/neutralinojs-svelte.git"
+      repoId: "neutralinojs-svelte"
     }
   }
 };

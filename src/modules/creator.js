@@ -1,6 +1,5 @@
 const { exec } = require('child_process');
 const constants = require('../constants');
-const clone = require('git-clone');
 const commons = require('../commons');
 const settings = require('../modules/settings');
 const downloader = require('./downloader');
@@ -10,7 +9,8 @@ module.exports.createApp = (name, templateName, callback) => {
         templateName = 'js';
     if (templateName in constants.templates) {
         let template = constants.templates[templateName];
-        clone(template.githubUrl, `./${name}`, {}, () => {
+        downloader.downloadTemplate(template, () => {
+            console.log('Installing required dependencies...');
             exec(`cd ${name} && npm i`, (err, stdout, stderr) => {
                 if (err) {
                     console.error(stderr);
@@ -26,7 +26,7 @@ module.exports.createApp = (name, templateName, callback) => {
                     }, name);
                 }
             });
-        });
+        }, name);
         console.log(`Downloading ${templateName} template to ${name} directory...`);
     }
     else {
