@@ -21,6 +21,7 @@ module.exports.stop = () => {
         watcher.close();
     if(appSourceWatcher)
         appSourceWatcher.close();
+    devServer.stop();
 }
 
 
