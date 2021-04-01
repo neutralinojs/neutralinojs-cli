@@ -6,7 +6,7 @@ const downloader = require('./downloader');
 
 module.exports.createApp = (name, templateName, callback) => {
     if(!templateName)
-        templateName = 'js';
+        templateName = 'blank';
     if (templateName in constants.templates) {
         let template = constants.templates[templateName];
         downloader.downloadTemplate(template, () => {
@@ -18,7 +18,7 @@ module.exports.createApp = (name, templateName, callback) => {
                 }
                 else {
                     downloader.downloadAndUpdateBinaries(() => {
-                        settings.update('appname', name, name);
+                        settings.update('binaryName', name, name);
                         commons.figlet();
                         console.log(`\n----\nEnter 'cd ${name} && neu build' to build the app.`);
                         if(callback)

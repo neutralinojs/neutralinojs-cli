@@ -1,22 +1,24 @@
 const { exec } = require('child_process');
 const chmod = require('chmod');
+const settings = require('./settings');
 
-module.exports.runApp = (settingsObj, runSuccessCallback = null, argsOpt = "") => {
+module.exports.runApp = (runSuccessCallback = null, argsOpt = "") => {
+    let settingsObj = settings.get();
     let binaryCmd;
     let args = " --load-dir-res";
     if(argsOpt.length > 0)
         args += " " + argsOpt;
     switch (process.platform) {
         case 'win32':
-            binaryCmd = `${settingsObj.appname}-win.exe${args}`;
+            binaryCmd = `${settingsObj.binaryName}-win.exe${args}`;
             break;
         case 'linux':
-            binaryCmd = `./${settingsObj.appname}-linux${args}`;
-            chmod(`${settingsObj.appname}-linux`, 777);
+            binaryCmd = `./${settingsObj.binaryName}-linux${args}`;
+            chmod(`${settingsObj.binaryName}-linux`, 777);
             break;
         case 'darwin':
-            binaryCmd = `./${settingsObj.appname}-mac${args}`;
-            chmod(`${settingsObj.appname}-mac`, 777);
+            binaryCmd = `./${settingsObj.binaryName}-mac${args}`;
+            chmod(`${settingsObj.binaryName}-mac`, 777);
             break;
     }
     exec(binaryCmd, (err, stdout, stderr) => {

@@ -4,12 +4,12 @@ const bundler = require('../modules/bundler');
 module.exports.register = (program) => {
     program
         .command('build')
-        .option('-v, --verbose')
+        .option('-r, --release')
         .action((name, command) => {
-            bundler.buildApp(() => {
-                console.log('App build was successful!');
+            bundler.bundleApp(name.release, () => {
+                console.log('Please check the ./dist directory!');
                 commons.figlet();
-            }, name.verbose);
+            });
         });
 }
 

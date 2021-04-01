@@ -9,7 +9,7 @@ let downloadFromRelease = (callback, name = null) => {
     let pathPrefix = name ? `${name}/` : '';
     fs.mkdirSync(`${pathPrefix}temp`, { recursive: true });
     const file = fs.createWriteStream(`${pathPrefix}temp/binaries.zip`);
-    console.log('Downloading latest Neutralinojs binaries and the client library..');
+    console.log('Downloading latest Neutralinojs binaries..');
     https.get(constants.binaries.url, function (response) {
         response.pipe(file);
         response.on('end', () => {
@@ -27,7 +27,8 @@ let clearDownloadCache = (pathPrefix) => {
 
 module.exports.downloadTemplate = (template, callback, name = null) => {
     let pathPrefix = name ? `${name}/` : '';
-    let templateUrl = `https://github.com/neutralinojs/${template.repoId}/archive/master.zip`;
+    let templateUrl = `https://github.com/neutralinojs/${template.repoId}/archive/main.zip`;
+    console.log(templateUrl);
     fs.mkdirSync(`${pathPrefix}temp`, { recursive: true });
     const file = fs.createWriteStream(`${pathPrefix}temp/template.zip`);
     https.get(templateUrl, function (response) {
@@ -37,7 +38,7 @@ module.exports.downloadTemplate = (template, callback, name = null) => {
             fs.createReadStream(`${pathPrefix}temp/template.zip`)
                 .pipe(unzipper.Extract({ path: `${pathPrefix}temp/` }))
                 .promise().then(() => {
-                    fse.copySync(`${pathPrefix}temp/${template.repoId}-master`, `${pathPrefix}`);
+                    fse.copySync(`${pathPrefix}temp/${template.repoId}-main`, `${pathPrefix}`);
                     clearDownloadCache(pathPrefix);
                     callback(name);
                 });
@@ -50,7 +51,7 @@ module.exports.downloadAndUpdateBinaries = (callback, name) => {
     let appNameFromSettings = false;
     if(!name) {
         appNameFromSettings = true;
-        name = settings.get().appname;
+        name = settings.get().binaryName;
     }
 
     downloadFromRelease(() => {
@@ -58,7 +59,6 @@ module.exports.downloadAndUpdateBinaries = (callback, name) => {
         fse.copySync(`${pathPrefix}temp/neutralino-win.exe`, `${pathPrefix}${name}-win.exe`);
         fse.copySync(`${pathPrefix}temp/neutralino-linux`, `${pathPrefix}${name}-linux`);
         fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}${name}-mac`);
-        fse.copySync(`${pathPrefix}temp/app/assets/neutralino.js`, `${pathPrefix}app/assets/neutralino.js`);
         clearDownloadCache(pathPrefix);
         if(callback)
             callback();

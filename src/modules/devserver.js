@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const DEV_APP_PORT = 8080;
+const DEV_APP_PORT = 5050;
 
 let devAPIServer = null;
 let devAPIData = {

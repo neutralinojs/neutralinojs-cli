@@ -1,5 +1,5 @@
 const editJsonFile = require('edit-json-file');
-const SETTINGS_FILE = 'app/settings.json';
+const SETTINGS_FILE = 'neutralino.config.json';
 
 module.exports.update = (key, value, appName) => {
     let file;
