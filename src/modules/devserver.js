@@ -4,7 +4,8 @@ const DEV_APP_PORT = 5050;
 
 let devAPIServer = null;
 let devAPIData = {
-    needsReload: false
+    needsReload: false,
+    success: true
 };
 
 module.exports.start = () => {
