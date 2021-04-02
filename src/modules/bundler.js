@@ -10,12 +10,13 @@ async function createAsarFile() {
     const resourcesDir = settingsObj.cli.resourcesPath.replace(/^\//, "");
     const clientLibrary = settingsObj.cli.clientLibrary.replace(/^\//, "");
     const icon = settingsObj.modes.window.icon.replace(/^\//, "");
+    let binaryName = settingsObj.cli.binaryName;
     fs.mkdirSync(`temp`, { recursive: true });
     await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
     await fse.copy(`neutralino.config.json`, 'temp/neutralino.config.json', {overwrite: true});
     await fse.copy(`./${clientLibrary}`, `temp/${clientLibrary}`, {overwrite: true});
     await fse.copy(`./${icon}`, `temp/${icon}`, {overwrite: true});
-    await asar.createPackage('temp', `dist/${settingsObj.binaryName}/res.neu`);
+    await asar.createPackage('temp', `dist/${binaryName}/res.neu`);
 }
 
 function clearBuildCache() {
@@ -24,19 +25,19 @@ function clearBuildCache() {
 
 module.exports.bundleApp = async (isRelease, buildSuccessCallback = null) => {
     let settingsObj = settings.get();
+    let binaryName = settingsObj.cli.binaryName;
     try {
         await createAsarFile();
-        fse.copySync(`${settingsObj.binaryName}-win.exe`, `dist/${settingsObj.binaryName}/${settingsObj.binaryName}-win.exe`);
-        fse.copySync(`${settingsObj.binaryName}-linux`, `dist/${settingsObj.binaryName}/${settingsObj.binaryName}-linux`);
-        fse.copySync(`${settingsObj.binaryName}-mac`, `dist/${settingsObj.binaryName}/${settingsObj.binaryName}-mac`);
-        fse.copySync(`WebView2Loader.dll`, `dist/${settingsObj.binaryName}/WebView2Loader.dll`);
-        fse.copySync(`webview.dll`, `dist/${settingsObj.binaryName}/webview.dll`);
+        fse.copySync(`${binaryName}-win.exe`, `dist/${binaryName}/${binaryName}-win.exe`);
+        fse.copySync(`${binaryName}-linux`, `dist/${binaryName}/${binaryName}-linux`);
+        fse.copySync(`${binaryName}-mac`, `dist/${binaryName}/${binaryName}-mac`);
+        fse.copySync(`WebView2Loader.dll`, `dist/${binaryName}/WebView2Loader.dll`);
         if (isRelease) {
             // TODO: Add installers in the future
-            let output = fs.createWriteStream(`dist/${settingsObj.binaryName}-release.zip`);
+            let output = fs.createWriteStream(`dist/${binaryName}-release.zip`);
             let archive = archiver('zip', { zlib: { level: 9 } });
             archive.pipe(output);
-            archive.directory(`dist/${settingsObj.binaryName}`, false);
+            archive.directory(`dist/${binaryName}`, false);
             await archive.finalize();
 
         }

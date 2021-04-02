@@ -18,7 +18,7 @@ module.exports.createApp = (binaryName, templateName, callback) => {
                 }
                 else {
                     downloader.downloadAndUpdateBinaries(() => {
-                        settings.update('binaryName', binaryName, binaryName);
+                        settings.update('cli.binaryName', binaryName, binaryName);
                         settings.update('modes.window.title', binaryName, binaryName);
                         commons.figlet();
                         console.log(`\n----\nEnter 'cd ${binaryName} && neu run' to open your application.`);

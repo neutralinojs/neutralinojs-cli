@@ -50,7 +50,7 @@ module.exports.downloadAndUpdateBinaries = (callback, name) => {
     let appNameFromSettings = false;
     if(!name) {
         appNameFromSettings = true;
-        name = settings.get().binaryName;
+        name = settings.get().cli.binaryName;
     }
 
     downloadFromRelease(() => {
@@ -59,7 +59,6 @@ module.exports.downloadAndUpdateBinaries = (callback, name) => {
         fse.copySync(`${pathPrefix}temp/neutralino-linux`, `${pathPrefix}${name}-linux`);
         fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}${name}-mac`);
         fse.copySync(`${pathPrefix}temp/WebView2Loader.dll`, `${pathPrefix}WebView2Loader.dll`);
-        fse.copySync(`${pathPrefix}temp/webview.dll`, `${pathPrefix}webview.dll`);
         clearDownloadCache(pathPrefix);
         if(callback)
             callback();

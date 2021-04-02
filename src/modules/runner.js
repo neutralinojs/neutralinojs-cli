@@ -4,21 +4,22 @@ const settings = require('./settings');
 
 module.exports.runApp = (runSuccessCallback = null, argsOpt = "") => {
     let settingsObj = settings.get();
+    let binaryName = settingsObj.cli.binaryName;
     let binaryCmd;
     let args = " --load-dir-res";
     if(argsOpt.length > 0)
         args += " " + argsOpt;
     switch (process.platform) {
         case 'win32':
-            binaryCmd = `${settingsObj.binaryName}-win.exe${args}`;
+            binaryCmd = `${binaryName}-win.exe${args}`;
             break;
         case 'linux':
-            binaryCmd = `./${settingsObj.binaryName}-linux${args}`;
-            chmod(`${settingsObj.binaryName}-linux`, 777);
+            binaryCmd = `./${binaryName}-linux${args}`;
+            chmod(`${binaryName}-linux`, 777);
             break;
         case 'darwin':
-            binaryCmd = `./${settingsObj.binaryName}-mac${args}`;
-            chmod(`${settingsObj.binaryName}-mac`, 777);
+            binaryCmd = `./${binaryName}-mac${args}`;
+            chmod(`${binaryName}-mac`, 777);
             break;
     }
     exec(binaryCmd, (err, stdout, stderr) => {
