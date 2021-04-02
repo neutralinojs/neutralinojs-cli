@@ -6,10 +6,15 @@ const asar = require('asar');
 const settings = require('./settings');
 
 async function createAsarFile() {
-    let settingsObj = settings.get();
+    const settingsObj = settings.get();
+    const resourcesDir = settingsObj.cli.resourcesPath.replace(/^\//, "");
+    const clientLibrary = settingsObj.cli.clientLibrary.replace(/^\//, "");
+    const icon = settingsObj.modes.window.icon.replace(/^\//, "");
     fs.mkdirSync(`temp`, { recursive: true });
-    await fse.copy(`resources/`, 'temp/resources/', {overwrite: true});
+    await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
     await fse.copy(`neutralino.config.json`, 'temp/neutralino.config.json', {overwrite: true});
+    await fse.copy(`./${clientLibrary}`, `temp/${clientLibrary}`, {overwrite: true});
+    await fse.copy(`./${icon}`, `temp/${icon}`, {overwrite: true});
     await asar.createPackage('temp', `dist/${settingsObj.binaryName}/res.neu`);
 }
 

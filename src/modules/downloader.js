@@ -28,7 +28,6 @@ let clearDownloadCache = (pathPrefix) => {
 module.exports.downloadTemplate = (template, callback, name = null) => {
     let pathPrefix = name ? `${name}/` : '';
     let templateUrl = `https://github.com/neutralinojs/${template.repoId}/archive/main.zip`;
-    console.log(templateUrl);
     fs.mkdirSync(`${pathPrefix}temp`, { recursive: true });
     const file = fs.createWriteStream(`${pathPrefix}temp/template.zip`);
     https.get(templateUrl, function (response) {

@@ -4,32 +4,33 @@ const commons = require('../commons');
 const settings = require('../modules/settings');
 const downloader = require('./downloader');
 
-module.exports.createApp = (name, templateName, callback) => {
+module.exports.createApp = (binaryName, templateName, callback) => {
     if(!templateName)
         templateName = 'blank';
     if (templateName in constants.templates) {
         let template = constants.templates[templateName];
         downloader.downloadTemplate(template, () => {
             console.log('Installing required dependencies...');
-            exec(`cd ${name} && npm i`, (err, stdout, stderr) => {
+            exec(`cd ${binaryName} && npm i`, (err, stdout, stderr) => {
                 if (err) {
                     console.error(stderr);
                     return;
                 }
                 else {
                     downloader.downloadAndUpdateBinaries(() => {
-                        settings.update('binaryName', name, name);
+                        settings.update('binaryName', binaryName, binaryName);
+                        settings.update('modes.window.title', binaryName, binaryName);
                         commons.figlet();
-                        console.log(`\n----\nEnter 'cd ${name} && neu build' to build the app.`);
+                        console.log(`\n----\nEnter 'cd ${binaryName} && neu run' to open your application.`);
                         if(callback)
                             callback();
-                    }, name);
+                    }, binaryName);
                 }
             });
-        }, name);
-        console.log(`Downloading ${templateName} template to ${name} directory...`);
+        }, binaryName);
+        console.log(`Downloading ${templateName} template to ${binaryName} directory...`);
     }
     else {
-        console.log(`Unable to find template ${templateName}`);
+        console.log(`Unable to find template: ${templateName}`);
     }
 }
