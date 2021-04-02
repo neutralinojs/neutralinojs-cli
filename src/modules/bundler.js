@@ -29,6 +29,8 @@ module.exports.bundleApp = async (isRelease, buildSuccessCallback = null) => {
         fse.copySync(`${settingsObj.binaryName}-win.exe`, `dist/${settingsObj.binaryName}/${settingsObj.binaryName}-win.exe`);
         fse.copySync(`${settingsObj.binaryName}-linux`, `dist/${settingsObj.binaryName}/${settingsObj.binaryName}-linux`);
         fse.copySync(`${settingsObj.binaryName}-mac`, `dist/${settingsObj.binaryName}/${settingsObj.binaryName}-mac`);
+        fse.copySync(`WebView2Loader.dll`, `dist/${settingsObj.binaryName}/WebView2Loader.dll`);
+        fse.copySync(`webview.dll`, `dist/${settingsObj.binaryName}/webview.dll`);
         if (isRelease) {
             // TODO: Add installers in the future
             let output = fs.createWriteStream(`dist/${settingsObj.binaryName}-release.zip`);

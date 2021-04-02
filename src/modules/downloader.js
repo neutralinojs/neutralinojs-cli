@@ -58,6 +58,8 @@ module.exports.downloadAndUpdateBinaries = (callback, name) => {
         fse.copySync(`${pathPrefix}temp/neutralino-win.exe`, `${pathPrefix}${name}-win.exe`);
         fse.copySync(`${pathPrefix}temp/neutralino-linux`, `${pathPrefix}${name}-linux`);
         fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}${name}-mac`);
+        fse.copySync(`${pathPrefix}temp/WebView2Loader.dll`, `${pathPrefix}WebView2Loader.dll`);
+        fse.copySync(`${pathPrefix}temp/webview.dll`, `${pathPrefix}webview.dll`);
         clearDownloadCache(pathPrefix);
         if(callback)
             callback();
