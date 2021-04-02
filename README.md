@@ -10,26 +10,12 @@ neu cli for Neutralinojs
 
 Synopsis
 
-- `neu create myapp --template <templateName>`
+- `neu create <binaryName>`
 - `neu build`
 - `neu run`
-- `neu listen [--auto-build]`
-- `neu release`
+- `neu listen`
 - `neu update`
 - `neu plugins [packageName] [--remove, --add]`
-
-Supported templates
-
-Generic
-
-- Javascript `--template js`
-- Typescript `--template ts`
-- Kotlin `--template kotlin`
-
-Frameworks/Libraries
-
-- React `--template react`
-- Svelte `--template svelte`
 
 ### Plugins
 
