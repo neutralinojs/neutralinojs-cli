@@ -20,7 +20,9 @@ module.exports.stop = () => {
 function startFileWatcher() {
     if(!fs.existsSync(APP_PATH))
         return;
-    fileWatcher = chokidar.watch(APP_PATH , {ignoreInitial: true}).on('all', () => {
+    fileWatcher = chokidar.watch(APP_PATH , {ignoreInitial: true}).on('all', (event, path) => {
+        if(['unlink', 'unlinkDir'].includes(event))
+            return;
         devServer.setData({
             needsReload: true
         });
