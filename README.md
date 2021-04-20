@@ -11,7 +11,7 @@ neu cli for Neutralinojs
 Synopsis
 
 - `neu create <binaryName>`
-- `neu build`
+- `neu build [--release]`
 - `neu run`
 - `neu listen`
 - `neu update`
