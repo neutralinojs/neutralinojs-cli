@@ -5,11 +5,11 @@ const LOG_FILE = 'neutralinojs.log';
 let watcher = null;
 
 let formalLine = (line) => {
-    let matches = /^(WARN|INFO|ERROR|DEBUG) /.exec(line);
+    let matches = /^(WARNING|INFO|ERROR|DEBUG) /.exec(line);
     if(matches && matches[1]) {
         let colorFormatter;
         switch(matches[1]) {
-            case 'WARN':
+            case 'WARNING':
                 colorFormatter = chalk.bgYellow.black;
                 break;
             case 'INFO':
