@@ -15,11 +15,11 @@ module.exports.runApp = (runSuccessCallback = null, argsOpt = "") => {
             break;
         case 'linux':
             binaryCmd = `bin/neutralino-linux${args}`;
-            chmod(`bin/neutralino-linux`, 777);
+            chmod(`bin/neutralino-linux`, { execute: true });
             break;
         case 'darwin':
             binaryCmd = `bin/neutralino-mac${args}`;
-            chmod(`bin/neutralino-mac`, 777);
+            chmod(`bin/neutralino-mac`, { execute: true });
             break;
     }
     exec(binaryCmd, (err, stdout, stderr) => {
