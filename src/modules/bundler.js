@@ -1,7 +1,6 @@
 const fse = require('fs-extra');
 const fs = require('fs');
 const archiver = require('archiver');
-const { spawn } = require('child_process');
 const asar = require('asar');
 const settings = require('./settings');
 
