@@ -1,28 +1,30 @@
 const { exec } = require('child_process');
 const chmod = require('chmod');
+const fse = require('fs-extra');
 const settings = require('./settings');
 
 module.exports.runApp = (runSuccessCallback = null, argsOpt = "") => {
     let settingsObj = settings.get();
     let binaryName = settingsObj.cli.binaryName;
-    let binaryCmd;
+    let binaryPath;
     let args = " --load-dir-res";
     if(argsOpt.length > 0)
         args += " " + argsOpt;
+    process.env.NL_PATH = "..";
     switch (process.platform) {
         case 'win32':
-            binaryCmd = `bin\\neutralino-win.exe${args}`;
+            binaryPath = fse.existsSync(`bin`) ? `bin\\neutralino-win.exe` : `${binaryName}-win.exe`;
             break;
         case 'linux':
-            binaryCmd = `bin/neutralino-linux${args}`;
-            chmod(`bin/neutralino-linux`, { execute: true });
+            binaryPath = fse.existsSync(`bin`) ? `bin/neutralino-linux` : `${binaryName}-linux`;
+            chmod(binaryPath, { execute: true });
             break;
         case 'darwin':
-            binaryCmd = `bin/neutralino-mac${args}`;
-            chmod(`bin/neutralino-mac`, { execute: true });
+            binaryPath = fse.existsSync(`bin`) ? `bin/neutralino-mac` : `${binaryName}-mac`;
+            chmod(binaryPath, { execute: true });
             break;
     }
-    exec(binaryCmd, (err, stdout, stderr) => {
+    exec(binaryPath + args, (err, stdout, stderr) => {
         if (err) {
             console.error(stderr);
         }
