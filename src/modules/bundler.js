@@ -28,10 +28,10 @@ module.exports.bundleApp = async (isRelease, buildSuccessCallback = null) => {
     let binaryName = settingsObj.cli.binaryName;
     try {
         await createAsarFile();
-        fse.copySync(`${binaryName}-win.exe`, `dist/${binaryName}/${binaryName}-win.exe`);
-        fse.copySync(`${binaryName}-linux`, `dist/${binaryName}/${binaryName}-linux`);
-        fse.copySync(`${binaryName}-mac`, `dist/${binaryName}/${binaryName}-mac`);
-        fse.copySync(`WebView2Loader.dll`, `dist/${binaryName}/WebView2Loader.dll`);
+        fse.copySync(`bin/neutralino-win.exe`, `dist/${binaryName}/${binaryName}-win.exe`);
+        fse.copySync(`bin/neutralino-linux`, `dist/${binaryName}/${binaryName}-linux`);
+        fse.copySync(`bin/neutralino-mac`, `dist/${binaryName}/${binaryName}-mac`);
+        fse.copySync(`bin/WebView2Loader.dll`, `dist/${binaryName}/WebView2Loader.dll`);
         if (isRelease) {
             // TODO: Add installers in the future
             let output = fs.createWriteStream(`dist/${binaryName}-release.zip`);
