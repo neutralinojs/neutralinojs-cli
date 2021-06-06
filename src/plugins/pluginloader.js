@@ -23,50 +23,50 @@ module.exports.registerPlugins = (program, modules) => {
     }
 }
 
-module.exports.add = (packageName, installSuccessCallback) => {
-    let plugins = [];
-    if(config.has('plugins'))
-        plugins = config.get('plugins');
-    if(!plugins.includes(packageName)) {
-        exec(`cd ${NEU_ROOT} && npm install --save ${packageName}`, (err, stdout, stderr) => {
-            if (err) {
-                console.error(stderr);
-                return;
-            }
-            else {
-                plugins.push(packageName);
-                config.set('plugins', plugins);
-                if(installSuccessCallback)
-                    installSuccessCallback();
-            }
-        });
-    }
-    else {
-        console.error(`${packageName} is already installed!`);
-    }
+module.exports.add = (packageName) => {
+    return new Promise((resolve, reject) => {
+        let plugins = [];
+        if(config.has('plugins'))
+            plugins = config.get('plugins');
+        if(!plugins.includes(packageName)) {
+            exec(`cd ${NEU_ROOT} && npm install --save ${packageName}`, (err, stdout, stderr) => {
+                if (err) {
+                    reject(stderr);
+                }
+                else {
+                    plugins.push(packageName);
+                    config.set('plugins', plugins);
+                    resolve();
+                }
+            });
+        }
+        else {
+            reject(`${packageName} is already installed!`);
+        }
+    });
 };
 
 module.exports.remove = (packageName, uninstallSuccessCallback) => {
-    let plugins = [];
-    if(config.has('plugins'))
-        plugins = config.get('plugins');
-    if(plugins.includes(packageName)) {
-        exec(`cd ${NEU_ROOT} && npm uninstall --save ${packageName}`, (err, stdout, stderr) => {
-            if (err) {
-                console.error(stderr);
-                return;
-            }
-            else {
-                plugins.splice(plugins.indexOf(packageName), 1);
-                config.set('plugins', plugins);
-                if(uninstallSuccessCallback)
-                    uninstallSuccessCallback();
-            }
-        });
-    }
-    else {
-        console.error(`Unable to find ${packageName}!`);
-    }
+    return new Promise((resolve, reject) => {
+        let plugins = [];
+        if(config.has('plugins'))
+            plugins = config.get('plugins');
+        if(plugins.includes(packageName)) {
+            exec(`cd ${NEU_ROOT} && npm uninstall --save ${packageName}`, (err, stdout, stderr) => {
+                if (err) {
+                    reject(stderr);
+                }
+                else {
+                    plugins.splice(plugins.indexOf(packageName), 1);
+                    config.set('plugins', plugins);
+                    resolve();
+                }
+            });
+        }
+        else {
+            reject(`Unable to find ${packageName}!`);
+        }    
+    });
 };
 
 module.exports.list = () => {

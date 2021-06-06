@@ -4,10 +4,9 @@ const downloder = require('../modules/downloader');
 module.exports.register = (program) => {
     program
         .command('update')
-        .action((name, command) => {
-            downloder.downloadAndUpdateBinaries(() => {
-                commons.figlet();
-            });
+        .action(async (name, command) => {
+            await downloder.downloadAndUpdateBinaries();
+            commons.figlet();
         });
 }
 

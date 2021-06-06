@@ -5,6 +5,7 @@ const asar = require('asar');
 const settings = require('./settings');
 
 async function createAsarFile() {
+    console.log('Generating res.neu...');
     const settingsObj = settings.get();
     const resourcesDir = settingsObj.cli.resourcesPath.replace(/^\//, "");
     const clientLibrary = settingsObj.cli.clientLibrary.replace(/^\//, "");
@@ -22,17 +23,19 @@ function clearBuildCache() {
     fse.removeSync(`temp`);
 }
 
-module.exports.bundleApp = async (isRelease, buildSuccessCallback = null) => {
+module.exports.bundleApp = async (isRelease) => {
     let settingsObj = settings.get();
     let binaryName = settingsObj.cli.binaryName;
     try {
         await createAsarFile();
+        console.log('Copying binaries...');
         if (fse.existsSync(`bin`)) { // Check if new binary path is present
             fse.copySync(`bin/neutralino-win.exe`, `dist/${binaryName}/${binaryName}-win.exe`);
             fse.copySync(`bin/neutralino-linux`, `dist/${binaryName}/${binaryName}-linux`);
             fse.copySync(`bin/neutralino-mac`, `dist/${binaryName}/${binaryName}-mac`);
             fse.copySync(`bin/WebView2Loader.dll`, `dist/${binaryName}/WebView2Loader.dll`);
-        } else { // Use old paths
+        } 
+        else { // Use old paths
             fse.copySync(`${binaryName}-win.exe`, `dist/${binaryName}/${binaryName}-win.exe`);
             fse.copySync(`${binaryName}-linux`, `dist/${binaryName}/${binaryName}-linux`);
             fse.copySync(`${binaryName}-mac`, `dist/${binaryName}/${binaryName}-mac`);
@@ -48,8 +51,6 @@ module.exports.bundleApp = async (isRelease, buildSuccessCallback = null) => {
 
         }
         clearBuildCache();
-        if(buildSuccessCallback)
-            buildSuccessCallback();
     }
     catch (e) {
         console.error(e);

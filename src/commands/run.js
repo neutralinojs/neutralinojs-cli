@@ -4,12 +4,16 @@ const runner = require('../modules/runner');
 module.exports.register = (program) => {
     program
         .command('run')
-        .action(() => {
-            runner.runApp(() => {
-                logwatcher.stop();
-                console.log(`Application was terminated.`);
-            });
+        .option('--mode <mode>')
+        .action(async (command) => {
+            let optArgs = null;
+            if(command.mode)
+                optArgs = `--mode=${command.mode}`;
+            
             logwatcher.start();
+            await runner.runApp(optArgs);
+            logwatcher.stop();
+            console.log(`Application was terminated.`);
         });
 }
 
