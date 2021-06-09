@@ -12,8 +12,8 @@ Synopsis
 
 - `neu create <binaryName>`
 - `neu build [--release]`
-- `neu run`
-- `neu listen`
+- `neu run [--mode=<mode>]`
+- `neu listen [--mode=<mode>]`
 - `neu update`
 - `neu plugins [packageName] [--remove, --add]`
 
