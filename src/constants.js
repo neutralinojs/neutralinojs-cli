@@ -1,6 +1,13 @@
 module.exports = {
-  binaries: {
-    url: "https://github.com/neutralinojs/neutralinojs/releases/download/v2.3.0/neutralinojs-v2.3.0.zip"
+  remote: {
+    binaries: {
+      version: "2.3.0",
+      url: "https://github.com/neutralinojs/neutralinojs/releases/download/v{version}/neutralinojs-v{version}.zip"
+    },
+    clientLib: {
+      version: null,
+      url: null
+    }
   },
   templates: {
     minimal: {

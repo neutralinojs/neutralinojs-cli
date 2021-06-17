@@ -1,9 +1,5 @@
 const figlet = require('figlet');
  
-module.exports.figlet = (callback) => {
-    figlet('Neutralinojs', function(err, data) {
-        console.log(data);
-        if(callback)
-            callback();
-    });
+module.exports.figlet = () => {
+    console.log(figlet.textSync('Neutralinojs'));
 }

@@ -5,13 +5,19 @@ const constants = require('../constants');
 const unzipper = require('unzipper');
 const settings = require('../modules/settings');
 
+let getBinariesUrl = () => {
+    let url = constants.remote.binaries.url;
+    let version = constants.remote.binaries.version;
+    return url.replace(/{version}/g, version);
+}
+
 let downloadFromRelease = (name = null) => {
     return new Promise((resolve, reject) => {
         let pathPrefix = name ? `${name}/` : '';
         fs.mkdirSync(`${pathPrefix}temp`, { recursive: true });
         const file = fs.createWriteStream(`${pathPrefix}temp/binaries.zip`);
         console.log('Downloading latest Neutralinojs binaries..');
-        https.get(constants.binaries.url, function (response) {
+        https.get(getBinariesUrl(), function (response) {
             response.pipe(file);
             response.on('end', () => {
                 console.log('Extracting zip file..');

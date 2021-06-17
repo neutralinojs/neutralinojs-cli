@@ -10,9 +10,8 @@ neu.bootstrap(program);
 program.parse(process.argv);
 
 if (!process.argv.slice(2).length) {
-    commons.figlet(() => {
-        program.outputHelp();
-    });
+    commons.figlet();
+    program.outputHelp();
 }
 
 
