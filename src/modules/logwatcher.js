@@ -1,6 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
-const LOG_FILE = 'neutralinojs.log';
+const constants = require('../constants');
+const LOG_FILE = constants.files.logFile;
 
 let watcher = null;
 

@@ -1,12 +1,9 @@
 const { exec } = require('child_process');
 const chmod = require('chmod');
 const fse = require('fs-extra');
-const settings = require('./settings');
 
 module.exports.runApp = async (argsOpt = null) => {
     return new Promise((resolve, reject) => {
-        let settingsObj = settings.get();
-        let binaryName = settingsObj.cli.binaryName;
         let binaryPath;
         let args = " --load-dir-res --path=.";
         if(argsOpt)
@@ -14,14 +11,14 @@ module.exports.runApp = async (argsOpt = null) => {
     
         switch (process.platform) {
             case 'win32':
-                binaryPath = fse.existsSync(`bin`) ? `bin\\neutralino-win.exe` : `${binaryName}-win.exe`;
+                binaryPath = 'bin\\neutralino-win.exe';
                 break;
             case 'linux':
-                binaryPath = fse.existsSync(`bin`) ? `bin/neutralino-linux` : `${binaryName}-linux`;
+                binaryPath = 'bin/neutralino-linux';
                 chmod(binaryPath, { execute: true });
                 break;
             case 'darwin':
-                binaryPath = fse.existsSync(`bin`) ? `bin/neutralino-mac` : `${binaryName}-mac`;
+                binaryPath = 'bin/neutralino-mac';
                 chmod(binaryPath, { execute: true });
                 break;
         }

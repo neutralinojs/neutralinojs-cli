@@ -1,5 +1,7 @@
+const process = require('process');
+const fs = require('fs');
 const constants = require('../constants');
-const settings = require('../modules/settings');
+const config = require('../modules/config');
 const downloader = require('./downloader');
 
 module.exports.createApp = async (binaryName, templateName) => {
@@ -8,13 +10,16 @@ module.exports.createApp = async (binaryName, templateName) => {
     if (templateName in constants.templates) {
         let template = constants.templates[templateName];
         console.log(`Downloading ${templateName} template to ${binaryName} directory...`);
-        await downloader.downloadTemplate(template, binaryName);
+        
+        fs.mkdirSync(binaryName, { recursive: true });
+        process.chdir(binaryName); // Change the path context for the following methods
+        await downloader.downloadTemplate(template);
         
         console.log('Downloading binaries from the latest release...');
         await downloader.downloadAndUpdateBinaries(binaryName);
         
-        settings.update('cli.binaryName', binaryName, binaryName);
-        settings.update('modes.window.title', binaryName, binaryName);
+        config.update('cli.binaryName', binaryName);
+        config.update('modes.window.title', binaryName);
         
         console.log(`\n----\nEnter 'cd ${binaryName} && neu run' to run your application.`);
     }

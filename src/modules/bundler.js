@@ -2,15 +2,15 @@ const fse = require('fs-extra');
 const fs = require('fs');
 const archiver = require('archiver');
 const asar = require('asar');
-const settings = require('./settings');
+const config = require('./config');
 
 async function createAsarFile() {
     console.log('Generating res.neu...');
-    const settingsObj = settings.get();
-    const resourcesDir = settingsObj.cli.resourcesPath.replace(/^\//, "");
-    const clientLibrary = settingsObj.cli.clientLibrary.replace(/^\//, "");
-    const icon = settingsObj.modes.window.icon.replace(/^\//, "");
-    let binaryName = settingsObj.cli.binaryName;
+    const configObj = config.get();
+    const resourcesDir = configObj.cli.resourcesPath.replace(/^\//, "");
+    const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
+    const icon = configObj.modes.window.icon.replace(/^\//, "");
+    let binaryName = configObj.cli.binaryName;
     fs.mkdirSync(`temp`, { recursive: true });
     await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
     await fse.copy(`neutralino.config.json`, 'temp/neutralino.config.json', {overwrite: true});
@@ -20,27 +20,19 @@ async function createAsarFile() {
 }
 
 function clearBuildCache() {
-    fse.removeSync(`temp`);
+    fse.removeSync('temp');
 }
 
 module.exports.bundleApp = async (isRelease) => {
-    let settingsObj = settings.get();
-    let binaryName = settingsObj.cli.binaryName;
+    let configObj = config.get();
+    let binaryName = configObj.cli.binaryName;
     try {
         await createAsarFile();
         console.log('Copying binaries...');
-        if (fse.existsSync(`bin`)) { // Check if new binary path is present
-            fse.copySync(`bin/neutralino-win.exe`, `dist/${binaryName}/${binaryName}-win.exe`);
-            fse.copySync(`bin/neutralino-linux`, `dist/${binaryName}/${binaryName}-linux`);
-            fse.copySync(`bin/neutralino-mac`, `dist/${binaryName}/${binaryName}-mac`);
-            fse.copySync(`bin/WebView2Loader.dll`, `dist/${binaryName}/WebView2Loader.dll`);
-        } 
-        else { // Use old paths
-            fse.copySync(`${binaryName}-win.exe`, `dist/${binaryName}/${binaryName}-win.exe`);
-            fse.copySync(`${binaryName}-linux`, `dist/${binaryName}/${binaryName}-linux`);
-            fse.copySync(`${binaryName}-mac`, `dist/${binaryName}/${binaryName}-mac`);
-            fse.copySync(`WebView2Loader.dll`, `dist/${binaryName}/WebView2Loader.dll`);
-        }
+        fse.copySync(`bin/neutralino-win.exe`, `dist/${binaryName}/${binaryName}-win.exe`);
+        fse.copySync(`bin/neutralino-linux`, `dist/${binaryName}/${binaryName}-linux`);
+        fse.copySync(`bin/neutralino-mac`, `dist/${binaryName}/${binaryName}-mac`);
+        fse.copySync(`bin/WebView2Loader.dll`, `dist/${binaryName}/WebView2Loader.dll`);
         if (isRelease) {
             // TODO: Add installers in the future
             let output = fs.createWriteStream(`dist/${binaryName}-release.zip`);
@@ -48,7 +40,6 @@ module.exports.bundleApp = async (isRelease) => {
             archive.pipe(output);
             archive.directory(`dist/${binaryName}`, false);
             await archive.finalize();
-
         }
         clearBuildCache();
     }

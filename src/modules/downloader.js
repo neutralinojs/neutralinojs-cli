@@ -3,7 +3,7 @@ const fse = require('fs-extra');
 const { https } = require('follow-redirects');
 const constants = require('../constants');
 const unzipper = require('unzipper');
-const settings = require('../modules/settings');
+const config = require('./config');
 
 let getBinariesUrl = () => {
     let url = constants.remote.binaries.url;
@@ -11,18 +11,17 @@ let getBinariesUrl = () => {
     return url.replace(/{version}/g, version);
 }
 
-let downloadFromRelease = (name = null) => {
+let downloadFromRelease = () => {
     return new Promise((resolve, reject) => {
-        let pathPrefix = name ? `${name}/` : '';
-        fs.mkdirSync(`${pathPrefix}temp`, { recursive: true });
-        const file = fs.createWriteStream(`${pathPrefix}temp/binaries.zip`);
+        fs.mkdirSync('temp', { recursive: true });
+        const file = fs.createWriteStream('temp/binaries.zip');
         console.log('Downloading latest Neutralinojs binaries..');
         https.get(getBinariesUrl(), function (response) {
             response.pipe(file);
             response.on('end', () => {
                 console.log('Extracting zip file..');
-                fs.createReadStream(`${pathPrefix}temp/binaries.zip`)
-                    .pipe(unzipper.Extract({ path: `${pathPrefix}temp/` }))
+                fs.createReadStream('temp/binaries.zip')
+                    .pipe(unzipper.Extract({ path: 'temp/' }))
                     .promise()
                         .then(() => resolve())
                         .catch((e) => reject(e));
@@ -31,26 +30,25 @@ let downloadFromRelease = (name = null) => {
     });
 }
 
-let clearDownloadCache = (pathPrefix) => {
-    fse.removeSync(`${pathPrefix}temp`);
+let clearDownloadCache = () => {
+    fse.removeSync('temp');
 }
 
-module.exports.downloadTemplate = (template, name = null) => {
+module.exports.downloadTemplate = (template) => {
     return new Promise((resolve, reject) => {
-        let pathPrefix = name ? `${name}/` : '';
         let templateUrl = `https://github.com/neutralinojs/${template.repoId}/archive/main.zip`;
-        fs.mkdirSync(`${pathPrefix}temp`, { recursive: true });
-        const file = fs.createWriteStream(`${pathPrefix}temp/template.zip`);
+        fs.mkdirSync('temp', { recursive: true });
+        const file = fs.createWriteStream('temp/template.zip');
         https.get(templateUrl, function (response) {
             response.pipe(file);
             response.on('end', () => {
                 console.log('Extracting template zip file..');
-                fs.createReadStream(`${pathPrefix}temp/template.zip`)
-                    .pipe(unzipper.Extract({ path: `${pathPrefix}temp/` }))
+                fs.createReadStream('temp/template.zip')
+                    .pipe(unzipper.Extract({ path: 'temp/' }))
                     .promise()
                         .then(() => {
-                            fse.copySync(`${pathPrefix}temp/${template.repoId}-main`, `${pathPrefix}`);
-                            clearDownloadCache(pathPrefix);
+                            fse.copySync(`temp/${template.repoId}-main`, '.');
+                            clearDownloadCache();
                             resolve();
                         })
                         .catch((e) => reject(e));
@@ -59,22 +57,18 @@ module.exports.downloadTemplate = (template, name = null) => {
     });
 }
 
-module.exports.downloadAndUpdateBinaries = async (name) => {
-    let pathPrefix = name ? `${name}/` : '';
-    let appNameFromSettings = false;
-    if(!name) {
-        appNameFromSettings = true;
-        name = settings.get().cli.binaryName;
-    }
-
-    await downloadFromRelease(appNameFromSettings ? null : name);
+module.exports.downloadAndUpdateBinaries = async () => {
+    await downloadFromRelease();
     console.log('Finalizing and cleaning temp. files.');
-    if(!fse.existsSync(`${pathPrefix}bin`))
-        fse.mkdirSync(`${pathPrefix}bin`);
-    fse.copySync(`${pathPrefix}temp/neutralino-win.exe`, `${pathPrefix}bin/neutralino-win.exe`);
-    fse.copySync(`${pathPrefix}temp/neutralino-linux`, `${pathPrefix}bin/neutralino-linux`);
-    fse.copySync(`${pathPrefix}temp/neutralino-mac`, `${pathPrefix}bin/neutralino-mac`);
-    fse.copySync(`${pathPrefix}temp/WebView2Loader.dll`, `${pathPrefix}bin/WebView2Loader.dll`);
-    clearDownloadCache(pathPrefix);
+    if(!fse.existsSync('bin'))
+        fse.mkdirSync('bin');
+    fse.copySync('temp/neutralino-win.exe', 'bin/neutralino-win.exe');
+    fse.copySync('temp/neutralino-linux', 'bin/neutralino-linux');
+    fse.copySync('temp/neutralino-mac', 'bin/neutralino-mac');
+    fse.copySync('temp/WebView2Loader.dll', 'bin/WebView2Loader.dll');
+    clearDownloadCache();
+    
+    let version = constants.remote.binaries.version;
+    config.update('cli.binaryVersion', version);
 }
 

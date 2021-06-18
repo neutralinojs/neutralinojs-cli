@@ -4,5 +4,5 @@ module.exports = {
     downloader: require('./downloader'),
     logwatcher: require('./logwatcher'),
     runner: require('./runner'),
-    settings: require('./settings')
+    config: require('./config')
 }

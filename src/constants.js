@@ -13,5 +13,9 @@ module.exports = {
     minimal: {
       repoId: "neutralinojs-minimal"
     }
+  },
+  files: {
+    configFile: "neutralino.config.json",
+    logFile: "neutralinojs.log"
   }
 };
