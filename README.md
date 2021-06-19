@@ -16,6 +16,7 @@ Synopsis
 - `neu listen [--mode=<mode>]`
 - `neu update`
 - `neu plugins [packageName] [--remove, --add]`
+- `neu version`
 
 ### Plugins
 
