@@ -1,6 +1,6 @@
 const { exec } = require('child_process');
-const chmod = require('chmod');
-const fse = require('fs-extra');
+const fs = require('fs');
+const EXEC_PERMISSION = 755;
 
 module.exports.runApp = async (argsOpt = null) => {
     return new Promise((resolve, reject) => {
@@ -15,11 +15,11 @@ module.exports.runApp = async (argsOpt = null) => {
                 break;
             case 'linux':
                 binaryPath = 'bin/neutralino-linux';
-                chmod(binaryPath, { execute: true });
+                fs.chmodSync(binaryPath, EXEC_PERMISSION);
                 break;
             case 'darwin':
                 binaryPath = 'bin/neutralino-mac';
-                chmod(binaryPath, { execute: true });
+                fs.chmodSync(binaryPath, EXEC_PERMISSION);
                 break;
         }
         exec(binaryPath + args, (err, stdout, stderr) => {

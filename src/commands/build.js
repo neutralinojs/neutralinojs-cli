@@ -9,8 +9,8 @@ module.exports.register = (program) => {
             commons.checkCurrentProject();
             console.log('Bundling app...');
             await bundler.bundleApp(command.release);
-            console.log('Please check the ./dist directory!');
             commons.figlet();
+            console.log('Please check the ./dist directory!');
         });
 }
 

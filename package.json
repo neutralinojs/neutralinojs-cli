@@ -4,7 +4,7 @@
   "description": "neu cli for Neutralinojs",
   "main": "./bin/neu.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "neu --version"
   },
   "repository": {
     "type": "git",
@@ -21,9 +21,8 @@
     "archiver": "^4.0.2",
     "asar": "^3.0.3",
     "chalk": "^4.1.0",
-    "chmod": "^0.2.1",
     "chokidar": "^3.5.1",
-    "commander": "^4.1.1",
+    "commander": "^7.2.0",
     "configstore": "^5.0.1",
     "cors": "^2.8.5",
     "edit-json-file": "^1.5.0",

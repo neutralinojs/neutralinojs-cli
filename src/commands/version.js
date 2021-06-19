@@ -12,13 +12,14 @@ module.exports.register = (program) => {
             console.log('--- Global ---');
             console.log(`Neutralinojs binaries: v${constants.remote.binaries.version}`);
             console.log(`neu CLI: v${package.version}`);
-            console.log('\n--- Project ---');
             if(commons.isNeutralinojsProject()) {
                 const configObj = config.get();
+                console.log(`\n--- Project: ${configObj.cli.binaryName} (${configObj.applicationId}) ---`);
                 console.log(`Neutralinojs binaries: v${configObj.cli.binaryVersion}`);
             }
             else {
-                console.log(`${chalk.bgGreen.black('INFO')} Run this command in your project directory`);
+                console.log(`${chalk.bgGreen.black('INFO')} Run this command inside your project directory` + 
+                            ` to get project specific Neutralinojs version.`);
             }
         });
 }
