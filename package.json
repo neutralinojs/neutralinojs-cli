@@ -4,7 +4,7 @@
   "description": "neu cli for Neutralinojs",
   "main": "./bin/neu.js",
   "scripts": {
-    "test": "neu --version"
+    "test": "neu version"
   },
   "repository": {
     "type": "git",

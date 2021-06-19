@@ -8,9 +8,13 @@ const CONFIG_FILE = constants.files.configFile;
 let isNeutralinojsProject = () => {
     return fs.existsSync(CONFIG_FILE);
 }
+
+let getFiglet = () => {
+    return figlet.textSync('Neutralinojs');
+}
  
 module.exports.figlet = () => {
-    console.log(figlet.textSync('Neutralinojs'));
+    console.log(getFiglet());
 }
 
 module.exports.checkCurrentProject = () => {
@@ -22,3 +26,4 @@ module.exports.checkCurrentProject = () => {
 }
 
 module.exports.isNeutralinojsProject = isNeutralinojsProject;
+module.exports.getFiglet = getFiglet;

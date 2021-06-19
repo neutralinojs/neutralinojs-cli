@@ -1,17 +1,13 @@
 #!/usr/bin/env node
 
-const program  = require('commander');
+const { Command } = require('commander');
 const neu = require('../src/neu-cli');
 const commons = require('../src/commons');
 const chalk = require('chalk');
 
+const program = new Command();
 neu.bootstrap(program);
 
+program.addHelpText('beforeAll', commons.getFiglet());
 program.parse(process.argv);
-
-if (!process.argv.slice(2).length) {
-    commons.figlet();
-    program.outputHelp();
-}
-
 
