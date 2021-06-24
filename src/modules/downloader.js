@@ -46,7 +46,7 @@ let downloadClientFromRelease = () => {
 }
 
 let clearDownloadCache = () => {
-    //fse.removeSync('temp');
+    fse.removeSync('temp');
 }
 
 module.exports.downloadTemplate = (template) => {
