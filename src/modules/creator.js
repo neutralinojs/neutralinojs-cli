@@ -13,10 +13,10 @@ module.exports.createApp = async (binaryName, templateName) => {
         
         fs.mkdirSync(binaryName, { recursive: true });
         process.chdir(binaryName); // Change the path context for the following methods
-        await downloader.downloadTemplate(template);
         
-        console.log('Downloading binaries from the latest release...');
-        await downloader.downloadAndUpdateBinaries(binaryName);
+        await downloader.downloadTemplate(template);
+        await downloader.downloadAndUpdateBinaries();
+        await downloader.downloadAndUpdateClient();
         
         config.update('cli.binaryName', binaryName);
         config.update('modes.window.title', binaryName);

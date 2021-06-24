@@ -5,18 +5,18 @@ const constants = require('../constants');
 const unzipper = require('unzipper');
 const config = require('./config');
 
-let getBinariesUrl = () => {
-    let url = constants.remote.binaries.url;
-    let version = constants.remote.binaries.version;
+let getUrlWithVersion = (remoteInfo) => {
+    let url = remoteInfo.url;
+    let version = remoteInfo.version;
     return url.replace(/{version}/g, version);
 }
 
-let downloadFromRelease = () => {
+let downloadBinariesFromRelease = () => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('temp', { recursive: true });
         const file = fs.createWriteStream('temp/binaries.zip');
-        console.log('Downloading latest Neutralinojs binaries..');
-        https.get(getBinariesUrl(), function (response) {
+        console.log('Downloading Neutralinojs binaries..');
+        https.get(getUrlWithVersion(constants.remote.binaries), function (response) {
             response.pipe(file);
             response.on('end', () => {
                 console.log('Extracting zip file..');
@@ -30,8 +30,23 @@ let downloadFromRelease = () => {
     });
 }
 
+let downloadClientFromRelease = () => {
+    return new Promise((resolve, reject) => {
+        fs.mkdirSync('temp', { recursive: true });
+        const file = fs.createWriteStream('temp/neutralino.js');
+        console.log('Downloading the Neutralinojs client..');
+        https.get(getUrlWithVersion(constants.remote.client), function (response) {
+            response.pipe(file);
+            file.on('finish', () => {
+                file.close();
+                resolve();
+            });
+        });
+    });
+}
+
 let clearDownloadCache = () => {
-    fse.removeSync('temp');
+    //fse.removeSync('temp');
 }
 
 module.exports.downloadTemplate = (template) => {
@@ -58,7 +73,7 @@ module.exports.downloadTemplate = (template) => {
 }
 
 module.exports.downloadAndUpdateBinaries = async () => {
-    await downloadFromRelease();
+    await downloadBinariesFromRelease();
     console.log('Finalizing and cleaning temp. files.');
     if(!fse.existsSync('bin'))
         fse.mkdirSync('bin');
@@ -70,5 +85,17 @@ module.exports.downloadAndUpdateBinaries = async () => {
     
     let version = constants.remote.binaries.version;
     config.update('cli.binaryVersion', version);
+}
+
+module.exports.downloadAndUpdateClient = async () => {
+    const configObj = config.get();
+    const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
+    await downloadClientFromRelease();
+    console.log('Finalizing and cleaning temp. files.');
+    fse.copySync('temp/neutralino.js', `./${clientLibrary}`);
+    clearDownloadCache();
+    
+    let version = constants.remote.client.version;
+    config.update('cli.clientVersion', version);
 }
 
