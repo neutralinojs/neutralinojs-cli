@@ -23,12 +23,7 @@ module.exports.runApp = async (argsOpt = null) => {
                 break;
         }
         exec(binaryPath + args, (err, stdout, stderr) => {
-            if (err) {
-                reject(stderr);
-            }
-            else {
-                resolve();
-            }
+            resolve(); // TODO: Fix Neutralinojs.app.exit issue, After that, reject() for err
         });
     });
 }
