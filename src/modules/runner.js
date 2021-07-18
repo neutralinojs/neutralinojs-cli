@@ -1,6 +1,6 @@
 const { exec } = require('child_process');
 const fs = require('fs');
-const EXEC_PERMISSION = 755;
+const EXEC_PERMISSION = 0o755;
 
 module.exports.runApp = async (argsOpt = null) => {
     return new Promise((resolve, reject) => {
