@@ -1,11 +1,11 @@
 module.exports = {
   remote: {
     binaries: {
-      version: "2.4.1",
+      version: "2.5.0",
       url: "https://github.com/neutralinojs/neutralinojs/releases/download/v{version}/neutralinojs-v{version}.zip"
     },
     client: {
-      version: "1.0.0",
+      version: "1.1.0",
       url: "https://github.com/neutralinojs/neutralino.js/releases/download/v{version}/neutralino.js"
     },
     clientLib: {
