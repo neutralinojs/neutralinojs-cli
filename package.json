@@ -1,6 +1,6 @@
 {
   "name": "@neutralinojs/neu",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "neu cli for Neutralinojs",
   "main": "./bin/neu.js",
   "scripts": {
@@ -10,14 +10,21 @@
     "type": "git",
     "url": "git+https://github.com/neutralinojs/neutralinojs-cli.git"
   },
-  "author": "",
+  "author": {
+    "name": "Neutralinojs and contributors",
+    "email": "neutralinojs@gmail.com",
+    "url": "https://neutralino.js.org"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/neutralinojs/neutralinojs-cli/issues"
   },
-  "homepage": "https://neutralino.js.org/docs/#/tools/cli",
+  "funding": {
+    "type": "patreon",
+    "url": "https://www.patreon.com/shalithasuranga"
+  },
+  "homepage": "https://neutralino.js.org/docs/developer-environment/cli",
   "dependencies": {
-    "@neutralinojs/appify": "^2.0.0",
     "archiver": "^4.0.2",
     "asar": "^3.0.3",
     "chalk": "^4.1.0",
