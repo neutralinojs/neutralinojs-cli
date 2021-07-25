@@ -5,7 +5,7 @@ module.exports = {
       url: "https://github.com/neutralinojs/neutralinojs/releases/download/v{version}/neutralinojs-v{version}.zip"
     },
     client: {
-      version: "1.1.0",
+      version: "1.2.0",
       url: "https://github.com/neutralinojs/neutralino.js/releases/download/v{version}/neutralino.js"
     },
     clientLib: {
