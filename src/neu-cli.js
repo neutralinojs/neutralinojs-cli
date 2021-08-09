@@ -2,7 +2,6 @@ const create = require('../src/commands/create');
 const run = require('../src/commands/run');
 const build = require('../src/commands/build');
 const update = require('../src/commands/update');
-const listen = require('../src/commands/listen');
 const version = require('../src/commands/version');
 const plugins = require('../src/commands/plugins');
 const pluginloader = require('../src/plugins/pluginloader');
@@ -13,7 +12,6 @@ module.exports.bootstrap = (program) => {
     run.register(program);
     build.register(program);
     update.register(program);
-    listen.register(program);
     version.register(program);
     plugins.register(program);
     pluginloader.registerPlugins(program, modules);

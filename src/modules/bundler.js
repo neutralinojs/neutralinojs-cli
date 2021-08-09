@@ -3,9 +3,10 @@ const fs = require('fs');
 const archiver = require('archiver');
 const asar = require('asar');
 const config = require('./config');
+const constants = require('../constants');
 
 async function createAsarFile() {
-    console.log('Generating res.neu...');
+    console.log(`Generating ${constants.files.resourceFile}...`);
     const configObj = config.get();
     const resourcesDir = configObj.cli.resourcesPath.replace(/^\//, "");
     const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
@@ -13,10 +14,10 @@ async function createAsarFile() {
     let binaryName = configObj.cli.binaryName;
     fs.mkdirSync(`temp`, { recursive: true });
     await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
-    await fse.copy(`neutralino.config.json`, 'temp/neutralino.config.json', {overwrite: true});
+    await fse.copy(`${constants.files.configFile}`, `temp/${constants.files.configFile}`, {overwrite: true});
     await fse.copy(`./${clientLibrary}`, `temp/${clientLibrary}`, {overwrite: true});
     await fse.copy(`./${icon}`, `temp/${icon}`, {overwrite: true});
-    await asar.createPackage('temp', `dist/${binaryName}/res.neu`);
+    await asar.createPackage('temp', `dist/${binaryName}/${constants.files.resourceFile}`);
 }
 
 function clearBuildCache() {
@@ -29,10 +30,17 @@ module.exports.bundleApp = async (isRelease) => {
     try {
         await createAsarFile();
         console.log('Copying binaries...');
-        fse.copySync(`bin/neutralino-win.exe`, `dist/${binaryName}/${binaryName}-win.exe`);
-        fse.copySync(`bin/neutralino-linux`, `dist/${binaryName}/${binaryName}-linux`);
-        fse.copySync(`bin/neutralino-mac`, `dist/${binaryName}/${binaryName}-mac`);
-        fse.copySync(`bin/WebView2Loader.dll`, `dist/${binaryName}/WebView2Loader.dll`);
+
+        for(let platform in constants.files.binaries) {
+            for(let arch in constants.files.binaries[platform]) {
+                let originalBinaryFile = constants.files.binaries[platform][arch];
+                let destinationBinaryFile = `${binaryName}-${platform}_${arch}`;
+                fse.copySync(`bin/${originalBinaryFile}`, `dist/${binaryName}/${destinationBinaryFile}`);
+            }
+        }
+        
+        fse.copySync(`bin/${constants.files.dependencies.windows_webview2loader_x64}`,
+                    `dist/${binaryName}/${constants.files.dependencies.windows_webview2loader_x64}`);
         if (isRelease) {
             // TODO: Add installers in the future
             let output = fs.createWriteStream(`dist/${binaryName}-release.zip`);

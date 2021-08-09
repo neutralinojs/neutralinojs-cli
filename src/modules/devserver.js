@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const DEV_APP_PORT = 5050;
+const constants = require('../constants');
+const DEV_APP_PORT = constants.settings.devServerPort;
 
 let devAPIServer = null;
 let devAPIData = {

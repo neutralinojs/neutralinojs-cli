@@ -51,7 +51,7 @@ let clearDownloadCache = () => {
 
 module.exports.downloadTemplate = (template) => {
     return new Promise((resolve, reject) => {
-        let templateUrl = `https://github.com/neutralinojs/${template.repoId}/archive/main.zip`;
+        let templateUrl = constants.remote.templateUrl.replace('{repoId}', template.repoId);
         fs.mkdirSync('temp', { recursive: true });
         const file = fs.createWriteStream('temp/template.zip');
         https.get(templateUrl, function (response) {
@@ -77,10 +77,15 @@ module.exports.downloadAndUpdateBinaries = async () => {
     console.log('Finalizing and cleaning temp. files.');
     if(!fse.existsSync('bin'))
         fse.mkdirSync('bin');
-    fse.copySync('temp/neutralino-win.exe', 'bin/neutralino-win.exe');
-    fse.copySync('temp/neutralino-linux', 'bin/neutralino-linux');
-    fse.copySync('temp/neutralino-mac', 'bin/neutralino-mac');
-    fse.copySync('temp/WebView2Loader.dll', 'bin/WebView2Loader.dll');
+        
+    for(let platform in constants.files.binaries) {
+        for(let arch in constants.files.binaries[platform]) {
+            let binaryFile = constants.files.binaries[platform][arch];
+            fse.copySync(`temp/${binaryFile}`, `bin/${binaryFile}`);
+        }
+    }
+    fse.copySync(`temp/${constants.files.dependencies.windows_webview2loader_x64}`, 
+                    `bin/${constants.files.dependencies.windows_webview2loader_x64}`);
     clearDownloadCache();
     
     let version = constants.remote.binaries.version;
@@ -92,7 +97,7 @@ module.exports.downloadAndUpdateClient = async () => {
     const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
     await downloadClientFromRelease();
     console.log('Finalizing and cleaning temp. files.');
-    fse.copySync('temp/neutralino.js', `./${clientLibrary}`);
+    fse.copySync(`temp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
     clearDownloadCache();
     
     let version = constants.remote.client.version;

@@ -19,7 +19,7 @@ module.exports.register = (program) => {
                 }
                 else if(command.remove)
                     try {
-                        console.log(`Installing ${plugin}..`);
+                        console.log(`Uninstalling ${plugin}..`);
                         await pluginloader.remove(plugin);
                         console.log(`${plugin} was uninstalled!`);
                     }
