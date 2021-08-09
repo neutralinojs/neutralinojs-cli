@@ -1,5 +1,3 @@
-const BIN_FILE_PREFIX = "neutralino-";
-
 module.exports = {
   remote: {
     binaries: {
@@ -24,14 +22,14 @@ module.exports = {
     resourceFile: "res.neu",
     binaries: {
       linux: {
-        x64: `${BIN_FILE_PREFIX}linux_x64`,
-        ia32: `${BIN_FILE_PREFIX}linux_ia32`
+        x64: 'neutralino-linux_x64',
+        ia32: 'neutralino-linux_ia32'
       },
       darwin: {
-        x64: `${BIN_FILE_PREFIX}mac_x64`   
+        x64: 'neutralino-mac_x64'   
       },
       win32: {
-        x64: `${BIN_FILE_PREFIX}win_x64.exe`
+        x64: 'neutralino-win_x64.exe'
       }
     },
     dependencies: {
