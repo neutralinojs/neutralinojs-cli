@@ -1,6 +1,6 @@
 {
   "name": "@neutralinojs/neu",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "neu cli for Neutralinojs",
   "main": "./bin/neu.js",
   "scripts": {
