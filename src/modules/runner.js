@@ -1,5 +1,6 @@
 const { exec } = require('child_process');
 const fs = require('fs');
+const path = require('path');
 const chalk = require('chalk');
 const constants = require('../constants');
 
@@ -20,7 +21,7 @@ module.exports.runApp = async (argsOpt = null) => {
             console.log(`${chalk.bgRed.white('ERROR')} Unsupported platform or CPU architecture: 
                     ${process.platform}_${process.arch}`);
 
-        let binaryPath = `bin/${binaryName}`;
+        let binaryPath = `bin${path.sep}${binaryName}`;
         let args = " --load-dir-res --path=.";
         if(argsOpt)
             args += " " + argsOpt;
