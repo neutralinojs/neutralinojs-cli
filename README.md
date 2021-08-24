@@ -12,8 +12,7 @@ Synopsis
 
 - `neu create <binaryName>`
 - `neu build [--release]`
-- `neu run [--mode=<mode>]`
-- `neu listen [--mode=<mode>]`
+- `neu run [--mode=<mode> --disable-auto-reload]`
 - `neu update`
 - `neu plugins [packageName] [--remove, --add]`
 - `neu version`
@@ -43,13 +42,13 @@ module.exports = {
 
 #### Publishing the plugin
 
-Once you publish your `neu-cli` plugin to npm directory anyone will be able to use it using,
+Once you publish your `neu-cli` plugin to npm registry, anyone will be able to use it using:
 
 ```bash
  $ neu plugins --add <packageName>
 ```
 
-and it can be removed using,
+and it can be removed using:
 
 ```bash
  $ neu plugins --remove <packageName>
