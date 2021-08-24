@@ -7,16 +7,24 @@ module.exports.register = (program) => {
     program
         .command('run')
         .option('--mode <mode>')
+        .option('--disable-auto-reload')
         .action(async (command) => {
             commons.checkCurrentProject();
-            let optArgs = "--debug-mode";
+            let optArgs = "";
+            
+            if(!command.disableAutoReload)
+                optArgs += "--debug-mode";
+            
             if(command.mode)
                 optArgs += ` --mode=${command.mode}`;
+
+            if(!command.disableAutoReload)
+                filewatcher.start();
+
             logwatcher.start();
-            filewatcher.start();
             await runner.runApp(optArgs);
-            logwatcher.stop();
             filewatcher.stop();
+            logwatcher.stop();
         });
 }
 

@@ -22,7 +22,7 @@ function startFileWatcher() {
         return;
     let watcherOptions = {
         ignoreInitial: true,
-        ignored: /(^|[\/\\])\..|node_modules|bin/
+        ignored: /(^|[\/\\])\..|node_modules|bin|(.*.log)/
     };
     fileWatcher = chokidar.watch(APP_PATH, watcherOptions)
         .on('all', (event, path) => {
