@@ -31,8 +31,9 @@ module.exports.runApp = async (argsOpt = null) => {
     
         console.log(`Starting process: ${binaryName} ${args}`);
         exec(binaryPath + args, (err, stdout, stderr) => {
-            console.log(`${binaryName} was stopped.`);
-            resolve(); // TODO: Fix Neutralinojs.app.exit issue, After that, reject() for err
+            let statusCodeMsg = err ? `error code ${err.code}` : `success code 0`;
+            console.log(`${binaryName} was stopped with ${statusCodeMsg}`);
+            resolve();
         });
     });
 }
