@@ -7,19 +7,30 @@ const constants = require('../constants');
 const EXEC_PERMISSION = 0o755;
 
 function getBinaryName() {
-    if(!(process.platform in constants.files.binaries))
-        return "";
-    if(!(process.arch in constants.files.binaries[process.platform]))
-        return "";
-    return constants.files.binaries[process.platform][process.arch];
+    let platform = process.platform;
+    let arch = process.arch;
+
+    // Use x64 binary for M1 chip (arm64)
+    // Translation is handdle by macOS
+    if(platform == 'darwin' && arch == 'arm64') {
+        arch = 'x64';
+    }
+
+    if(!(platform in constants.files.binaries))
+        return '';
+    if(!(arch in constants.files.binaries[process.platform]))
+        return '';
+    return constants.files.binaries[process.platform][arch];
 }
 
 module.exports.runApp = async (argsOpt = null) => {
     return new Promise((resolve, reject) => {
         let binaryName = getBinaryName();
-        if(!binaryName)
+        if(!binaryName) {
             console.log(`${chalk.bgRed.white('ERROR')} Unsupported platform or CPU architecture: 
                     ${process.platform}_${process.arch}`);
+            return reject();
+        }
 
         let binaryPath = `bin${path.sep}${binaryName}`;
         let args = " --load-dir-res --path=.";
