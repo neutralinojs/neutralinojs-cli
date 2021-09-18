@@ -1,11 +1,11 @@
 module.exports = {
   remote: {
     binaries: {
-      version: "2.7.0",
+      version: "2.8.0",
       url: "https://github.com/neutralinojs/neutralinojs/releases/download/v{version}/neutralinojs-v{version}.zip"
     },
     client: {
-      version: "1.4.0",
+      version: "1.5.0",
       url: "https://github.com/neutralinojs/neutralino.js/releases/download/v{version}/neutralino.js"
     },
     templateUrl: "https://github.com/neutralinojs/{repoId}/archive/main.zip"
@@ -23,7 +23,8 @@ module.exports = {
     binaries: {
       linux: {
         x64: 'neutralino-linux_x64',
-        ia32: 'neutralino-linux_ia32'
+        ia32: 'neutralino-linux_ia32',
+        arm: 'neutralino-linux_armhf'
       },
       darwin: {
         x64: 'neutralino-mac_x64'   
