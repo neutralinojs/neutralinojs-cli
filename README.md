@@ -19,7 +19,7 @@ Synopsis
 
 ### Plugins
 
-Neutralinojs app developers are able to write custom `neu-cli` plugins to add their own commands to the main CLI. Plugins can be developed as per below.
+Neutralinojs app developers are able to write custom `neu-cli` plugins to add their own commands to the main CLI. Plugins can be developed as explained below.
 
 #### Implementing the plugin
 
