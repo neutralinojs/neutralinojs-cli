@@ -12,7 +12,7 @@ Synopsis
 
 - `neu create <binaryName>`
 - `neu build [--release]`
-- `neu run [--mode=<mode> --disable-auto-reload]`
+- `neu run [--mode=<mode> --arch=<arch> --disable-auto-reload]`
 - `neu update`
 - `neu plugins [packageName] [--remove, --add]`
 - `neu version`
