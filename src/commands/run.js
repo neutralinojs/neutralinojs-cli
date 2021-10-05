@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const logwatcher = require('../modules/logwatcher');
 const filewatcher = require('../modules/filewatcher');
 const runner = require('../modules/runner');
@@ -8,6 +9,7 @@ module.exports.register = (program) => {
         .command('run')
         .option('--mode <mode>')
         .option('--disable-auto-reload')
+        .option('--arch <arch>')
         .action(async (command) => {
             commons.checkCurrentProject();
             let optArgs = "";
@@ -22,7 +24,12 @@ module.exports.register = (program) => {
                 filewatcher.start();
 
             logwatcher.start();
-            await runner.runApp(optArgs);
+            try {
+                await runner.runApp({optArgs, arch: command.arch});
+            }
+            catch(error) {
+                console.log(`${chalk.bgRed.white('ERROR')} ${error}`);
+            }
             filewatcher.stop();
             logwatcher.stop();
         });

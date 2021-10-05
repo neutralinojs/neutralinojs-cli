@@ -6,12 +6,11 @@ const constants = require('../constants');
 
 const EXEC_PERMISSION = 0o755;
 
-function getBinaryName() {
+function getBinaryName(arch) {
     let platform = process.platform;
-    let arch = process.arch;
 
     // Use x64 binary for M1 chip (arm64)
-    // Translation is handdle by macOS
+    // Translation is handled by macOS
     if(platform == 'darwin' && arch == 'arm64') {
         arch = 'x64';
     }
@@ -23,19 +22,19 @@ function getBinaryName() {
     return constants.files.binaries[process.platform][arch];
 }
 
-module.exports.runApp = async (argsOpt = null) => {
+module.exports.runApp = async (options = {}) => {
     return new Promise((resolve, reject) => {
-        let binaryName = getBinaryName();
+        let arch = options.arch || process.arch;
+        let binaryName = getBinaryName(arch);
+
         if(!binaryName) {
-            console.log(`${chalk.bgRed.white('ERROR')} Unsupported platform or CPU architecture: 
-                    ${process.platform}_${process.arch}`);
-            return reject();
+            return reject(`Unsupported platform or CPU architecture: ${process.platform}_${arch}`);
         }
 
         let binaryPath = `bin${path.sep}${binaryName}`;
         let args = " --load-dir-res --path=.";
-        if(argsOpt)
-            args += " " + argsOpt;
+        if(options.argsOpt)
+            args += " " + options.argsOpt;
 
         if(process.platform == 'linux' || process.platform == 'darwin')
             fs.chmodSync(binaryPath, EXEC_PERMISSION);
