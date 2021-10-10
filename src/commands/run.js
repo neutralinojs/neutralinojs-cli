@@ -12,20 +12,20 @@ module.exports.register = (program) => {
         .option('--arch <arch>')
         .action(async (command) => {
             commons.checkCurrentProject();
-            let optArgs = "";
+            let argsOpt = "";
             
             if(!command.disableAutoReload)
-                optArgs += "--debug-mode";
+                argsOpt += "--debug-mode";
             
             if(command.mode)
-                optArgs += ` --mode=${command.mode}`;
+                argsOpt += ` --mode=${command.mode}`;
 
             if(!command.disableAutoReload)
                 filewatcher.start();
 
             logwatcher.start();
             try {
-                await runner.runApp({optArgs, arch: command.arch});
+                await runner.runApp({argsOpt, arch: command.arch});
             }
             catch(error) {
                 console.log(`${chalk.bgRed.white('ERROR')} ${error}`);
