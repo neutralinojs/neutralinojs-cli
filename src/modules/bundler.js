@@ -42,7 +42,6 @@ module.exports.bundleApp = async (isRelease) => {
         fse.copySync(`bin/${constants.files.dependencies.windows_webview2loader_x64}`,
                     `dist/${binaryName}/${constants.files.dependencies.windows_webview2loader_x64}`);
         if (isRelease) {
-            // TODO: Add installers in the future
             let output = fs.createWriteStream(`dist/${binaryName}-release.zip`);
             let archive = archiver('zip', { zlib: { level: 9 } });
             archive.pipe(output);
