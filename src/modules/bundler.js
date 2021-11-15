@@ -5,6 +5,8 @@ const asar = require('asar');
 const config = require('./config');
 const constants = require('../constants');
 
+const tempName = config.get().cli?.temp ?? 'temp';
+
 async function createAsarFile() {
     console.log(`Generating ${constants.files.resourceFile}...`);
     const configObj = config.get();
@@ -12,16 +14,16 @@ async function createAsarFile() {
     const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
     const icon = configObj.modes.window.icon.replace(/^\//, "");
     let binaryName = configObj.cli.binaryName;
-    fs.mkdirSync(`temp`, { recursive: true });
-    await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
-    await fse.copy(`${constants.files.configFile}`, `temp/${constants.files.configFile}`, {overwrite: true});
-    await fse.copy(`./${clientLibrary}`, `temp/${clientLibrary}`, {overwrite: true});
-    await fse.copy(`./${icon}`, `temp/${icon}`, {overwrite: true});
-    await asar.createPackage('temp', `dist/${binaryName}/${constants.files.resourceFile}`);
+    fs.mkdirSync(tempName, { recursive: true });
+    await fse.copy(`./${resourcesDir}`, `${tempName}/${resourcesDir}`, {overwrite: true});
+    await fse.copy(`${constants.files.configFile}`, `${tempName}/${constants.files.configFile}`, {overwrite: true});
+    await fse.copy(`./${clientLibrary}`, `${tempName}/${clientLibrary}`, {overwrite: true});
+    await fse.copy(`./${icon}`, `${tempName}/${icon}`, {overwrite: true});
+    await asar.createPackage(tempName, `dist/${binaryName}/${constants.files.resourceFile}`);
 }
 
 function clearBuildCache() {
-    fse.removeSync('temp');
+    fse.removeSync(tempName);
 }
 
 module.exports.bundleApp = async (isRelease) => {
