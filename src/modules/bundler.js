@@ -5,6 +5,11 @@ const asar = require('asar');
 const config = require('./config');
 const constants = require('../constants');
 
+let docRoot = (config.get().docRoot ?? '').replace(/^\//, "").replace(/\/$/, "");
+if (docRoot.length > 0) {
+    docRoot += "/";
+}
+
 async function createAsarFile() {
     console.log(`Generating ${constants.files.resourceFile}...`);
     const configObj = config.get();
@@ -13,10 +18,10 @@ async function createAsarFile() {
     const icon = configObj.modes.window.icon.replace(/^\//, "");
     let binaryName = configObj.cli.binaryName;
     fs.mkdirSync(`temp`, { recursive: true });
-    await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
+    await fse.copy(`./${docRoot}${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
     await fse.copy(`${constants.files.configFile}`, `temp/${constants.files.configFile}`, {overwrite: true});
-    await fse.copy(`./${clientLibrary}`, `temp/${clientLibrary}`, {overwrite: true});
-    await fse.copy(`./${icon}`, `temp/${icon}`, {overwrite: true});
+    await fse.copy(`./${docRoot}${clientLibrary}`, `temp/${clientLibrary}`, {overwrite: true});
+    await fse.copy(`./${docRoot}${icon}`, `temp/${icon}`, {overwrite: true});
     await asar.createPackage('temp', `dist/${binaryName}/${constants.files.resourceFile}`);
 }
 
