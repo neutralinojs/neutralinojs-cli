@@ -5,10 +5,16 @@ const constants = require('../constants');
 const unzipper = require('unzipper');
 const config = require('./config');
 
-let getUrlWithVersion = (remoteInfo) => {
-    let url = remoteInfo.url;
-    let version = remoteInfo.version;
-    return url.replace(/{version}/g, version);
+let getBinaryDownloadUrl = () => {
+    const configObj = config.get();
+    let version = configObj.cli.binaryVersion;
+    return constants.remote.binaries.url.replace(/{version}/g, version);
+}
+
+let getClientDownloadUrl = () => {
+    const configObj = config.get();
+    let version = configObj.cli.clientVersion;
+    return constants.remote.client.url.replace(/{version}/g, version);
 }
 
 let downloadBinariesFromRelease = () => {
@@ -16,7 +22,7 @@ let downloadBinariesFromRelease = () => {
         fs.mkdirSync('temp', { recursive: true });
         const file = fs.createWriteStream('temp/binaries.zip');
         console.log('Downloading Neutralinojs binaries..');
-        https.get(getUrlWithVersion(constants.remote.binaries), function (response) {
+        https.get(getBinaryDownloadUrl(), function (response) {
             response.pipe(file);
             response.on('end', () => {
                 console.log('Extracting zip file..');
@@ -35,7 +41,7 @@ let downloadClientFromRelease = () => {
         fs.mkdirSync('temp', { recursive: true });
         const file = fs.createWriteStream('temp/neutralino.js');
         console.log('Downloading the Neutralinojs client..');
-        https.get(getUrlWithVersion(constants.remote.client), function (response) {
+        https.get(getClientDownloadUrl(), function (response) {
             response.pipe(file);
             file.on('finish', () => {
                 file.close();
@@ -77,19 +83,16 @@ module.exports.downloadAndUpdateBinaries = async () => {
     console.log('Finalizing and cleaning temp. files.');
     if(!fse.existsSync('bin'))
         fse.mkdirSync('bin');
-        
+
     for(let platform in constants.files.binaries) {
         for(let arch in constants.files.binaries[platform]) {
             let binaryFile = constants.files.binaries[platform][arch];
             fse.copySync(`temp/${binaryFile}`, `bin/${binaryFile}`);
         }
     }
-    fse.copySync(`temp/${constants.files.dependencies.windows_webview2loader_x64}`, 
+    fse.copySync(`temp/${constants.files.dependencies.windows_webview2loader_x64}`,
                     `bin/${constants.files.dependencies.windows_webview2loader_x64}`);
     clearDownloadCache();
-    
-    let version = constants.remote.binaries.version;
-    config.update('cli.binaryVersion', version);
 }
 
 module.exports.downloadAndUpdateClient = async () => {
@@ -98,9 +101,6 @@ module.exports.downloadAndUpdateClient = async () => {
     await downloadClientFromRelease();
     console.log('Finalizing and cleaning temp. files.');
     fse.copySync(`temp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
-    clearDownloadCache();
-    
-    let version = constants.remote.client.version;
-    config.update('cli.clientVersion', version);
+    clearDownloadCache()
 }
 
