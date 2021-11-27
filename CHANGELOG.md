@@ -6,6 +6,10 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+...
+
+## v7.1.0
+
 ### Core: Downloader
 - Use server/client versions from config
 
