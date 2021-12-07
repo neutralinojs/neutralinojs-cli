@@ -6,7 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
-...
+### Core: Bunlder
+- Copy extensions to the app bundle.
 
 ## v7.1.0
 
