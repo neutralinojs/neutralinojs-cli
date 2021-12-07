@@ -9,14 +9,22 @@ async function createAsarFile() {
     console.log(`Generating ${constants.files.resourceFile}...`);
     const configObj = config.get();
     const resourcesDir = configObj.cli.resourcesPath.replace(/^\//, "");
+    const extensionsDir = configObj.cli.extensionsPath.replace(/^\//, "");
     const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
     const icon = configObj.modes.window.icon.replace(/^\//, "");
-    let binaryName = configObj.cli.binaryName;
+    const binaryName = configObj.cli.binaryName;
+
     fs.mkdirSync(`temp`, { recursive: true });
     await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
+
+    if(fs.existsSync(extensionsDir)) {
+        await fse.copy(`./${extensionsDir}`, `dist/${binaryName}/${extensionsDir}`, {overwrite: true});
+    }
+
     await fse.copy(`${constants.files.configFile}`, `temp/${constants.files.configFile}`, {overwrite: true});
     await fse.copy(`./${clientLibrary}`, `temp/${clientLibrary}`, {overwrite: true});
     await fse.copy(`./${icon}`, `temp/${icon}`, {overwrite: true});
+
     await asar.createPackage('temp', `dist/${binaryName}/${constants.files.resourceFile}`);
 }
 
@@ -38,7 +46,7 @@ module.exports.bundleApp = async (isRelease) => {
                 fse.copySync(`bin/${originalBinaryFile}`, `dist/${binaryName}/${destinationBinaryFile}`);
             }
         }
-        
+
         fse.copySync(`bin/${constants.files.dependencies.windows_webview2loader_x64}`,
                     `dist/${binaryName}/${constants.files.dependencies.windows_webview2loader_x64}`);
         if (isRelease) {
