@@ -17,7 +17,7 @@ module.exports = {
     configFile: "neutralino.config.json",
     logFile: "neutralinojs.log",
     clientLibrary: "neutralino.js",
-    resourceFile: "res.neu",
+    resourceFile: "resources.neu",
     binaries: {
       linux: {
         x64: 'neutralino-linux_x64',

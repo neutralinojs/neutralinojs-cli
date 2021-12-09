@@ -6,7 +6,7 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
-...
+- Rename `res.neu` to `resources.neu`.
 
 ## v7.1.0
 
