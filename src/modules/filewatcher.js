@@ -1,6 +1,6 @@
 const fs = require('fs');
 const chokidar = require('chokidar');
-const devServer = require('./devserver');
+const websocket = require('./websocket');
 const bundler = require('../modules/bundler');
 const APP_PATH = '.';
 
@@ -8,13 +8,11 @@ let fileWatcher = null;
 
 module.exports.start = () => {
     startFileWatcher();
-    devServer.start();
 }
 
 module.exports.stop = () => {
     if(fileWatcher)
         fileWatcher.close();
-    devServer.stop();
 }
 
 function startFileWatcher() {
@@ -28,8 +26,7 @@ function startFileWatcher() {
         .on('all', (event, path) => {
             if(['unlink', 'unlinkDir'].includes(event))
                 return;
-            devServer.setData({
-                needsReload: true
+
+            websocket.dispatch('devEvent_reloadApp');
         });
-    });
 }

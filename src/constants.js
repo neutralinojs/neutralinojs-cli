@@ -34,8 +34,5 @@ module.exports = {
     dependencies: {
       windows_webview2loader_x64: "WebView2Loader.dll"
     }
-  },
-  settings: {
-    devServerPort: 5050
   }
 };

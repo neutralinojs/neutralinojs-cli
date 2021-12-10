@@ -32,13 +32,13 @@ module.exports.runApp = async (options = {}) => {
         }
 
         let binaryPath = `bin${path.sep}${binaryName}`;
-        let args = " --load-dir-res --path=.";
+        let args = " --load-dir-res --path=. --export-auth-info";
         if(options.argsOpt)
             args += " " + options.argsOpt;
 
         if(process.platform == 'linux' || process.platform == 'darwin')
             fs.chmodSync(binaryPath, EXEC_PERMISSION);
-    
+
         console.log(`Starting process: ${binaryName} ${args}`);
         exec(binaryPath + args, (err, stdout, stderr) => {
             let statusCodeMsg = err ? `error code ${err.code}` : `success code 0`;

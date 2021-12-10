@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const logwatcher = require('../modules/logwatcher');
 const filewatcher = require('../modules/filewatcher');
+const websocket = require('../modules/websocket');
 const runner = require('../modules/runner');
 const commons = require('../commons');
 
@@ -13,10 +14,10 @@ module.exports.register = (program) => {
         .action(async (command) => {
             commons.checkCurrentProject();
             let argsOpt = "";
-            
+
             if(!command.disableAutoReload)
-                argsOpt += "--debug-mode";
-            
+                argsOpt += "--dev-cli-auto-reload";
+
             if(command.mode)
                 argsOpt += ` --mode=${command.mode}`;
 
@@ -24,6 +25,7 @@ module.exports.register = (program) => {
                 filewatcher.start();
 
             logwatcher.start();
+            websocket.start();
             try {
                 await runner.runApp({argsOpt, arch: command.arch});
             }
@@ -32,6 +34,7 @@ module.exports.register = (program) => {
             }
             filewatcher.stop();
             logwatcher.stop();
+            websocket.stop();
         });
 }
 
