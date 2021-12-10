@@ -62,7 +62,6 @@ function getAuthInfo() {
     }
     catch(err) {
         // ignore
-        console.log(err);
     }
     return authInfo;
 }
