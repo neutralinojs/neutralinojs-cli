@@ -10,6 +10,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 - Copy extensions to the app bundle.
 - Rename `res.neu` to `resources.neu`.
 
+### Core: Runner
+- Use websocket connection to auto reload app.
+
 ## v7.1.0
 
 ### Core: Downloader
