@@ -27,6 +27,6 @@ function startFileWatcher() {
             if(['unlink', 'unlinkDir'].includes(event))
                 return;
 
-            websocket.dispatch('devEvent_reloadApp');
+            websocket.dispatch('neuDev_reloadApp');
         });
 }

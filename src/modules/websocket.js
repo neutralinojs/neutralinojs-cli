@@ -31,6 +31,9 @@ module.exports.stop = () => {
     if(ws) {
         clearTimeout(retryHandler);
         ws.close();
+        if(fs.existsSync(constants.files.authFile)) {
+            fs.unlinkSync(constants.files.authFile);
+        }
     }
 }
 
@@ -57,7 +60,7 @@ module.exports.dispatch = (event, data) => {
 function getAuthInfo() {
     let authInfo = null;
     try {
-        authInfo = fs.readFileSync('.tmp/auth_info.json', 'utf8');
+        authInfo = fs.readFileSync(constants.files.authFile, 'utf8');
         authInfo = JSON.parse(authInfo);
     }
     catch(err) {

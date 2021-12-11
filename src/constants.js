@@ -18,11 +18,10 @@ module.exports = {
     logFile: "neutralinojs.log",
     clientLibrary: "neutralino.js",
     resourceFile: "resources.neu",
+    authFile: ".tmp/auth_info.json",
     binaries: {
       linux: {
         x64: 'neutralino-linux_x64',
-        ia32: 'neutralino-linux_ia32',
-        arm: 'neutralino-linux_armhf'
       },
       darwin: {
         x64: 'neutralino-mac_x64'
