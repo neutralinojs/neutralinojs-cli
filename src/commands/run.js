@@ -16,7 +16,7 @@ module.exports.register = (program) => {
             let argsOpt = "";
 
             if(!command.disableAutoReload)
-                argsOpt += "--neu-dev-cli-auto-reload";
+                argsOpt += "--neu-dev-auto-reload";
 
             if(command.mode)
                 argsOpt += ` --mode=${command.mode}`;
