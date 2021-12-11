@@ -6,6 +6,10 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+- ...
+
+## v8.0.0
+
 ### Core: Bunlder
 - Copy extensions to the app bundle.
 - Rename `res.neu` to `resources.neu`.
