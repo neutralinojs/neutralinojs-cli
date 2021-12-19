@@ -19,7 +19,7 @@ Synopsis
 
 ### Requirements
 
-- Node.js v14 or later. 
+- Node.js v14 or above. 
 - npm, npx, or yarn package manager.
 
 ### Plugins
