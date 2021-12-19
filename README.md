@@ -17,6 +17,11 @@ Synopsis
 - `neu plugins [packageName] [--remove, --add]`
 - `neu version`
 
+### Requirements
+
+- Node.js v14 or later. 
+- npm, npx, or yarn package manager.
+
 ### Plugins
 
 Neutralinojs app developers are able to write custom `neu-cli` plugins to add their own commands to the main CLI. Plugins can be developed as explained below.
