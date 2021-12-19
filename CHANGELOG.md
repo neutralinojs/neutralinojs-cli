@@ -6,7 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
-- ...
+### Core: Bundler
+- Make `cli.extensionsDir` optional for bundling process.
 
 ## v8.0.0
 
