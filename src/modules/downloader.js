@@ -90,8 +90,10 @@ module.exports.downloadAndUpdateBinaries = async () => {
             fse.copySync(`temp/${binaryFile}`, `bin/${binaryFile}`);
         }
     }
-    fse.copySync(`temp/${constants.files.dependencies.windows_webview2loader_x64}`,
-                    `bin/${constants.files.dependencies.windows_webview2loader_x64}`);
+
+    for(let dependency of constants.files.dependencies) {
+        fse.copySync(`temp/${dependency}`,`bin/${dependency}`);
+    }
     clearDownloadCache();
 }
 

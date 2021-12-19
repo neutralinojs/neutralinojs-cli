@@ -8,7 +8,9 @@ module.exports.register = (program) => {
             commons.checkCurrentProject();
             await downloader.downloadAndUpdateBinaries();
             await downloader.downloadAndUpdateClient();
+
             commons.figlet();
+            console.log('Run "neu version" to see installed version details.');
         });
 }
 

@@ -9,7 +9,7 @@ async function createAsarFile() {
     console.log(`Generating ${constants.files.resourceFile}...`);
     const configObj = config.get();
     const resourcesDir = configObj.cli.resourcesPath.replace(/^\//, "");
-    const extensionsDir = configObj.cli.extensionsPath.replace(/^\//, "");
+    const extensionsDir = configObj.cli.extensionsPath?.replace(/^\//, "");
     const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
     const icon = configObj.modes.window.icon.replace(/^\//, "");
     const binaryName = configObj.cli.binaryName;
@@ -17,7 +17,7 @@ async function createAsarFile() {
     fs.mkdirSync(`temp`, { recursive: true });
     await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
 
-    if(fs.existsSync(extensionsDir)) {
+    if(extensionsDir && fs.existsSync(extensionsDir)) {
         await fse.copy(`./${extensionsDir}`, `dist/${binaryName}/${extensionsDir}`, {overwrite: true});
     }
 
@@ -47,9 +47,12 @@ module.exports.bundleApp = async (isRelease) => {
             }
         }
 
-        fse.copySync(`bin/${constants.files.dependencies.windows_webview2loader_x64}`,
-                    `dist/${binaryName}/${constants.files.dependencies.windows_webview2loader_x64}`);
+        for(let dependency of constants.files.dependencies) {
+            fse.copySync(`bin/${dependency}`,`dist/${binaryName}/${dependency}`);
+        }
+
         if (isRelease) {
+            console.log('Making app bundle ZIP file...');
             let output = fs.createWriteStream(`dist/${binaryName}-release.zip`);
             let archive = archiver('zip', { zlib: { level: 9 } });
             archive.pipe(output);

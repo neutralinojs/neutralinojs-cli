@@ -21,17 +21,15 @@ module.exports = {
     authFile: ".tmp/auth_info.json",
     binaries: {
       linux: {
-        x64: 'neutralino-linux_x64',
+        x64: "neutralino-linux_x64",
       },
       darwin: {
-        x64: 'neutralino-mac_x64'
+        x64: "neutralino-mac_x64"
       },
       win32: {
-        x64: 'neutralino-win_x64.exe'
+        x64: "neutralino-win_x64.exe"
       }
     },
-    dependencies: {
-      windows_webview2loader_x64: "WebView2Loader.dll"
-    }
+    dependencies: ["WebView2Loader.dll"]
   }
 };
