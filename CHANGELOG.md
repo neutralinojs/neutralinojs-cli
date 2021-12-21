@@ -9,6 +9,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ### Core: Bundler
 - Make `cli.extensionsDir` optional for bundling process.
 
+### Bugfixes
+- Fix an issue in websocket error log.
+
 ## v8.0.0
 
 ### Core: Bunlder
