@@ -2,6 +2,7 @@ const fs = require('fs');
 const WS = require('websocket').w3cwebsocket;
 const { v4: uuidv4 } = require('uuid');
 const constants = require('../constants');
+const chalk = require('chalk');
 
 let ws = null;
 let authInfo = null;
