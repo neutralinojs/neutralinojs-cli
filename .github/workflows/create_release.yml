@@ -59,7 +59,7 @@ jobs:
           bodyFile: ./.tmprz/release_notes.md
           draft: true
           
-    - name: Configure
+    - name: Publish to NPM Registry
       run: |
         npm publish --access=public
       env:
