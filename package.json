@@ -1,7 +1,7 @@
 {
   "name": "@neutralinojs/neu",
   "version": "8.0.0",
-  "description": "neu cli for Neutralinojs",
+  "description": "neu CLI for Neutralinojs",
   "main": "./bin/neu.js",
   "scripts": {
     "test": "neu version"
@@ -23,7 +23,7 @@
     "type": "patreon",
     "url": "https://www.patreon.com/shalithasuranga"
   },
-  "homepage": "https://neutralino.js.org/docs/developer-environment/cli",
+  "homepage": "https://neutralino.js.org/docs/cli/neu-cli",
   "dependencies": {
     "archiver": "^4.0.2",
     "asar": "^3.0.3",
