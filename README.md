@@ -19,7 +19,7 @@ Synopsis
 
 ### Requirements
 
-- Node.js v14 or above. 
+- Node.js v14 or above.
 - npm, npx, or yarn package manager.
 
 ### Plugins
@@ -58,7 +58,6 @@ and it can be removed using:
 ```bash
  $ neu plugins --remove <packageName>
 ```
-
 
 ### License
 
