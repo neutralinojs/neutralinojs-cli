@@ -41,5 +41,20 @@
   },
   "bin": {
     "neu": "./bin/neu.js"
-  }
+  },
+  "keywords": [
+    "neutralinojs",
+    "neu",
+    "cross-platform",
+    "framework",
+    "desktop-framework",
+    "lightweight",
+    "cpp",
+    "javascript",
+    "desktop",
+    "webview",
+    "chrome",
+    "browser",
+    "codezri"
+  ]
 }
