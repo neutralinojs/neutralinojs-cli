@@ -14,6 +14,12 @@ jobs:
     - name: Checkout 
       uses: actions/checkout@v2
       
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '16.x'
+        registry-url: 'https://registry.npmjs.org'
+        scope: '@neutralinojs'
+      
     - name: Configure
       run: |
         npm ci
@@ -52,6 +58,10 @@ jobs:
           name: Neutralinojs CLI v${{github.event.inputs.version}} released!
           bodyFile: ./.tmprz/release_notes.md
           draft: true
+          
+    - name: Configure
+      run: |
+        npm publish --access=public
           
     - name: Clean Release Notes
       run: |
