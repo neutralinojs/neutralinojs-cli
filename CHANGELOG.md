@@ -10,6 +10,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 - Exclude auto-reload files via `cli.autoReloadExclude`.
 - Watch only the `cli.resourcesDir` to avoid many unwanted reloads.
 
+### Core: Bundler
+- Add new `--copy-storage` flag to automatically copy storage data to the app bundle.
+
 ## v8.0.1
 
 ### Core: Bundler
