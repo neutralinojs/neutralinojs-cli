@@ -11,7 +11,7 @@ neu cli for Neutralinojs
 Synopsis
 
 - `neu create <binaryName>`
-- `neu build [--release]`
+- `neu build [--release --copy-storage]`
 - `neu run [--mode=<mode> --arch=<arch> --disable-auto-reload]`
 - `neu update`
 - `neu plugins [packageName] [--remove, --add]`
