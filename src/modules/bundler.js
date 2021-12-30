@@ -32,7 +32,7 @@ function clearBuildCache() {
     fse.removeSync('temp');
 }
 
-module.exports.bundleApp = async (isRelease) => {
+module.exports.bundleApp = async (isRelease, copyStorage) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
     try {
@@ -49,6 +49,11 @@ module.exports.bundleApp = async (isRelease) => {
 
         for(let dependency of constants.files.dependencies) {
             fse.copySync(`bin/${dependency}`,`dist/${binaryName}/${dependency}`);
+        }
+
+        if(copyStorage) {
+            console.log('Copying storage data...');
+            fse.copySync(`.storage`,`dist/${binaryName}/.storage`);
         }
 
         if (isRelease) {
