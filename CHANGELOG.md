@@ -6,6 +6,10 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Core: File watcher
+- Exclude auto-reload files via `cli.autoReloadExclude`.
+- Watch only the `cli.resourcesDir` to avoid many unwanted reloads.
+
 ## v8.0.1
 
 ### Core: Bundler
