@@ -68,3 +68,10 @@ jobs:
     - name: Clean Release Notes
       run: |
         ./scripts/rz.py cleanup
+
+    - name: Send Discord Notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: 'Neutralinojs CLI v${{github.event.inputs.version}} released 🚀'
