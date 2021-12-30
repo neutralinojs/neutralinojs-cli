@@ -2,7 +2,7 @@ const fs = require('fs');
 const chokidar = require('chokidar');
 const websocket = require('./websocket');
 const bundler = require('../modules/bundler');
-const APP_PATH = '.';
+const config = require('../modules/config');
 
 let fileWatcher = null;
 
@@ -16,13 +16,26 @@ module.exports.stop = () => {
 }
 
 function startFileWatcher() {
-    if(!fs.existsSync(APP_PATH))
+    let configObj = config.get();
+    let resourcesDir = configObj.cli.resourcesPath.replace(/^\//, "");
+    if(!fs.existsSync(resourcesDir))
         return;
+    let exclude = [
+        '(^|[\\/\\\\])\\..', // dot files
+        'node_modules.*',
+        '^bin.*',
+        '.*.log$'
+    ];
+
+    if(configObj?.cli?.autoReloadExclude) {
+        exclude.push(configObj.cli.autoReloadExclude);
+    }
     let watcherOptions = {
         ignoreInitial: true,
-        ignored: /(^|[\/\\])\..|node_modules|bin|(.*.log)/
+        ignored: new RegExp(exclude.join('|'))
     };
-    fileWatcher = chokidar.watch(APP_PATH, watcherOptions)
+
+    fileWatcher = chokidar.watch(resourcesDir, watcherOptions)
         .on('all', (event, path) => {
             if(['unlink', 'unlinkDir'].includes(event))
                 return;
