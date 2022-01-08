@@ -40,9 +40,27 @@ module.exports.runApp = async (options = {}) => {
             fs.chmodSync(binaryPath, EXEC_PERMISSION);
 
         console.log(`Starting process: ${binaryName} ${args}`);
+
         exec(binaryPath + args, (err, stdout, stderr) => {
             let statusCodeMsg = err ? `error code ${err.code}` : `success code 0`;
             console.log(`${binaryName} was stopped with ${statusCodeMsg}`);
+            if(!options.verbose && err) {
+                console.log('You can launch app with "neu run --verbose" to see the output coming from ' +
+                            'the Neutralinojs process. The verbose option is helpful for detecting framework ' +
+                            'initialization crashes.');
+            }
+
+            if(options.verbose) {
+                if(stderr.trim()) {
+                    console.log('--- STDERR ---');
+                    console.log(stderr);
+                }
+
+                if(stdout.trim()) {
+                    console.log('--- STDOUT ---');
+                    console.log(stdout);
+                }
+            }
             resolve();
         });
     });

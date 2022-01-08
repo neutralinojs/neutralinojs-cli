@@ -29,8 +29,10 @@ module.exports.start = () => {
 }
 
 module.exports.stop = () => {
+    if(retryHandler) {
+         clearTimeout(retryHandler);
+    }
     if(ws) {
-        clearTimeout(retryHandler);
         ws.close();
         if(fs.existsSync(constants.files.authFile)) {
             fs.unlinkSync(constants.files.authFile);
@@ -75,5 +77,5 @@ function retryLater() {
     retryHandler = setTimeout(() => {
         reconnecting = false;
         module.exports.start();
-    }, 5000);
+    }, 1000);
 }

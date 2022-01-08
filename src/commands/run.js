@@ -11,6 +11,7 @@ module.exports.register = (program) => {
         .option('--mode <mode>')
         .option('--disable-auto-reload')
         .option('--arch <arch>')
+        .option('--verbose')
         .action(async (command) => {
             commons.checkCurrentProject();
             let argsOpt = "";
@@ -27,7 +28,9 @@ module.exports.register = (program) => {
             logwatcher.start();
             websocket.start();
             try {
-                await runner.runApp({argsOpt, arch: command.arch});
+                await runner.runApp({argsOpt,
+                                    arch: command.arch,
+                                    verbose: command.verbose});
             }
             catch(error) {
                 console.log(`${chalk.bgRed.white('ERROR')} ${error}`);
