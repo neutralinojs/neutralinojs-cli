@@ -7,7 +7,7 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ## Unreleased
 
 ### Core: Runner
-- Add `--verbose` option to identify framework initialization crashes. It will show STDERR and STDOUT of the framework once the process is terminated.
+- Add `--verbose` option to identify framework initialization crashes. It will show STDERR and STDOUT of the framework once the process was terminated.
 
 ### Bugfixes
 - Fix the infinite retry issue with the `neu run` command.
