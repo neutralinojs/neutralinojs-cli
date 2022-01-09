@@ -6,11 +6,15 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Core: Creator
+- Allow downloading any community template via `neu create myapp --template <template>`. `<template>` accepts valid GitHub repo identifiers. The default value is `neutralinojs/neutralinojs-minimal`.
+
 ### Core: Runner
 - Add `--verbose` option to identify framework initialization crashes. It will show STDERR and STDOUT of the framework once the process was terminated.
 
-### Bugfixes
+### Bugfixes and improvements
 - Fix the infinite retry issue with the `neu run` command.
+- Show an error message for download failures.
 
 ## v8.1.0
 
