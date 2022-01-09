@@ -11,6 +11,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ### Core: Runner
 - Add `--verbose` option to identify framework initialization crashes. It will show STDERR and STDOUT of the framework once the process was terminated.
+- Support sending any internal CLI argument to the Neutralinojs process via `neu run -- <additional_args>`.
+- Remove `--mode=<mode>` option from `run` since the same work can be done with `neu run -- --mode=<mode>`.
 
 ### Bugfixes and improvements
 - Fix the infinite retry issue with the `neu run` command.
