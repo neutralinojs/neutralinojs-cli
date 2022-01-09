@@ -11,7 +11,7 @@ module.exports.register = (program) => {
         .option('--disable-auto-reload')
         .option('--arch <arch>')
         .option('--verbose')
-        .action(async (command, t) => {
+        .action(async (command) => {
             commons.checkCurrentProject();
             let argsOpt = "";
 
@@ -25,11 +25,13 @@ module.exports.register = (program) => {
                                 .join(' ');
             }
 
-            if(!command.disableAutoReload)
+            if(!command.disableAutoReload) {
                 filewatcher.start();
+            }
 
             logwatcher.start();
             websocket.start();
+    
             try {
                 await runner.runApp({argsOpt,
                                     arch: command.arch,
@@ -38,6 +40,7 @@ module.exports.register = (program) => {
             catch(error) {
                 console.log(`${chalk.bgRed.white('ERROR')} ${error}`);
             }
+
             filewatcher.stop();
             logwatcher.stop();
             websocket.stop();
