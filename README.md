@@ -8,15 +8,6 @@ neu cli for Neutralinojs
   $ npm i -g @neutralinojs/neu
 ```
 
-Synopsis
-
-- `neu create <binaryName>`
-- `neu build [--release --copy-storage]`
-- `neu run [--mode=<mode> --arch=<arch> --disable-auto-reload]`
-- `neu update`
-- `neu plugins [packageName] [--remove, --add]`
-- `neu version`
-
 ### Requirements
 
 - Node.js v14 or above.
