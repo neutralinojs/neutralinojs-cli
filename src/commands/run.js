@@ -8,19 +8,22 @@ const commons = require('../commons');
 module.exports.register = (program) => {
     program
         .command('run')
-        .option('--mode <mode>')
         .option('--disable-auto-reload')
         .option('--arch <arch>')
         .option('--verbose')
-        .action(async (command) => {
+        .action(async (command, t) => {
             commons.checkCurrentProject();
             let argsOpt = "";
 
             if(!command.disableAutoReload)
                 argsOpt += "--neu-dev-auto-reload";
 
-            if(command.mode)
-                argsOpt += ` --mode=${command.mode}`;
+            let parseStopIndex = process.argv.indexOf('--');
+            if(parseStopIndex != -1) {
+                argsOpt += ' ' + process.argv
+                                .slice(parseStopIndex + 1)
+                                .join(' ');
+            }
 
             if(!command.disableAutoReload)
                 filewatcher.start();
