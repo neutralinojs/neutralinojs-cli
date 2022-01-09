@@ -17,6 +17,10 @@ let getClientDownloadUrl = () => {
     return constants.remote.client.url.replace(/{version}/g, version);
 }
 
+let getRepoNameFromTemplate = (template) => {
+    return template.split('/')[1];
+}
+
 let downloadBinariesFromRelease = () => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('temp', { recursive: true });
@@ -57,7 +61,7 @@ let clearDownloadCache = () => {
 
 module.exports.downloadTemplate = (template) => {
     return new Promise((resolve, reject) => {
-        let templateUrl = constants.remote.templateUrl.replace('{repoId}', template.repoId);
+        let templateUrl = constants.remote.templateUrl.replace('{template}', template);
         fs.mkdirSync('temp', { recursive: true });
         const file = fs.createWriteStream('temp/template.zip');
         https.get(templateUrl, function (response) {
@@ -68,7 +72,7 @@ module.exports.downloadTemplate = (template) => {
                     .pipe(unzipper.Extract({ path: 'temp/' }))
                     .promise()
                         .then(() => {
-                            fse.copySync(`temp/${template.repoId}-main`, '.');
+                            fse.copySync(`temp/${getRepoNameFromTemplate(template)}-main`, '.');
                             clearDownloadCache();
                             resolve();
                         })
@@ -101,7 +105,7 @@ module.exports.downloadAndUpdateClient = async () => {
     const configObj = config.get();
     const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
     await downloadClientFromRelease();
-    console.log('Finalizing and cleaning temp. files.');
+    console.log('Finalizing and cleaning temp. files...');
     fse.copySync(`temp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
     clearDownloadCache()
 }

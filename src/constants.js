@@ -6,12 +6,7 @@ module.exports = {
     client: {
       url: "https://github.com/neutralinojs/neutralino.js/releases/download/v{version}/neutralino.js"
     },
-    templateUrl: "https://github.com/neutralinojs/{repoId}/archive/main.zip"
-  },
-  templates: {
-    minimal: {
-      repoId: "neutralinojs-minimal"
-    }
+    templateUrl: "https://github.com/{template}/archive/main.zip"
   },
   files: {
     configFile: "neutralino.config.json",
