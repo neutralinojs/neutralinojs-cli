@@ -3,28 +3,32 @@ const WS = require('websocket').w3cwebsocket;
 const { v4: uuidv4 } = require('uuid');
 const constants = require('../constants');
 const chalk = require('chalk');
+const utils = require('../utils');
 
 let ws = null;
 let authInfo = null;
 let reconnecting = false;
 let retryHandler = null;
 
-module.exports.start = () => {
+module.exports.start = (options = {}) => {
     authInfo = getAuthInfo();
 
     if(!authInfo) {
-        retryLater();
+        retryLater(options);
         return;
     }
 
     ws = new WS(`ws://localhost:${authInfo.port}`);
 
     ws.onerror = () => {
-        retryLater();
+        retryLater(options);
     };
 
     ws.onopen = () => {
         console.log('neu CLI connected with the application.');
+        if(options.hotReload) {
+            utils.patchForHotReload();
+        }
     };
 }
 
@@ -72,10 +76,10 @@ function getAuthInfo() {
     return authInfo;
 }
 
-function retryLater() {
+function retryLater(options) {
     reconnecting = true;
     retryHandler = setTimeout(() => {
         reconnecting = false;
-        module.exports.start();
+        module.exports.start(options);
     }, 1000);
 }
