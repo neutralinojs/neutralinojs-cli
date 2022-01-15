@@ -27,9 +27,15 @@ module.exports.start = (options = {}) => {
     ws.onopen = () => {
         console.log('neu CLI connected with the application.');
         if(options.hotReload) {
-            utils.patchForHotReload();
+            utils.patchForHotReload(authInfo.port);
         }
     };
+
+    ws.onclose = () => {
+        if(options.hotReload) {
+            utils.revertHotReloadPatch();
+        }
+    }
 }
 
 module.exports.stop = () => {

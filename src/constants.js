@@ -26,5 +26,8 @@ module.exports = {
       }
     },
     dependencies: ["WebView2Loader.dll"]
+  },
+  misc: {
+    hotReloadPatchRegex: /(<script.*src=")(.*neutralino.js)(".*><\/script>)/g
   }
 };
