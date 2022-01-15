@@ -9,6 +9,7 @@ module.exports.register = (program) => {
     program
         .command('run')
         .option('--disable-auto-reload')
+        .option('--hot-reload-workaround')
         .option('--arch <arch>')
         .option('--verbose')
         .action(async (command) => {
@@ -30,8 +31,10 @@ module.exports.register = (program) => {
             }
 
             logwatcher.start();
-            websocket.start();
-    
+            websocket.start({
+                hotReload: command.hotReloadWorkaround
+            });
+
             try {
                 await runner.runApp({argsOpt,
                                     arch: command.arch,
@@ -46,4 +49,3 @@ module.exports.register = (program) => {
             websocket.stop();
         });
 }
-
