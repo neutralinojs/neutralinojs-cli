@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Core: Runner
+- Add a workaround to use hot module reloading from the app developer's existing frontend library/framework.
+
 ## v9.0.0
 
 ### Core: Creator
