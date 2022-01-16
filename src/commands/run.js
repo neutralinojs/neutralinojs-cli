@@ -10,7 +10,7 @@ module.exports.register = (program) => {
     program
         .command('run')
         .option('--disable-auto-reload')
-        .option('--use-frontend-lib')
+        .option('--frontend-lib-dev')
         .option('--arch <arch>')
         .option('--verbose')
         .action(async (command) => {
@@ -18,14 +18,14 @@ module.exports.register = (program) => {
             let configObj = config.get();
             let argsOpt = "";
 
-            if(!command.disableAutoReload && !command.useFrontendLib) {
+            if(!command.disableAutoReload && !command.frontendLibDev) {
                 argsOpt += "--neu-dev-auto-reload";
                 filewatcher.start();
             }
 
             logwatcher.start();
             websocket.start({
-                useFrontendLib: command.useFrontendLib
+                frontendLibDev: command.frontendLibDev
             });
 
             // Add additional process ARGs that comes after --
@@ -36,7 +36,7 @@ module.exports.register = (program) => {
                                 .join(' ');
             }
 
-            if(command.useFrontendLib && configObj.cli.frontendLibrary.devUrl) {
+            if(command.frontendLibDev && configObj.cli.frontendLibrary.devUrl) {
                 argsOpt += ` --url=${configObj.cli.frontendLibrary.devUrl}`
             }
 

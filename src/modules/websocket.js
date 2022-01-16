@@ -26,13 +26,13 @@ module.exports.start = (options = {}) => {
 
     ws.onopen = () => {
         console.log('neu CLI connected with the application.');
-        if(options.useFrontendLib) {
+        if(options.frontendLibDev) {
             frontendlib.bootstrap(authInfo.port);
         }
     };
 
     ws.onclose = () => {
-        if(options.useFrontendLib) {
+        if(options.frontendLibDev) {
             frontendlib.cleanup();
         }
     }
