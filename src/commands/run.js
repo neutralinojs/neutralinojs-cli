@@ -4,21 +4,31 @@ const filewatcher = require('../modules/filewatcher');
 const websocket = require('../modules/websocket');
 const runner = require('../modules/runner');
 const commons = require('../commons');
+const config = require('../modules/config');
 
 module.exports.register = (program) => {
     program
         .command('run')
         .option('--disable-auto-reload')
-        .option('--hot-reload-workaround')
+        .option('--use-frontend-lib')
         .option('--arch <arch>')
         .option('--verbose')
         .action(async (command) => {
             commons.checkCurrentProject();
+            let configObj = config.get();
             let argsOpt = "";
 
-            if(!command.disableAutoReload)
+            if(!command.disableAutoReload && !command.useFrontendLib) {
                 argsOpt += "--neu-dev-auto-reload";
+                filewatcher.start();
+            }
 
+            logwatcher.start();
+            websocket.start({
+                useFrontendLib: command.useFrontendLib
+            });
+
+            // Add additional process ARGs that comes after --
             let parseStopIndex = process.argv.indexOf('--');
             if(parseStopIndex != -1) {
                 argsOpt += ' ' + process.argv
@@ -26,14 +36,9 @@ module.exports.register = (program) => {
                                 .join(' ');
             }
 
-            if(!command.disableAutoReload) {
-                filewatcher.start();
+            if(command.useFrontendLib && configObj.cli.frontendLibrary.devUrl) {
+                argsOpt += ` --url=${configObj.cli.frontendLibrary.devUrl}`
             }
-
-            logwatcher.start();
-            websocket.start({
-                hotReload: command.hotReloadWorkaround
-            });
 
             try {
                 await runner.runApp({argsOpt,

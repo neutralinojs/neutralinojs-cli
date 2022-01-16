@@ -3,7 +3,7 @@ const WS = require('websocket').w3cwebsocket;
 const { v4: uuidv4 } = require('uuid');
 const constants = require('../constants');
 const chalk = require('chalk');
-const utils = require('../utils');
+const frontendlib = require('./frontendlib.js');
 
 let ws = null;
 let authInfo = null;
@@ -26,14 +26,14 @@ module.exports.start = (options = {}) => {
 
     ws.onopen = () => {
         console.log('neu CLI connected with the application.');
-        if(options.hotReload) {
-            utils.patchForHotReload(authInfo.port);
+        if(options.useFrontendLib) {
+            frontendlib.bootstrap(authInfo.port);
         }
     };
 
     ws.onclose = () => {
-        if(options.hotReload) {
-            utils.revertHotReloadPatch();
+        if(options.useFrontendLib) {
+            frontendlib.cleanup();
         }
     }
 }
