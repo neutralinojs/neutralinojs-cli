@@ -43,7 +43,7 @@ module.exports.bootstrap = async (port) => {
     originalClientLib = patchHTMLFile(clientLibUrl);
     console.log(`${chalk.bgYellow.white('WARNING')} Hot reload patch was applied successfully. ` +
         `Please avoid sending keyboard interrupts.`);
-    console.log('You working with your frontend library\'s development environment. ' +
+    console.log('You are working with your frontend library\'s development environment. ' +
         'Hot reload and other tooling will work alongside with Neutralinojs API.');
 }
 
