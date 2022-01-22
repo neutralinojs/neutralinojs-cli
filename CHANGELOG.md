@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v9.1.1
+
 ### Bugfixes
 - Fix browser mode exit issue with `neu run`.
 
