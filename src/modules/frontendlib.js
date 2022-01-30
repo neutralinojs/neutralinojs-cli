@@ -11,7 +11,9 @@ async function makeClientLibUrl(port) {
     let configObj = config.get();
     let resourcesPath = configObj.cli.resourcesPath.replace(/^\//, '');
     let files = await recursive(resourcesPath);
-    let clientLib = files.find((file) => /neutralino\.js$/.test(file));
+    let clientLib = files
+        .find((file) => /neutralino\.js$/.test(file))
+        .replace(/\\/g, '/'); //Fix path on windows;
 
     let url = `http://localhost:${port}`;
 
