@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v9.1.2
+
 ### Core: Runner
 - Fix client library path issue with hot-reload workaround on Windows.
 
