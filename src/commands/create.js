@@ -1,5 +1,5 @@
 const creator = require('../modules/creator');
-const commons = require('../commons');
+const utils = require('../utils');
 
 module.exports.register = (program) => {
     program
@@ -7,7 +7,7 @@ module.exports.register = (program) => {
         .option('-t, --template [template]')
         .action(async (binaryName, command) => {
             await creator.createApp(binaryName, command.template);
-            commons.figlet();
+            utils.figlet();
         });
 }
 

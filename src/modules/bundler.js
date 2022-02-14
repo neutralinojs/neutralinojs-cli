@@ -4,9 +4,10 @@ const archiver = require('archiver');
 const asar = require('asar');
 const config = require('./config');
 const constants = require('../constants');
+const utils = require('../utils');
 
 async function createAsarFile() {
-    console.log(`Generating ${constants.files.resourceFile}...`);
+    utils.log(`Generating ${constants.files.resourceFile}...`);
     const configObj = config.get();
     const resourcesDir = configObj.cli.resourcesPath.replace(/^\//, "");
     const extensionsDir = configObj.cli.extensionsPath?.replace(/^\//, "");
@@ -37,7 +38,7 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
     let binaryName = configObj.cli.binaryName;
     try {
         await createAsarFile();
-        console.log('Copying binaries...');
+        utils.log('Copying binaries...');
 
         for(let platform in constants.files.binaries) {
             for(let arch in constants.files.binaries[platform]) {
@@ -52,12 +53,12 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
         }
 
         if(copyStorage) {
-            console.log('Copying storage data...');
+            utils.log('Copying storage data...');
             fse.copySync(`.storage`,`dist/${binaryName}/.storage`);
         }
 
         if (isRelease) {
-            console.log('Making app bundle ZIP file...');
+            utils.log('Making app bundle ZIP file...');
             let output = fs.createWriteStream(`dist/${binaryName}-release.zip`);
             let archive = archiver('zip', { zlib: { level: 9 } });
             archive.pipe(output);
@@ -67,6 +68,6 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
         clearBuildCache();
     }
     catch (e) {
-        console.error(e);
+        utils.error(e);
     }
 }

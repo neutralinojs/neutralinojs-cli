@@ -1,4 +1,5 @@
 const pluginloader = require('../plugins/pluginloader');
+const utils = require('../utils');
 
 module.exports.register = (program) => {
     program
@@ -9,22 +10,22 @@ module.exports.register = (program) => {
             if(plugin) {
                 if(command.add) {
                     try {
-                        console.log(`Installing ${plugin}..`);
+                        utils.log(`Installing ${plugin}..`);
                         await pluginloader.add(plugin);
-                        console.log(`${plugin} was installed!`);
+                        utils.log(`${plugin} was installed!`);
                     }
                     catch(e) {
-                        console.error(e);
+                        utils.error(e);
                     }
                 }
                 else if(command.remove)
                     try {
-                        console.log(`Uninstalling ${plugin}..`);
+                        utils.log(`Uninstalling ${plugin}..`);
                         await pluginloader.remove(plugin);
-                        console.log(`${plugin} was uninstalled!`);
+                        utils.log(`${plugin} was uninstalled!`);
                     }
                     catch(e) {
-                        console.error(e);
+                        utils.error(e);
                     }
             }
             else

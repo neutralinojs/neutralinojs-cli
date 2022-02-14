@@ -3,6 +3,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const constants = require('../constants');
+const utils = require('../utils');
 
 const EXEC_PERMISSION = 0o755;
 
@@ -39,18 +40,19 @@ module.exports.runApp = async (options = {}) => {
         if(process.platform == 'linux' || process.platform == 'darwin')
             fs.chmodSync(binaryPath, EXEC_PERMISSION);
 
-        console.log(`Starting process: ${binaryName} ${args}`);
+        utils.log(`Starting process: ${binaryName} ${args}`);
 
         const neuProcess = spawn(binaryPath, args.split(` `), { stdio: 'inherit' })
-        
+
         neuProcess.on('exit', function (code) {
             let statusCodeMsg = code ? `error code ${code}` : `success code 0`;
-            console.log(`${binaryName} was stopped with ${statusCodeMsg}`);
+            let runnerMsg = `${binaryName} was stopped with ${statusCodeMsg}`;
 
-            if(!options.verbose && code) {
-                console.log('You can launch app with "neu run --verbose" to see the output coming from ' +
-                            'the Neutralinojs process. The verbose option is helpful for detecting framework ' +
-                            'initialization crashes.');
+            if(code) {
+                utils.warn(runnerMsg);
+            }
+            else {
+                utils.log(runnerMsg);
             }
 
             resolve()

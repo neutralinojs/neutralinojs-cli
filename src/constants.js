@@ -10,7 +10,6 @@ module.exports = {
   },
   files: {
     configFile: "neutralino.config.json",
-    logFile: "neutralinojs.log",
     clientLibrary: "neutralino.js",
     resourceFile: "resources.neu",
     authFile: ".tmp/auth_info.json",

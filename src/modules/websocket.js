@@ -2,8 +2,8 @@ const fs = require('fs');
 const WS = require('websocket').w3cwebsocket;
 const { v4: uuidv4 } = require('uuid');
 const constants = require('../constants');
-const chalk = require('chalk');
 const frontendlib = require('./frontendlib.js');
+const utils = require('../utils');
 
 let ws = null;
 let authInfo = null;
@@ -25,7 +25,7 @@ module.exports.start = (options = {}) => {
     };
 
     ws.onopen = () => {
-        console.log('neu CLI connected with the application.');
+        utils.log('neu CLI connected with the application.');
         if(options.frontendLibDev) {
             frontendlib.bootstrap(authInfo.port);
         }
@@ -66,7 +66,7 @@ module.exports.dispatch = (event, data) => {
         }));
     }
     catch(err) {
-        console.log(`${chalk.bgRed.white('ERROR')} Unable to dispatch event to the app.`);
+        utils.error('Unable to dispatch event to the app.');
     }
 }
 

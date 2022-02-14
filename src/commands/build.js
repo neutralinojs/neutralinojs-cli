@@ -1,4 +1,4 @@
-const commons = require('../commons');
+const utils = require('../utils');
 const bundler = require('../modules/bundler');
 
 module.exports.register = (program) => {
@@ -7,11 +7,11 @@ module.exports.register = (program) => {
         .option('-r, --release')
         .option('--copy-storage')
         .action(async (command) => {
-            commons.checkCurrentProject();
-            console.log('Bundling app...');
+            utils.checkCurrentProject();
+            utils.log('Bundling app...');
             await bundler.bundleApp(command.release, command.copyStorage);
-            commons.figlet();
-            console.log('Please check the ./dist directory!');
+            utils.figlet();
+            utils.log('Please check the ./dist directory!');
         });
 }
 

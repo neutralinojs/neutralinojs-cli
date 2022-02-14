@@ -1,9 +1,7 @@
-const chalk = require('chalk');
-const logwatcher = require('../modules/logwatcher');
 const filewatcher = require('../modules/filewatcher');
 const websocket = require('../modules/websocket');
 const runner = require('../modules/runner');
-const commons = require('../commons');
+const utils = require('../utils');
 const config = require('../modules/config');
 
 module.exports.register = (program) => {
@@ -12,9 +10,8 @@ module.exports.register = (program) => {
         .option('--disable-auto-reload')
         .option('--frontend-lib-dev')
         .option('--arch <arch>')
-        .option('--verbose')
         .action(async (command) => {
-            commons.checkCurrentProject();
+            utils.checkCurrentProject();
             let configObj = config.get();
             let argsOpt = "";
 
@@ -23,7 +20,6 @@ module.exports.register = (program) => {
                 filewatcher.start();
             }
 
-            logwatcher.start();
             websocket.start({
                 frontendLibDev: command.frontendLibDev
             });
@@ -42,15 +38,13 @@ module.exports.register = (program) => {
 
             try {
                 await runner.runApp({argsOpt,
-                                    arch: command.arch,
-                                    verbose: command.verbose});
+                                    arch: command.arch});
             }
             catch(error) {
-                console.log(`${chalk.bgRed.white('ERROR')} ${error}`);
+                utils.log(error);
             }
 
             filewatcher.stop();
-            logwatcher.stop();
             websocket.stop();
         });
 }

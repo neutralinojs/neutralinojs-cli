@@ -1,8 +1,8 @@
 const fs = require('fs');
 const recursive = require('recursive-readdir');
-const chalk = require('chalk');
 const config = require('./config');
 const constants = require('../constants');
+const utils = require('../utils');
 
 const HOT_REL_PATCH_REGEX = constants.misc.hotReloadPatchRegex;
 let originalClientLib = null;
@@ -43,15 +43,15 @@ function patchHTMLFile(clientLib) {
 module.exports.bootstrap = async (port) => {
     let clientLibUrl = await makeClientLibUrl(port);
     originalClientLib = patchHTMLFile(clientLibUrl);
-    console.log(`${chalk.bgYellow.white('WARNING')} Hot reload patch was applied successfully. ` +
+    utils.warn(`Hot reload patch was applied successfully. ` +
         `Please avoid sending keyboard interrupts.`);
-    console.log('You are working with your frontend library\'s development environment. ' +
+    utils.log('You are working with your frontend library\'s development environment. ' +
         'Hot reload and other tooling will work alongside with Neutralinojs API.');
 }
 
 module.exports.cleanup = () => {
     if(originalClientLib) {
         patchHTMLFile(originalClientLib);
-        console.log('Hot reload patch was reverted.');
+        utils.log('Hot reload patch was reverted.');
     }
 }

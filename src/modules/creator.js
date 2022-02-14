@@ -1,15 +1,15 @@
 const process = require('process');
 const fs = require('fs');
-const chalk = require('chalk');
 const constants = require('../constants');
 const config = require('../modules/config');
 const downloader = require('./downloader');
+const utils = require('../utils');
 
 module.exports.createApp = async (binaryName, template) => {
     if(!template) {
         template = 'neutralinojs/neutralinojs-minimal';
     }
-    console.log(`Downloading ${template} template to ${binaryName} directory...`);
+    utils.log(`Downloading ${template} template to ${binaryName} directory...`);
 
     fs.mkdirSync(binaryName, { recursive: true });
     process.chdir(binaryName); // Change the path context for the following methods
@@ -20,8 +20,8 @@ module.exports.createApp = async (binaryName, template) => {
         await downloader.downloadAndUpdateClient();
     }
     catch(err) {
-        console.log(`${chalk.bgRed.white('INFO')} Unable to download resources from internet.` +
-                    ` Please check your internet connection and template URLs.`);
+        utils.error('Unable to download resources from internet.' +
+                    ' Please check your internet connection and template URLs.');
         process.exit(1);
     }
 
@@ -29,5 +29,5 @@ module.exports.createApp = async (binaryName, template) => {
     config.update('modes.window.title', binaryName);
 
     console.log('-------');
-    console.log(`Enter 'cd ${binaryName} && neu run' to run your application.`);
+    utils.log(`Enter 'cd ${binaryName} && neu run' to run your application.`);
 }
