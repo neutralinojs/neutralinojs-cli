@@ -1,7 +1,7 @@
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
+
 const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk');
 const constants = require('../constants');
 
 const EXEC_PERMISSION = 0o755;
@@ -41,27 +41,19 @@ module.exports.runApp = async (options = {}) => {
 
         console.log(`Starting process: ${binaryName} ${args}`);
 
-        exec(binaryPath + args, (err, stdout, stderr) => {
-            let statusCodeMsg = err ? `error code ${err.code}` : `success code 0`;
+        const neuProcess = spawn(binaryPath, args.split(` `), { stdio: 'inherit' })
+        
+        neuProcess.on('exit', function (code) {
+            let statusCodeMsg = code ? `error code ${code}` : `success code 0`;
             console.log(`${binaryName} was stopped with ${statusCodeMsg}`);
-            if(!options.verbose && err) {
+
+            if(!options.verbose && code) {
                 console.log('You can launch app with "neu run --verbose" to see the output coming from ' +
                             'the Neutralinojs process. The verbose option is helpful for detecting framework ' +
                             'initialization crashes.');
             }
 
-            if(options.verbose) {
-                if(stderr.trim()) {
-                    console.log('--- STDERR ---');
-                    console.log(stderr);
-                }
-
-                if(stdout.trim()) {
-                    console.log('--- STDOUT ---');
-                    console.log(stdout);
-                }
-            }
-            resolve();
+            resolve()
         });
     });
 }
