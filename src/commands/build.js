@@ -12,6 +12,7 @@ module.exports.register = (program) => {
             await bundler.bundleApp(command.release, command.copyStorage);
             utils.figlet();
             utils.log('Application package was generated at the ./dist directory!');
+            utils.log('Distribution guide: https://neutralino.js.org/docs/distribution/overview');
         });
 }
 
