@@ -5,6 +5,7 @@ const package = require('../../package.json');
 const NEU_ROOT = path.join(__dirname, '../../');
 const Configstore = require('configstore');
 const config = new Configstore(package.name);
+const utils = require('../utils');
 
 module.exports.registerPlugins = (program, modules) => {
     if(!config.has('plugins'))
@@ -15,10 +16,10 @@ module.exports.registerPlugins = (program, modules) => {
             if(plugin.register && plugin.command)
                 plugin.register(program.command(plugin.command), modules);
             else
-                console.log(`ERROR: ${pluginName} plugin should export command and register properties.`);
+                utils.error(`Plugin ${pluginName} should export command and register properties.`);
         }
         catch(e) {
-            console.error(`ERROR: Unable to load ${pluginName} plugin.`);
+            utils.error(`Unable to load ${pluginName} plugin.`);
         }
     }
 }
@@ -65,12 +66,12 @@ module.exports.remove = (packageName, uninstallSuccessCallback) => {
         }
         else {
             reject(`Unable to find ${packageName}!`);
-        }    
+        }
     });
 };
 
 module.exports.list = () => {
-    if(config.has('plugin'))
+    if(!config.has('plugin'))
         return;
     for(let plugin of config.get('plugins'))
         console.log(plugin);
