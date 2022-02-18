@@ -9,6 +9,10 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ### General
 - Improve log messages and styles
 
+### Core: Runner
+- Display Neutralinojs process's STDIN and STDERR streams directly on the console.
+- Remove `--verbose` option from the `run` command.
+
 ## v9.1.2
 
 ### Core: Runner
