@@ -1,10 +1,10 @@
 const fs = require('fs');
-const fse = require('fs-extra');
-const { https } = require('follow-redirects');
+const fse = require('fs-extra'); // soon fs-extra will be completely removed as a dependency.
 const constants = require('../constants');
 const unzipper = require('unzipper');
 const config = require('./config');
 const utils = require('../utils');
+const fetch = require('node-fetch');
 
 let getBinaryDownloadUrl = () => {
     const configObj = config.get();
@@ -27,17 +27,19 @@ let downloadBinariesFromRelease = () => {
         fs.mkdirSync('temp', { recursive: true });
         const file = fs.createWriteStream('temp/binaries.zip');
         utils.log('Downloading Neutralinojs binaries..');
-        https.get(getBinaryDownloadUrl(), function (response) {
-            response.pipe(file);
-            response.on('end', () => {
-                utils.log('Extracting zip file..');
-                fs.createReadStream('temp/binaries.zip')
-                    .pipe(unzipper.Extract({ path: 'temp/' }))
-                    .promise()
-                        .then(() => resolve())
-                        .catch((e) => reject(e));
-            });
-        });
+
+        fetch(getBinaryDownloadUrl()).then(res => {
+            res.body.pipe(file);
+        })
+
+        file.on('finish', () => {
+            utils.log('Extracting zip file..');
+            fs.createReadStream('temp/binaries.zip')
+                .pipe(unzipper.Extract({ path: 'temp/' }))
+                .promise()
+                    .then(() => resolve())
+                    .catch(err => reject(err));
+        })
     });
 }
 
@@ -46,58 +48,65 @@ let downloadClientFromRelease = () => {
         fs.mkdirSync('temp', { recursive: true });
         const file = fs.createWriteStream('temp/neutralino.js');
         utils.log('Downloading the Neutralinojs client..');
-        https.get(getClientDownloadUrl(), function (response) {
-            response.pipe(file);
-            file.on('finish', () => {
-                file.close();
-                resolve();
-            });
-        });
+
+        fetch(getClientDownloadUrl()).then(res => {
+            res.body.pipe(file);
+        }).catch(err => reject(err))
+
+        file.on('finish', () => {
+            file.close();
+            resolve();
+        })
     });
 }
 
 let clearDownloadCache = () => {
-    fse.removeSync('temp');
+    fs.rmSync('temp', {
+        force: true,
+        recursive: true
+    })
 }
 
 module.exports.downloadTemplate = (template) => {
     return new Promise((resolve, reject) => {
         let templateUrl = constants.remote.templateUrl.replace('{template}', template);
-        fs.mkdirSync('temp', { recursive: true });
+        fs.mkdirSync('temp');
         const file = fs.createWriteStream('temp/template.zip');
-        https.get(templateUrl, function (response) {
-            response.pipe(file);
-            response.on('end', () => {
-                utils.log('Extracting template zip file..');
-                fs.createReadStream('temp/template.zip')
-                    .pipe(unzipper.Extract({ path: 'temp/' }))
-                    .promise()
-                        .then(() => {
-                            fse.copySync(`temp/${getRepoNameFromTemplate(template)}-main`, '.');
-                            clearDownloadCache();
-                            resolve();
-                        })
-                        .catch((e) => reject(e));
-            });
-        });
+
+        fetch(templateUrl).then(res => {
+            res.body.pipe(file);
+        })
+
+        file.on('finish', () => {
+            utils.log('Extracting template zip file..');
+            fs.createReadStream('temp/template.zip')
+                .pipe(unzipper.Extract({ path: 'temp/' }))
+                .promise()
+                    .then(() => {
+                        fse.copySync(`temp/${getRepoNameFromTemplate(template)}-main`, '.');
+                        clearDownloadCache();
+                        resolve();
+                    })
+                    .catch((e) => reject(e));
+        })
     });
 }
 
 module.exports.downloadAndUpdateBinaries = async () => {
     await downloadBinariesFromRelease();
     utils.log('Finalizing and cleaning temp. files.');
-    if(!fse.existsSync('bin'))
-        fse.mkdirSync('bin');
+    if (!fs.existsSync('bin'))
+        fs.mkdirSync('bin');
 
-    for(let platform in constants.files.binaries) {
-        for(let arch in constants.files.binaries[platform]) {
+    for (let platform in constants.files.binaries) {
+        for (let arch in constants.files.binaries[platform]) {
             let binaryFile = constants.files.binaries[platform][arch];
-            fse.copySync(`temp/${binaryFile}`, `bin/${binaryFile}`);
+            fs.copyFileSync(`temp/${binaryFile}`, `bin/${binaryFile}`);
         }
     }
 
-    for(let dependency of constants.files.dependencies) {
-        fse.copySync(`temp/${dependency}`,`bin/${dependency}`);
+    for (let dependency of constants.files.dependencies) {
+        fs.copyFileSync(`temp/${dependency}`,`bin/${dependency}`);
     }
     clearDownloadCache();
 }
@@ -107,7 +116,7 @@ module.exports.downloadAndUpdateClient = async () => {
     const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
     await downloadClientFromRelease();
     utils.log('Finalizing and cleaning temp. files...');
-    fse.copySync(`temp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
+    fs.copyFileSync(`temp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
     clearDownloadCache()
 }
 
