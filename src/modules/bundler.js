@@ -1,4 +1,3 @@
-const fse = require('fs-extra');
 const fs = require('fs');
 const archiver = require('archiver');
 const asar = require('asar');
@@ -16,21 +15,25 @@ async function createAsarFile() {
     const binaryName = configObj.cli.binaryName;
 
     fs.mkdirSync(`temp`, { recursive: true });
-    await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
+    fs.copyFileSync(`./${resourcesDir}`, `temp/${resourcesDir}`)
 
     if(extensionsDir && fs.existsSync(extensionsDir)) {
-        await fse.copy(`./${extensionsDir}`, `dist/${binaryName}/${extensionsDir}`, {overwrite: true});
+        fs.copyFileSync(`./${extensionsDir}`, `dist/${binaryName}/${extensionsDir}`)
     }
 
-    await fse.copy(`${constants.files.configFile}`, `temp/${constants.files.configFile}`, {overwrite: true});
-    await fse.copy(`./${clientLibrary}`, `temp/${clientLibrary}`, {overwrite: true});
-    await fse.copy(`./${icon}`, `temp/${icon}`, {overwrite: true});
+    fs.copyFileSync(`${constants.files.configFile}`, `temp/${constants.files.configFile}`)
+    fs.copyFileSync(`./${clientLibrary}`, `temp/${clientLibrary}`)
+    fs.copyFileSync(`./${icon}`, `temp/${icon}`)
 
     await asar.createPackage('temp', `dist/${binaryName}/${constants.files.resourceFile}`);
 }
 
 function clearBuildCache() {
-    fse.removeSync('temp');
+    fs.rmdirSync('temp')
+    fs.rmSync('temp', {
+        force: true,
+        recursive: true
+    })
 }
 
 module.exports.bundleApp = async (isRelease, copyStorage) => {
@@ -44,17 +47,17 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             for(let arch in constants.files.binaries[platform]) {
                 let originalBinaryFile = constants.files.binaries[platform][arch];
                 let destinationBinaryFile = originalBinaryFile.replace('neutralino', binaryName);
-                fse.copySync(`bin/${originalBinaryFile}`, `dist/${binaryName}/${destinationBinaryFile}`);
+                fs.copyFileSync(`bin/${originalBinaryFile}`, `dist/${binaryName}/${destinationBinaryFile}`)
             }
         }
 
         for(let dependency of constants.files.dependencies) {
-            fse.copySync(`bin/${dependency}`,`dist/${binaryName}/${dependency}`);
+            fs.copyFileSync(`bin/${dependency}`,`dist/${binaryName}/${dependency}`);
         }
 
         if(copyStorage) {
             utils.log('Copying storage data...');
-            fse.copySync(`.storage`,`dist/${binaryName}/.storage`);
+            fs.copyFileSync(`.storage`,`dist/${binaryName}/.storage`);
         }
 
         if (isRelease) {
