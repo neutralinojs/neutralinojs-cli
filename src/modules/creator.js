@@ -1,6 +1,5 @@
 const process = require('process');
 const fs = require('fs');
-const constants = require('../constants');
 const config = require('../modules/config');
 const downloader = require('./downloader');
 const utils = require('../utils');

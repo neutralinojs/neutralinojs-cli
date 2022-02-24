@@ -3,7 +3,6 @@
 const { Command } = require('commander');
 const neu = require('../src/neu-cli');
 const utils = require('../src/utils');
-const chalk = require('chalk');
 
 const program = new Command();
 neu.bootstrap(program);
