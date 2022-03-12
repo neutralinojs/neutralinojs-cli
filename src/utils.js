@@ -5,16 +5,15 @@ const chalk = require('chalk');
 const constants = require('./constants');
 const CONFIG_FILE = constants.files.configFile;
 
-
-let error = (message) => {
+module.exports.error = (message) => {
     console.error(`neu: ${chalk.bgRed.black('ERROR')} ${message}`);
 }
 
-let isNeutralinojsProject = () => {
+module.exports.isNeutralinojsProject = () => {
     return fs.existsSync(CONFIG_FILE);
 }
 
-let getFiglet = () => {
+module.exports.getFiglet = () => {
     return figlet.textSync('Neutralinojs');
 }
 
@@ -37,7 +36,3 @@ module.exports.log = (message) => {
 module.exports.warn = (message) => {
     console.warn(`neu: ${chalk.bgYellow.black('WARNING')} ${message}`);
 }
-
-module.exports.isNeutralinojsProject = isNeutralinojsProject;
-module.exports.getFiglet = getFiglet;
-module.exports.error = error;
