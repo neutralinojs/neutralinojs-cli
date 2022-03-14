@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const utils = require('../utils');
 const package = require('../../package.json');
 const config = require('../modules/config');
