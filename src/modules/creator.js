@@ -1,18 +1,24 @@
 const process = require('process');
 const fs = require('fs');
+const path = require('path');
 const constants = require('../constants');
 const config = require('../modules/config');
 const downloader = require('./downloader');
 const utils = require('../utils');
 
-module.exports.createApp = async (binaryName, template) => {
+module.exports.createApp = async (binaryName, projectPath, template) => {
     if(!template) {
         template = 'neutralinojs/neutralinojs-minimal';
     }
-    utils.log(`Downloading ${template} template to ${binaryName} directory...`);
 
-    fs.mkdirSync(binaryName, { recursive: true });
-    process.chdir(binaryName); // Change the path context for the following methods
+    // Get the relative path. if path is '' which means "./" then value should be binary name, else it should be the relative path
+    const projectPathRel = path.relative('.', projectPath) ? path.relative('.', projectPath) : binaryName;
+    utils.log(`Downloading ${template} template to ${projectPathRel} directory...`);
+
+    if (!fs.existsSync(projectPath)) {
+        fs.mkdirSync(projectPath, { recursive: true });
+    }
+    process.chdir(projectPath); // Change the path context for the following methods
 
     try {
         await downloader.downloadTemplate(template);
@@ -29,5 +35,5 @@ module.exports.createApp = async (binaryName, template) => {
     config.update('modes.window.title', binaryName);
 
     console.log('-------');
-    utils.log(`Enter 'cd ${binaryName} && neu run' to run your application.`);
+    utils.log(`Enter 'cd ${projectPathRel} && neu run' to run your application.`);
 }
