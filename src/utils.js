@@ -3,7 +3,6 @@ const process = require('process');
 const figlet = require('figlet');
 const chalk = require('chalk');
 const constants = require('./constants');
-const utils = require('../src/utils');
 const CONFIG_FILE = constants.files.configFile;
 
 module.exports.error = (message) => {
@@ -19,7 +18,7 @@ module.exports.getFiglet = () => {
 }
 
 module.exports.figlet = () => {
-    console.log(utils.getFiglet());
+    console.log(figlet.textSync('Neutralinojs'));
 }
 
 module.exports.checkCurrentProject = () => {
