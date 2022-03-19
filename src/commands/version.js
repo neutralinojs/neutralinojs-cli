@@ -6,6 +6,7 @@ const config = require('../modules/config');
 module.exports.register = (program) => {
     program
         .command('version')
+        .description('displays global and project specific versions of packages')
         .action(async (command) => {
             utils.figlet();
             console.log('--- Global ---');
