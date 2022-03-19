@@ -7,6 +7,7 @@ const config = require('../modules/config');
 module.exports.register = (program) => {
     program
         .command('run')
+        .description('fetches config from neutralino.config.json & runs the app')
         .option('--disable-auto-reload')
         .option('--frontend-lib-dev')
         .option('--arch <arch>')

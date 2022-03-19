@@ -4,6 +4,7 @@ const utils = require('../utils');
 module.exports.register = (program) => {
     program
         .command('plugins [plugin]')
+        .description('displays, adds or removes plugins')
         .option('-a, --add')
         .option('-r, --remove')
         .action(async (plugin, command) => {

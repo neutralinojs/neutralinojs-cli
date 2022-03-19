@@ -4,6 +4,7 @@ const bundler = require('../modules/bundler');
 module.exports.register = (program) => {
     program
         .command('build')
+        .description('builds binaries for all supported platforms and resources.neu file')
         .option('-r, --release')
         .option('--copy-storage')
         .action(async (command) => {
