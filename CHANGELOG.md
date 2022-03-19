@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### General
+- Add short descriptions for each command.
+
 ## v9.2.0
 
 ### General
