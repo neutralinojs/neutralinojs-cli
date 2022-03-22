@@ -8,7 +8,7 @@ module.exports.register = (program) => {
         .option('-t, --template [template]')
         .action(async (binaryName, command) => {
             await creator.createApp(binaryName, command.template);
-            utils.figlet();
+            utils.showArt();
         });
 }
 

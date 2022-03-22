@@ -10,7 +10,7 @@ module.exports.register = (program) => {
             await downloader.downloadAndUpdateBinaries();
             await downloader.downloadAndUpdateClient();
 
-            utils.figlet();
+            utils.showArt();
             utils.log('Run "neu version" to see installed version details.');
         });
 }
