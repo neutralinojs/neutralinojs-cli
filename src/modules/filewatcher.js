@@ -1,7 +1,6 @@
 const fs = require('fs');
 const chokidar = require('chokidar');
 const websocket = require('./websocket');
-const bundler = require('../modules/bundler');
 const config = require('../modules/config');
 
 let fileWatcher = null;

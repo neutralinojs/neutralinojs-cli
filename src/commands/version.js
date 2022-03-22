@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const utils = require('../utils');
 const package = require('../../package.json');
 const config = require('../modules/config');
@@ -6,6 +5,7 @@ const config = require('../modules/config');
 module.exports.register = (program) => {
     program
         .command('version')
+        .description('displays global and project specific versions of packages')
         .action(async (command) => {
             utils.figlet();
             console.log('--- Global ---');

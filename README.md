@@ -5,7 +5,7 @@
 The official CLI of Neutralinojs. See neu CLI [documentation](https://neutralino.js.org/docs/cli/neu-cli/) for more details.
 
 ```bash
-  $ npm i -g @neutralinojs/neu
+npm i -g @neutralinojs/neu
 ```
 ### Requirements
 
