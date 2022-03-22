@@ -27,6 +27,5 @@ module.exports.createApp = async (binaryName, template) => {
     config.update('cli.binaryName', binaryName);
     config.update('modes.window.title', binaryName);
 
-    console.log('-------');
-    utils.log(`Enter 'cd ${binaryName} && neu run' to run your application.`);
+    utils.log(`Run 'cd ${binaryName} && neu run' to run your application.`);
 }
