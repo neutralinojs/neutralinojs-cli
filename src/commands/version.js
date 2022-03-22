@@ -7,7 +7,7 @@ module.exports.register = (program) => {
         .command('version')
         .description('displays global and project specific versions of packages')
         .action(async (command) => {
-            utils.figlet();
+            utils.showArt();
             console.log('--- Global ---');
             console.log(`neu CLI: v${package.version}`);
             if(utils.isNeutralinojsProject()) {
