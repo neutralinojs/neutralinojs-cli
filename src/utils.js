@@ -37,10 +37,12 @@ let warn = (message) => {
     console.warn(`neu: ${chalk.bgYellow.black('WARNING')} ${message}`);
 }
 
-module.exports.error = error;
-module.exports.isNeutralinojsProject = isNeutralinojsProject;
-module.exports.getFiglet = getFiglet;
-module.exports.showArt = showArt;
-module.exports.checkCurrentProject = checkCurrentProject;
-module.exports.log = log;
-module.exports.warn = warn;
+module.exports = {
+    error,
+    isNeutralinojsProject,
+    getFiglet,
+    showArt,
+    checkCurrentProject,
+    log,
+    warn,
+}
