@@ -9,10 +9,10 @@ const utils = require('../utils');
 async function createAsarFile() {
     utils.log(`Generating ${constants.files.resourceFile}...`);
     const configObj = config.get();
-    const resourcesDir = configObj.cli.resourcesPath.replace(/^\//, "");
-    const extensionsDir = configObj.cli.extensionsPath?.replace(/^\//, "");
-    const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
-    const icon = configObj.modes.window.icon.replace(/^\//, "");
+    const resourcesDir = utils.trimPath(configObj.cli.resourcesPath);
+    const extensionsDir = utils.trimPath(configObj.cli.extensionsPath);
+    const clientLibrary = utils.trimPath(configObj.cli.clientLibrary);
+    const icon = utils.trimPath(configObj.modes.window.icon);
     const binaryName = configObj.cli.binaryName;
 
     fs.mkdirSync(`temp`, { recursive: true });

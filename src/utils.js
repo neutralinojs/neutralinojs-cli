@@ -37,6 +37,10 @@ let warn = (message) => {
     console.warn(`neu: ${chalk.bgYellow.black('WARNING')} ${message}`);
 }
 
+let trimPath = (path) => {
+    return path?.replace(/^\//, "");
+}
+
 module.exports = {
     error,
     isNeutralinojsProject,
@@ -45,4 +49,5 @@ module.exports = {
     checkCurrentProject,
     log,
     warn,
+    trimPath,
 }
