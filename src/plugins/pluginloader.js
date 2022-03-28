@@ -71,7 +71,7 @@ module.exports.remove = (packageName, uninstallSuccessCallback) => {
 };
 
 module.exports.list = () => {
-    if(!config.has('plugin'))
+    if(!config.has('plugins'))
         return;
     for(let plugin of config.get('plugins'))
         console.log(plugin);
