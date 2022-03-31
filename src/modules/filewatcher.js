@@ -16,7 +16,7 @@ module.exports.stop = () => {
 
 function startFileWatcher() {
     let configObj = config.get();
-    let resourcesDir = configObj.cli.resourcesPath.replace(/^\//, "");
+    let resourcesDir = utils.trimPath(configObj.cli.resourcesPath);
     if(!fs.existsSync(resourcesDir))
         return;
     let exclude = [

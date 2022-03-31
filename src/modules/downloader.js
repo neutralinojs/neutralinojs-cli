@@ -104,7 +104,7 @@ module.exports.downloadAndUpdateBinaries = async () => {
 
 module.exports.downloadAndUpdateClient = async () => {
     const configObj = config.get();
-    const clientLibrary = configObj.cli.clientLibrary.replace(/^\//, "");
+    const clientLibrary = utils.trimPath(configObj.cli.clientLibrary);
     await downloadClientFromRelease();
     utils.log('Finalizing and cleaning temp. files...');
     fse.copySync(`temp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
