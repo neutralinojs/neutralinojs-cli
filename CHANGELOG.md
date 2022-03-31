@@ -9,6 +9,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ### General
 - Add short descriptions for each command.
 
+### Bugfixes/improvements
+- Fix plugin listing issue.
+
 ## v9.2.0
 
 ### General
