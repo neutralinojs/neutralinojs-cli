@@ -38,7 +38,7 @@ let warn = (message) => {
 }
 
 let trimPath = (path) => {
-    return path?.replace(/^\//, "");
+    return path?.replace(/^\//, '');
 }
 
 module.exports = {
