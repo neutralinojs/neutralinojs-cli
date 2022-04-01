@@ -22,4 +22,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm link
+    - run: chmod +x ./scripts/testcommands.sh
     - run: npm test
