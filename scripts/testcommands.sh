@@ -42,15 +42,6 @@ echo
 
 # run
 
-echoGreen "Installing libayatana-appindicator dependency required for neu run cmd"
-sudo apt-get update
-# Install GTK, WebKit, other required libraries
-sudo apt install \
-    libgtk-3-dev \
-    libwebkit2gtk-4.0-37 \
-    libwebkit2gtk-4.0-dev \
-    libayatana-appindicator3-dev
-
 echoGreen "Creating a sample app before running neu run & neu build"
 neu create myapp-run
 cd myapp-run
