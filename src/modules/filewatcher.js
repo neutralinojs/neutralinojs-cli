@@ -2,7 +2,7 @@ const fs = require('fs');
 const chokidar = require('chokidar');
 const websocket = require('./websocket');
 const config = require('../modules/config');
-
+const utils = require('../utils.js');
 let fileWatcher = null;
 
 module.exports.start = () => {
