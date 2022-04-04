@@ -42,28 +42,46 @@ echo
 
 # run
 
+echoGreen "Installing required packages"
+sudo apt-get update > /dev/null 2>&1
+sudo apt install > /dev/null 2>&1 \
+    libwebkit2gtk-4.0-37 > /dev/null 2>&1 \
+    libayatana-appindicator3-1 > /dev/null 2>&1 \
+    dbus-x11 > /dev/null 2>&1 \
+    at-spi2-core > /dev/null 2>&1 \
+    xvfb > /dev/null 2>&1
+
 echoGreen "Creating a sample app before running neu run & neu build"
 neu create myapp-run
 cd myapp-run
 echo
 
 displayCmd "neu run"
-neu run
+xvfb-run neu run &
+sleep 20s
+kill -HUP $(pgrep neutralino)
+sleep 10s
 echo
 
 displayCmd "neu run --disable-auto-reload"
-neu run --disable-auto-reload
+xvfb-run neu run --disable-auto-reload &
+sleep 20s
+kill -HUP $(pgrep neutralino)
+sleep 10s
 echo
 
 displayCmd "neu run --arch"
-neu run --arch x64
+xvfb-run neu run --arch x64 &
+sleep 20s
+kill -HUP $(pgrep neutralino)
+sleep 10s
 echo
 
 echoGreen "Creating the environment to run the app with flag --frontend-lib-dev"
 echo
 neu create myapp-react --template codezri/neutralinojs-react
 echo
-cd myapp-react && cd react-src && npm i && npm run build
+cd myapp-react && cd react-src && npm i > /dev/null 2>&1 && npm run build  > /dev/null 2>&1
 npm start &
 displayCmd "neu run --frontend-lib-dev"
 until [ ! -z "$(sudo netstat -tulpn | grep :3000)" ];
@@ -71,7 +89,10 @@ do
   echo "starting development server"
   sleep 3s
 done
-cd .. && neu run --frontend-lib-dev
+cd .. && xvfb-run neu run --frontend-lib-dev &
+sleep 20s
+kill -HUP $(pgrep neutralino)
+sleep 10s
 sudo kill `lsof -t -i:3000`
 echo
 
@@ -80,6 +101,9 @@ neu run --help
 echo
 
 # build
+
+neu create myapp-build
+cd myapp-build
 
 displayCmd "neu build"
 neu build
@@ -126,6 +150,3 @@ echo
 displayCmd "neu plugins --help"
 neu plugins --help
 echo
-
-pwd
-sudo rm -r ../../../testNeuCLI
