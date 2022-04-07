@@ -12,6 +12,7 @@ module.exports.createApp = async (binaryName, template) => {
     if(!template) {
         template = 'neutralinojs/neutralinojs-minimal';
     }
+    template = utils.formatTemplate(template);
     utils.log(`Downloading ${template} template to ${binaryName} directory...`);
 
     fs.mkdirSync(binaryName, { recursive: true });

@@ -9,6 +9,14 @@ let error = (message) => {
     console.error(`neu: ${chalk.bgRed.black('ERROR')} ${message}`);
 }
 
+let formatTemplate = (template)=>{
+    seperatedArray = template.split("/");
+    if(seperatedArray[seperatedArray.length-1].slice(-4)===".git"){
+        return seperatedArray[seperatedArray.length-2]+"/"+ (seperatedArray[seperatedArray.length-1]).slice(0,-4)
+    }
+    return seperatedArray[seperatedArray.length-2]+"/"+ (seperatedArray[seperatedArray.length-1])
+}
+
 let isNeutralinojsProject = () => {
     return fs.existsSync(CONFIG_FILE);
 }
@@ -50,4 +58,5 @@ module.exports = {
     log,
     warn,
     trimPath,
+    formatTemplate,
 }
