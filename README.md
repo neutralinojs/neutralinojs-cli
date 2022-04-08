@@ -18,7 +18,7 @@ npm i -g @neutralinojs/neu
 
 ### Contributing to Neutralinojs
 
-We really appreciate your code contributions. Please read [this contribution guide](https://neutralino.js.org/docs/contributing/framework-developer-guide#contribution-guidelines) before sending a pull request. Thanks for your contributions.
+We really appreciate your code contributions. Please read [this contribution guide](https://neutralino.js.org/docs/contributing/framework-developer-guide#contribution-guidelines) before sending a pull request. Thank you for your contributions.
 
 ### Contributors
 
