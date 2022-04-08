@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Install dependencies
-    - run: |
+      run: |
         sudo apt-get update
         sudo apt install -y -f \
             libwebkit2gtk-4.0-37 \
