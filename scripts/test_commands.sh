@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+sudo apt-get update
+sudo apt install -y -f \
+    libwebkit2gtk-4.0-37 \
+    libayatana-appindicator3-1 \
+    xvfb
+
 mkdir testNeuCLI
 cd testNeuCLI
 
@@ -41,15 +47,6 @@ neu version
 echo
 
 # run
-
-echoGreen "Installing required packages"
-sudo apt-get update > /dev/null 2>&1
-sudo apt install > /dev/null 2>&1 \
-    libwebkit2gtk-4.0-37 > /dev/null 2>&1 \
-    libayatana-appindicator3-1 > /dev/null 2>&1 \
-    dbus-x11 > /dev/null 2>&1 \
-    at-spi2-core > /dev/null 2>&1 \
-    xvfb > /dev/null 2>&1
 
 echoGreen "Creating a sample app before running neu run & neu build"
 neu create myapp-run
