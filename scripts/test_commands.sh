@@ -6,6 +6,7 @@ sudo apt install -y -f \
     libwebkit2gtk-4.0-37 \
     libayatana-appindicator3-1 \
     dbus-x11 \
+    at-spi2-core \
     xvfb
 
 mkdir testNeuCLI
