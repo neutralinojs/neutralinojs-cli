@@ -12,6 +12,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ### Bugfixes/improvements
 - Fix plugin listing issue.
 
+### DevOps
+- Add a simple test-suite for testing CLI commands with a Bash script.
+
 ## v9.2.0
 
 ### General
