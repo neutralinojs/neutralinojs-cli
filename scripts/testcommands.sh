@@ -4,8 +4,6 @@ set -e
 mkdir testNeuCLI
 cd testNeuCLI
 
-# NEU
-
 displayCmd(){
     echo -e "\e[1;32mcmd: $1\e[0m"
 }
@@ -15,6 +13,8 @@ echoGreen(){
 }
 
 echo -e "\e[1;32mTesting Neutralinojs CLI commands\n"
+
+# neu
 
 displayCmd "neu --help"
 neu --help
@@ -86,7 +86,7 @@ npm start &
 displayCmd "neu run --frontend-lib-dev"
 until [ ! -z "$(sudo netstat -tulpn | grep :3000)" ];
 do
-  echo "starting development server"
+  echo "Starting development server"
   sleep 3s
 done
 cd .. && xvfb-run neu run --frontend-lib-dev &
