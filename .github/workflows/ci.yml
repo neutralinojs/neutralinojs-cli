@@ -16,10 +16,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Install dependencies
+    - run: |
+        sudo apt-get update
+        sudo apt install -y -f \
+            libwebkit2gtk-4.0-37 \
+            libayatana-appindicator3-1 \
+            dbus-x11 \
+            at-spi2-core \
+            xvfb
+    
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
+        
     - run: npm ci
     - run: npm link
     - run: npm test
