@@ -141,3 +141,5 @@ echo
 displayCmd "neu plugins --help"
 neu plugins --help
 echo
+
+rm -r ../../testNeuCLI
