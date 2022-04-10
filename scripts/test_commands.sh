@@ -142,4 +142,5 @@ displayCmd "neu plugins --help"
 neu plugins --help
 echo
 
-rm -r ../../testNeuCLI
+cd /home/runner/work/neutralinojs-cli/neutralinojs-cli
+rm -r ./testNeuCLI
