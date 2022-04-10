@@ -34,5 +34,5 @@ jobs:
         
     - run: npm ci
     - run: npm link
-    - run: npm test-commands
-    - run: npm test-plugins
+    - run: npm run test-commands
+    - run: npm run test-plugins

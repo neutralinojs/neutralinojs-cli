@@ -4,7 +4,7 @@
   "description": "neu CLI for Neutralinojs",
   "main": "./bin/neu.js",
   "scripts": {
-    "test-commands": "./scripts/test_plugins.sh",
+    "test-commands": "./scripts/test_commands.sh",
     "test-plugins": "./scripts/test_plugins.sh",
     "start": "node ./bin/neu.js"
   },
