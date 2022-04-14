@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+const fs = require('fs');
 const process = require('process');
 const figlet = require('figlet');
 const chalk = require('chalk');
@@ -41,8 +41,8 @@ let trimPath = (path) => {
     return path?.replace(/^\//, '');
 }
 
-let clearCache = () => {
-    fs.removeSync('temp');
+let clearCache = (cacheDir) => {
+    fs.rmSync(cacheDir,{recursive:true});
 }
 
 module.exports = {
@@ -54,5 +54,5 @@ module.exports = {
     log,
     warn,
     trimPath,
-    clearCache
+    clearCache,
 }
