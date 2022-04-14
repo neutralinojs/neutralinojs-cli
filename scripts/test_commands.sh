@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+#remove /testNeuCLI folder from previous test runs
+rm -rf testNeuCLI
+
 mkdir testNeuCLI
 cd testNeuCLI
 
