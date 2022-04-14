@@ -105,3 +105,6 @@ dist
 
 # Misc
 .DS_Store
+
+# test directory
+/testNeuCLI
