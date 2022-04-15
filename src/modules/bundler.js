@@ -29,10 +29,6 @@ async function createAsarFile() {
     await asar.createPackage('temp', `dist/${binaryName}/${constants.files.resourceFile}`);
 }
 
-function clearBuildCache() {
-    fse.removeSync('temp');
-}
-
 module.exports.bundleApp = async (isRelease, copyStorage) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
@@ -65,7 +61,7 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             archive.directory(`dist/${binaryName}`, false);
             await archive.finalize();
         }
-        clearBuildCache();
+        utils.clearCache();
     }
     catch (e) {
         utils.error(e);

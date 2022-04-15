@@ -1,4 +1,5 @@
 const fs = require('fs');
+const fse = require('fs-extra');
 const process = require('process');
 const figlet = require('figlet');
 const chalk = require('chalk');
@@ -41,6 +42,10 @@ let trimPath = (path) => {
     return path?.replace(/^\//, '');
 }
 
+let clearCache = () => {
+    fse.removeSync('temp');
+}
+
 module.exports = {
     error,
     isNeutralinojsProject,
@@ -50,4 +55,5 @@ module.exports = {
     log,
     warn,
     trimPath,
+    clearCache,
 }
