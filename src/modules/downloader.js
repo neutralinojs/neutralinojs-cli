@@ -71,7 +71,7 @@ module.exports.downloadTemplate = (template) => {
                     .promise()
                         .then(() => {
                             fse.copySync(`temp/${getRepoNameFromTemplate(template)}-main`, '.');
-                            utils.clearCache('temp');
+                            utils.clearCache();
                             resolve();
                         })
                         .catch((e) => reject(e));
@@ -96,7 +96,7 @@ module.exports.downloadAndUpdateBinaries = async () => {
     for(let dependency of constants.files.dependencies) {
         fse.copySync(`temp/${dependency}`,`bin/${dependency}`);
     }
-    utils.clearCache('temp');
+    utils.clearCache();
 }
 
 module.exports.downloadAndUpdateClient = async () => {
