@@ -105,6 +105,6 @@ module.exports.downloadAndUpdateClient = async () => {
     await downloadClientFromRelease();
     utils.log('Finalizing and cleaning temp. files...');
     fse.copySync(`temp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
-    utils.clearCache('temp');
+    utils.clearCache();
 }
 
