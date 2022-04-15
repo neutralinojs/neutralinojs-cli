@@ -56,10 +56,6 @@ let downloadClientFromRelease = () => {
     });
 }
 
-let clearDownloadCache = () => {
-    fse.removeSync('.tmp');
-}
-
 module.exports.downloadTemplate = (template) => {
     return new Promise((resolve, reject) => {
         let templateUrl = constants.remote.templateUrl.replace('{template}', template);
@@ -74,7 +70,7 @@ module.exports.downloadTemplate = (template) => {
                     .promise()
                         .then(() => {
                             fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
-                            clearDownloadCache();
+                            utils.clearCache();
                             resolve();
                         })
                         .catch((e) => reject(e));
@@ -99,7 +95,7 @@ module.exports.downloadAndUpdateBinaries = async () => {
     for(let dependency of constants.files.dependencies) {
         fse.copySync(`.tmp/${dependency}`,`bin/${dependency}`);
     }
-    clearDownloadCache();
+    utils.clearCache();
 }
 
 module.exports.downloadAndUpdateClient = async () => {
@@ -108,6 +104,6 @@ module.exports.downloadAndUpdateClient = async () => {
     await downloadClientFromRelease();
     utils.log('Finalizing and cleaning temp. files...');
     fse.copySync(`.tmp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
-    clearDownloadCache()
+    utils.clearCache();
 }
 
