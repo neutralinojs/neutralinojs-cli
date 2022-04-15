@@ -42,8 +42,8 @@ let trimPath = (path) => {
     return path?.replace(/^\//, '');
 }
 
-let clearCache = (cacheDir) => {
-    fse.removeSync(cacheDir);
+let clearCache = () => {
+    fse.removeSync('temp');
 }
 
 module.exports = {
