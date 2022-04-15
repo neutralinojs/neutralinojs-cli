@@ -43,7 +43,7 @@ let trimPath = (path) => {
 }
 
 let clearCache = (cacheDir) => {
-    fse.removeSync('temp');
+    fse.removeSync(cacheDir);
 }
 
 module.exports = {
