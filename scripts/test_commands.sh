@@ -80,23 +80,33 @@ kill -HUP $(pgrep neutralino)
 sleep 10s
 echo
 
+isServerUp(){
+    local stts=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000)
+    if [ "$stts" == "200" ]; then
+        echo -e "\e[1;32mServer is up\e[0m"
+        return 0
+    else
+        echo -e "\e[1;31mServer is starting\e[0m"
+        return 10
+    fi
+}
+
 echoGreen "Creating the environment to run the app with flag --frontend-lib-dev"
 echo
 neu create myapp-react --template codezri/neutralinojs-react
 echo
 cd myapp-react && cd react-src && npm i > /dev/null 2>&1 && npm run build  > /dev/null 2>&1
 npm start &
-displayCmd "neu run --frontend-lib-dev"
-until [ ! -z "$(sudo netstat -tulpn | grep :3000)" ];
+displayCmd "$neuPath run --frontend-lib-dev"
+until isServerUp;
 do
-  echo "Starting development server"
   sleep 3s
 done
 cd .. && xvfb-run $neuPath run --frontend-lib-dev &
 sleep 20s
 kill -HUP $(pgrep neutralino)
 sleep 10s
-sudo kill `lsof -t -i:3000`
+kill `lsof -t -i:3000`
 echo
 
 displayCmd "$neuPath run --help"
