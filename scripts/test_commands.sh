@@ -1,8 +1,14 @@
 #!/bin/bash
 set -e
 
-mkdir testNeuCLI
-cd testNeuCLI
+# cd to the directory of this script
+cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
+
+rm -rf ".tmp"
+mkdir ".tmp"
+cd ".tmp"
+
+tmpDirPath=$(pwd)
 
 displayCmd(){
     echo -e "\e[1;32mcmd: $1\e[0m"
@@ -10,6 +16,12 @@ displayCmd(){
 
 echoGreen(){
     echo -e "\e[1;32m$1"
+}
+
+neuPath="node $(pwd)/../../bin/neu.js"
+
+neu(){
+    $neuPath $@
 }
 
 echo -e "\e[1;32mTesting Neutralinojs CLI commands\n"
@@ -42,27 +54,27 @@ echo
 
 # run
 
-echoGreen "Creating a sample app before running neu run & neu build"
+echoGreen "Creating a sample app before running $neuPath run & neu build"
 neu create myapp-run
 cd myapp-run
 echo
 
-displayCmd "neu run"
-xvfb-run neu run &
+displayCmd "$neuPath run"
+xvfb-run $neuPath run &
 sleep 20s
 kill -HUP $(pgrep neutralino)
 sleep 10s
 echo
 
-displayCmd "neu run --disable-auto-reload"
-xvfb-run neu run --disable-auto-reload &
+displayCmd "$neuPath run --disable-auto-reload"
+xvfb-run $neuPath run --disable-auto-reload &
 sleep 20s
 kill -HUP $(pgrep neutralino)
 sleep 10s
 echo
 
-displayCmd "neu run --arch"
-xvfb-run neu run --arch x64 &
+displayCmd "$neuPath run --arch"
+xvfb-run $neuPath run --arch x64 &
 sleep 20s
 kill -HUP $(pgrep neutralino)
 sleep 10s
@@ -80,14 +92,14 @@ do
   echo "Starting development server"
   sleep 3s
 done
-cd .. && xvfb-run neu run --frontend-lib-dev &
+cd .. && xvfb-run $neuPath run --frontend-lib-dev &
 sleep 20s
 kill -HUP $(pgrep neutralino)
 sleep 10s
 sudo kill `lsof -t -i:3000`
 echo
 
-displayCmd "neu run --help"
+displayCmd "$neuPath run --help"
 neu run --help
 echo
 
@@ -141,3 +153,5 @@ echo
 displayCmd "neu plugins --help"
 neu plugins --help
 echo
+
+rm -rf $tmpDirPath
