@@ -13,8 +13,8 @@ module.exports.register = (program) => {
             if(utils.isNeutralinojsProject()) {
                 const configObj = config.get();
                 console.log(`\n--- Project: ${configObj.cli.binaryName} (${configObj.applicationId}) ---`);
-                console.log(`Neutralinojs binaries: v${configObj.cli.binaryVersion}`);
-                console.log(`Neutralinojs client: v${configObj.cli.clientVersion}`);
+                console.log(`Neutralinojs binaries: ${utils.getVersionTag(configObj.cli.binaryVersion)}`);
+                console.log(`Neutralinojs client: ${utils.getVersionTag(configObj.cli.clientVersion)}`);
                 if(configObj.version) {
                     console.log(`Project version: v${configObj.version}`);
                 }

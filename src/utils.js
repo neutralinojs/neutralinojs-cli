@@ -46,6 +46,10 @@ let clearCache = () => {
     fse.removeSync('temp');
 }
 
+let getVersionTag = (version) => {
+    return version != 'nightly' ? 'v' + version : version;
+}
+
 module.exports = {
     error,
     isNeutralinojsProject,
@@ -56,4 +60,5 @@ module.exports = {
     warn,
     trimPath,
     clearCache,
+    getVersionTag
 }

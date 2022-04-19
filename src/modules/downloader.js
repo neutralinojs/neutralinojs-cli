@@ -9,13 +9,15 @@ const utils = require('../utils');
 let getBinaryDownloadUrl = () => {
     const configObj = config.get();
     let version = configObj.cli.binaryVersion;
-    return constants.remote.binaries.url.replace(/{version}/g, version);
+    return constants.remote.binaries.url
+            .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
 let getClientDownloadUrl = () => {
     const configObj = config.get();
     let version = configObj.cli.clientVersion;
-    return constants.remote.client.url.replace(/{version}/g, version);
+    return constants.remote.client.url
+            .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
 let getRepoNameFromTemplate = (template) => {
