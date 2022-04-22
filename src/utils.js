@@ -1,4 +1,5 @@
 const fs = require('fs');
+const fse = require('fs-extra');
 const process = require('process');
 const figlet = require('figlet');
 const chalk = require('chalk');
@@ -41,6 +42,14 @@ let trimPath = (path) => {
     return path?.replace(/^\//, '');
 }
 
+let clearCache = () => {
+    fse.removeSync('temp');
+}
+
+let getVersionTag = (version) => {
+    return version != 'nightly' ? 'v' + version : version;
+}
+
 module.exports = {
     error,
     isNeutralinojsProject,
@@ -50,4 +59,6 @@ module.exports = {
     log,
     warn,
     trimPath,
+    clearCache,
+    getVersionTag
 }
