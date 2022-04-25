@@ -9,13 +9,15 @@ const utils = require('../utils');
 let getBinaryDownloadUrl = () => {
     const configObj = config.get();
     let version = configObj.cli.binaryVersion;
-    return constants.remote.binaries.url.replace(/{version}/g, version);
+    return constants.remote.binaries.url
+            .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
 let getClientDownloadUrl = () => {
     const configObj = config.get();
     let version = configObj.cli.clientVersion;
-    return constants.remote.client.url.replace(/{version}/g, version);
+    return constants.remote.client.url
+            .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
 let getRepoNameFromTemplate = (template) => {
@@ -56,9 +58,6 @@ let downloadClientFromRelease = () => {
     });
 }
 
-let clearDownloadCache = () => {
-    fse.removeSync('temp');
-}
 
 module.exports.downloadTemplate = (template) => {
     return new Promise((resolve, reject) => {
@@ -74,7 +73,7 @@ module.exports.downloadTemplate = (template) => {
                     .promise()
                         .then(() => {
                             fse.copySync(`temp/${getRepoNameFromTemplate(template)}-main`, '.');
-                            clearDownloadCache();
+                            utils.clearCache();
                             resolve();
                         })
                         .catch((e) => reject(e));
@@ -99,7 +98,7 @@ module.exports.downloadAndUpdateBinaries = async () => {
     for(let dependency of constants.files.dependencies) {
         fse.copySync(`temp/${dependency}`,`bin/${dependency}`);
     }
-    clearDownloadCache();
+    utils.clearCache();
 }
 
 module.exports.downloadAndUpdateClient = async () => {
@@ -108,6 +107,6 @@ module.exports.downloadAndUpdateClient = async () => {
     await downloadClientFromRelease();
     utils.log('Finalizing and cleaning temp. files...');
     fse.copySync(`temp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
-    clearDownloadCache()
+    utils.clearCache();
 }
 

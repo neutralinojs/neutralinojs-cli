@@ -1,10 +1,10 @@
 module.exports = {
   remote: {
     binaries: {
-      url: "https://github.com/neutralinojs/neutralinojs/releases/download/v{version}/neutralinojs-v{version}.zip"
+      url: "https://github.com/neutralinojs/neutralinojs/releases/download/{tag}/neutralinojs-{tag}.zip"
     },
     client: {
-      url: "https://github.com/neutralinojs/neutralino.js/releases/download/v{version}/neutralino.js"
+      url: "https://github.com/neutralinojs/neutralino.js/releases/download/{tag}/neutralino.js"
     },
     templateUrl: "https://github.com/{template}/archive/main.zip"
   },
