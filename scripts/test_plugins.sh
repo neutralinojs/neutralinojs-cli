@@ -25,7 +25,7 @@ npm install -g @neutralinojs/neu
 npm link
 
 # Check if list of plugins has previously installed plugins 
-# Attempt to install plugin occurs
+# Attempt to install plugin if it's not in CLI's node_modules
 
 echoGreen "list plugins"
 neu plugins
