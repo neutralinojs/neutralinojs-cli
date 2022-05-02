@@ -9,9 +9,9 @@ echoGreen(){
 
 # Check if plugins remain after updating CLI
 
-echoGreen "uninstalling current version of neu"
+echoGreen "Uninstalling current version of neu"
 npm uninstall -g @neutralinojs/neu
-echoGreen "installing neu 8.1.0 (older version)"
+echoGreen "Installing neu 8.1.0 (older version)"
 npm install -g @neutralinojs/neu@8.1.0
 echoGreen "check neu version"
 neu version
@@ -19,7 +19,7 @@ neu version
 echoGreen "Add plugin"
 neu plugins --add @neutralinojs/appify
  
-echoGreen "updating neu"
+echoGreen "Updating neu"
 npm install -g @neutralinojs/neu
  
 npm link
