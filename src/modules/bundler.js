@@ -15,18 +15,18 @@ async function createAsarFile() {
     const icon = utils.trimPath(configObj.modes.window.icon);
     const binaryName = configObj.cli.binaryName;
 
-    fs.mkdirSync(`temp`, { recursive: true });
-    await fse.copy(`./${resourcesDir}`, `temp/${resourcesDir}`, {overwrite: true});
+    fs.mkdirSync(`.tmp`, { recursive: true });
+    await fse.copy(`./${resourcesDir}`, `.tmp/${resourcesDir}`, {overwrite: true});
 
     if(extensionsDir && fs.existsSync(extensionsDir)) {
         await fse.copy(`./${extensionsDir}`, `dist/${binaryName}/${extensionsDir}`, {overwrite: true});
     }
 
-    await fse.copy(`${constants.files.configFile}`, `temp/${constants.files.configFile}`, {overwrite: true});
-    await fse.copy(`./${clientLibrary}`, `temp/${clientLibrary}`, {overwrite: true});
-    await fse.copy(`./${icon}`, `temp/${icon}`, {overwrite: true});
+    await fse.copy(`${constants.files.configFile}`, `.tmp/${constants.files.configFile}`, {overwrite: true});
+    await fse.copy(`./${clientLibrary}`, `.tmp/${clientLibrary}`, {overwrite: true});
+    await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
 
-    await asar.createPackage('temp', `dist/${binaryName}/${constants.files.resourceFile}`);
+    await asar.createPackage('.tmp', `dist/${binaryName}/${constants.files.resourceFile}`);
 }
 
 module.exports.bundleApp = async (isRelease, copyStorage) => {

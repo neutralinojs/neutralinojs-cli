@@ -43,7 +43,7 @@ let trimPath = (path) => {
 }
 
 let clearCache = () => {
-    fse.removeSync('temp');
+    fse.removeSync('.tmp');
 }
 
 let getVersionTag = (version) => {
