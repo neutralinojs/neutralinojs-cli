@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-mkdir testNeuCLI
-cd testNeuCLI
+mkdir .tmp
+cd .tmp
 
 displayCmd(){
     echo -e "\e[1;32mcmd: $1\e[0m"
@@ -134,6 +134,10 @@ displayCmd "neu plugins --add <plugin>"
 neu plugins --add @neutralinojs/appify
 echo
 
+displayCmd "neu plugins"
+neu plugins
+echo
+
 displayCmd "neu plugins --remove <plugin>"
 neu plugins --remove @neutralinojs/appify
 echo
@@ -142,5 +146,6 @@ displayCmd "neu plugins --help"
 neu plugins --help
 echo
 
+pwd
 cd /home/runner/work/neutralinojs-cli/neutralinojs-cli
-rm -r ./testNeuCLI
+rm -r .tmp
