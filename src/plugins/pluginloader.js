@@ -38,16 +38,14 @@ let add = (pluginName) => {
             plugins = config.get('plugins');
         if(!isPluginInstalled(pluginName)) {
             exec(`cd ${NEU_ROOT} && npm install --save ${pluginName}`, (err, stdout, stderr) => {
-                if (err) {
+                if(err) {
                     reject(stderr);
                 }
-                else {
-                    if(!plugins.includes(pluginName)) {
-                        plugins.push(pluginName);
-                        config.set('plugins', plugins);
-                        resolve();
-                    }
+                else if(!plugins.includes(pluginName)) {
+                    plugins.push(pluginName);
+                    config.set('plugins', plugins);
                 }
+                resolve();
             });
         }
         else {
@@ -58,7 +56,7 @@ let add = (pluginName) => {
 
 let isPluginInstalled = (pluginName) => {
     try {
-        var package = require(pluginName);
+        require.resolve(pluginName);
         return true;
     }
     catch (e) {
