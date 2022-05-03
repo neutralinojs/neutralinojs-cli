@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
-mkdir testNeuCLI
-cd testNeuCLI
+mkdir .tmp
+cd .tmp
+
+TMP_PATH=`pwd`
 
 displayCmd(){
     echo -e "\e[1;32mcmd: $1\e[0m"
@@ -13,6 +15,8 @@ echoGreen(){
 }
 
 echo -e "\e[1;32mTesting Neutralinojs CLI commands\n"
+
+echoGreen "$TMP_PATH\n"
 
 # neu
 
@@ -74,12 +78,14 @@ neu create myapp-react --template codezri/neutralinojs-react
 echo
 cd myapp-react && cd react-src && npm i > /dev/null 2>&1 && npm run build  > /dev/null 2>&1
 npm start &
+
 displayCmd "neu run --frontend-lib-dev"
 until [ ! -z "$(sudo netstat -tulpn | grep :3000)" ];
 do
   echo "Starting development server"
   sleep 3s
 done
+
 cd .. && xvfb-run neu run --frontend-lib-dev &
 sleep 20s
 kill -HUP $(pgrep neutralino)
@@ -134,6 +140,10 @@ displayCmd "neu plugins --add <plugin>"
 neu plugins --add @neutralinojs/appify
 echo
 
+displayCmd "neu plugins"
+neu plugins
+echo
+
 displayCmd "neu plugins --remove <plugin>"
 neu plugins --remove @neutralinojs/appify
 echo
@@ -141,3 +151,6 @@ echo
 displayCmd "neu plugins --help"
 neu plugins --help
 echo
+
+echoGreen "Removing temp dir: $TMP_PATH"
+rm -r $TMP_PATH
