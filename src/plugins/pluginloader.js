@@ -37,7 +37,7 @@ let add = (pluginName) => {
         if(config.has('plugins'))
             plugins = config.get('plugins');
         if(!isPluginInstalled(pluginName)) {
-            exec(`cd ${NEU_ROOT} && npm install --save ${pluginName}`, (err, stdout, stderr) => {
+            exec(`cd ${NEU_ROOT} && npm install ${pluginName}`, (err, stdout, stderr) => {
                 if(err) {
                     reject(stderr);
                 }
