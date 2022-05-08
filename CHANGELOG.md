@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Core: Plugins
+- Automatically re-install plugins when the neu CLI version is upgraded/downgraded via package managers.
+
 ## v9.3.0
 
 ### General
