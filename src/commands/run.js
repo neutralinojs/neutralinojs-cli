@@ -37,6 +37,10 @@ module.exports.register = (program) => {
                 argsOpt += ` --url=${configObj.cli.frontendLibrary.devUrl}`
             }
 
+            if(configObj.exportAuthInfo) {
+                argsOpt += "--export-auth-info";
+            }
+
             try {
                 await runner.runApp({argsOpt,
                                     arch: command.arch});
