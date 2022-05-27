@@ -9,6 +9,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ### Core: Plugins
 - Automatically re-install plugins when the neu CLI version is upgraded/downgraded via package managers.
 
+### Core: downloader/builder
+- Support ARM (armhf/arm64) binaries.
+
 ## v9.3.0
 
 ### General
