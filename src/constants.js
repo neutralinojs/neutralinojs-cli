@@ -15,6 +15,7 @@ module.exports = {
     authFile: ".tmp/auth_info.json",
     binaries: {
       linux: {
+        arm64: "neutralino-linux_arm64",
         x64: "neutralino-linux_x64",
       },
       darwin: {
