@@ -90,7 +90,9 @@ module.exports.downloadAndUpdateBinaries = async () => {
     for(let platform in constants.files.binaries) {
         for(let arch in constants.files.binaries[platform]) {
             let binaryFile = constants.files.binaries[platform][arch];
-            fse.copySync(`.tmp/${binaryFile}`, `bin/${binaryFile}`);
+            if(fse.existsSync(`.tmp/${binaryFile}`)) {
+                fse.copySync(`.tmp/${binaryFile}`, `bin/${binaryFile}`);
+            }
         }
     }
 
