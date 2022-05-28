@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x, 16.x]
-        arch: [x64, arm64, armhf]
+        arch: [x64]
         
     steps:
     - name: Checkout
@@ -19,6 +19,7 @@ jobs:
       working-directory: ./
       run: |
         npm install --global @neutralinojs/neu
+        npm ci
         npm link
 
     - name: Run Spec
