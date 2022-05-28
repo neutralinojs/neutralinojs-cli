@@ -18,5 +18,6 @@ jobs:
     - name: Run Spec
       working-directory: ./spec
       run: |
+        npm install -g @neutralinojs/neu
         npm ci
         npm run test
