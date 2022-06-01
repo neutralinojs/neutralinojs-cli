@@ -9,11 +9,17 @@ describe('Run misc neu commands', () => {
                     done(error);
                 }
                 else {
-                    console.log(stdout);
-                    // assert output | Check for any possible tests
+                    if(stderr) {
+                        done(stderr);
+                    }
+                    assert.equal(error, null);
+                    assert.equal(stderr, '');
+                    assert.ok(typeof stdout == 'string');
+                    assert.ok(stdout.includes('Usage: neu [options] [command]'));
+                    assert.ok(stdout.includes(''));
                     done();
                 }
-            });
+            }).on('exit', (status) => { assert.strictEqual(status, 0); });
         });
     });
 });
