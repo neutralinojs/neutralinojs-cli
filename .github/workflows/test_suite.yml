@@ -18,7 +18,6 @@ jobs:
     - name: Install neu & link it
       working-directory: ./
       run: |
-        npm install --global @neutralinojs/neu
         npm ci
         npm link
 
