@@ -1,25 +1,15 @@
 const assert = require('assert');
-const { exec, execSync } = require("child_process");
+const runner = require('./runner')
 
 describe('Run misc neu commands', () => {
     describe('Test neu --help command', () => {
-        it('returns output of neu --help', (done) => {
-            exec("neu --help", (error, stdout, stderr) => {
-                if(error) {
-                    done(error);
-                }
-                else {
-                    if(stderr) {
-                        done(stderr);
-                    }
-                    assert.equal(error, null);
-                    assert.equal(stderr, '');
-                    assert.ok(typeof stdout == 'string');
-                    assert.ok(stdout.includes('Usage: neu [options] [command]'));
-                    assert.ok(stdout.includes(''));
-                    done();
-                }
-            }).on('exit', (status) => { assert.strictEqual(status, 0); });
+        it('returns output of neu --help', async() => {
+            let output = runner.run("neu --help");
+
+            assert.equal(output.status, null);
+            assert.ok(typeof output == 'string');
+            assert.ok(output.includes('Usage: neu [options] [command]'));
+            assert.ok(output.includes(''));
         });
     });
 });

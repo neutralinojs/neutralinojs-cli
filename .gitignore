@@ -105,3 +105,4 @@ dist
 
 # Misc
 .DS_Store
+settings.json
