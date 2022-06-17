@@ -1,18 +1,24 @@
 const { execSync } = require("child_process");
 
 function run(command){
-    let output;
+    let output = null;
+    let err = null;
+    let statusCode = 0;
+
     try{
         output = execSync(command);
     }
-    catch(err){
-        return { status : err.status};
+    catch(error){
+        statusCode = error.status;
+        err = error;
     }
-    return decodeUTF8(output);
+    finally{
+        return { error: decodeUTF8(err), data : decodeUTF8(output), status : statusCode};
+    }
 }
 
 function decodeUTF8(decode){
-    return decode?.toString('utf8');
+    return (!!decode) ? decode.toString('utf8') : null;
 }
 
 module.exports = {

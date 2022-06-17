@@ -6,10 +6,10 @@ describe('Run misc neu commands', () => {
         it('returns output of neu --help', async() => {
             let output = runner.run("neu --help");
 
-            assert.equal(output.status, null);
-            assert.ok(typeof output == 'string');
-            assert.ok(output.includes('Usage: neu [options] [command]'));
-            assert.ok(output.includes(''));
+            assert.equal(output.error, null);
+            assert.equal(output.status, 0);
+            assert.ok(typeof output.data == 'string');
+            assert.ok(output.data.includes('Usage: neu [options] [command]'));
         });
     });
 });
