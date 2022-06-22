@@ -20,6 +20,10 @@ jobs:
       run: |
         npm ci
         npm link
+        
+    - name: Install spec dependencies
+      working-directory: ./spec
+      run: npm ci
 
     - name: Run Spec
       working-directory: ./spec
