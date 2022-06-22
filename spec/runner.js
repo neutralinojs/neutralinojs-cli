@@ -22,7 +22,7 @@ function run(command) {
 }
 
 function decodeUTF8(decode) {
-    return decode.toString('utf8') || null;
+    return decode ? decode.toString('utf8') : null;
 }
 
 module.exports = {
