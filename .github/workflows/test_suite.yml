@@ -23,6 +23,4 @@ jobs:
 
     - name: Run Spec
       working-directory: ./spec
-      run: |
-        npm ci
-        npm run test
+      run: npm run test
