@@ -25,6 +25,6 @@ jobs:
       working-directory: ./spec
       run: npm ci
 
-    - name: Run Spec
+    - name: Run spec
       working-directory: ./spec
       run: npm run test
