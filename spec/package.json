@@ -1,0 +1,14 @@
+{
+  "name": "spec",
+  "version": "1.0.0",
+  "description": "Test suite for neu CLI",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^10.0.0"
+  }
+}
