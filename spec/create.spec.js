@@ -31,6 +31,6 @@ describe('Run create neu command and its options', () => {
         });
     });
     after(() => {
-        runner.run('rm -r test*');
+        runner.cleanup();
     });
 });

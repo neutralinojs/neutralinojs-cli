@@ -48,6 +48,6 @@ describe('Run misc neu commands', () => {
         });
     });
     after(() => {
-        runner.run('rm -r test*');
+        runner.cleanup();
     });
 });

@@ -1,4 +1,5 @@
 const { execSync } = require('child_process');
+const fs = require('fs');
 
 function run(command) {
     let output = null;
@@ -25,6 +26,16 @@ function decodeUTF8(decode) {
     return decode ? decode.toString('utf8') : null;
 }
 
+function cleanup() {
+    try {
+        run('rm -rf test*');
+    }
+    catch(err) {
+        // ignore
+    }
+}
+
 module.exports = {
+    cleanup,
     run
 }
