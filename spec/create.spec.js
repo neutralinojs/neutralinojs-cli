@@ -12,22 +12,25 @@ describe('Run create neu command and its options', () => {
             assert.ok(output.data.includes('Usage: neu create [options] <binaryName>'));
         });
     });
-    describe('Test neu sample app creation', () => {
+    describe('Test neu test app creation', () => {
         it('returns with successfully creating neutralinojs app', async() => {
-            let output = runner.run('neu create sample-app');
+            let output = runner.run('neu create test-app');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO Enter \'cd sample-app && neu run\' to run your application'));
+            assert.ok(output.data.includes('neu: INFO Enter \'cd test-app && neu run\' to run your application'));
         });
         it('returns with successfully creating neutralinojs app with specified template', async() => {
-            let output = runner.run('neu create sample-template-app --template=neutralinojs/neutralinojs-zero');
+            let output = runner.run('neu create test-template-app --template=neutralinojs/neutralinojs-zero');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO Enter \'cd sample-template-app && neu run\' to run your application'));
+            assert.ok(output.data.includes('neu: INFO Enter \'cd test-template-app && neu run\' to run your application'));
         });
+    });
+    after(() => {
+        runner.run('rm -r test*');
     });
 });
