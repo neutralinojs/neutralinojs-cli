@@ -1,7 +1,7 @@
 const assert = require('assert');
 const runner = require('./runner');
 
-describe('Run create neu command and its options', () => {
+describe('Run neu create command and its options', () => {
     describe('Test neu create --help command', () => {
         it('returns output of neu create --help', async() => {
             let output = runner.run('neu create --help');
