@@ -29,13 +29,29 @@ function decodeUTF8(decode) {
 function cleanup() {
     try {
         run('rm -rf test*');
+        run('rm -rf .storage');
     }
     catch(err) {
         // ignore
     }
 }
 
+function readDirectory(Directory) {
+    const files = [];
+    try{
+        fs.readdirSync(Directory).forEach(file => {
+            files.push(file);
+        });
+    }
+    catch(err) {
+        // ignore
+    }
+
+    return files;
+}
+
 module.exports = {
     cleanup,
+    readDirectory,
     run
 }
