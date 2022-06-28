@@ -1,5 +1,5 @@
 const assert = require('assert');
-const runner = require('./runner')
+const runner = require('./runner');
 
 describe('Run misc neu commands', () => {
     before(() => {

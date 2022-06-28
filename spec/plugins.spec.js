@@ -1,5 +1,5 @@
 const assert = require('assert');
-const runner = require('./runner')
+const runner = require('./runner');
 
 describe('Run neu plugins command and its options', () => {
     describe('Test neu plugins --help command', () => {
