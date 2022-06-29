@@ -25,6 +25,7 @@ module.exports.createApp = async (binaryName, template) => {
     catch(err) {
         utils.error('Unable to download resources from internet.' +
                     ' Please check your internet connection and template URLs.');
+                    fs.rmdirSync(`../${binaryName}`, { recursive: true });
         process.exit(1);
     }
 
