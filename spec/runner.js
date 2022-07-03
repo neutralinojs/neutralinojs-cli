@@ -28,8 +28,8 @@ function decodeUTF8(decode) {
 
 function cleanup() {
     try {
-        fs.rmdirSync("./test-app",{ recursive: true});
-        fs.rmdirSync("./test-template-app",{ recursive: true});
+        fs.rmdirSync('./test-app',{ recursive: true});
+        fs.rmdirSync('./test-template-app',{ recursive: true});
     }
     catch(err) {
         // ignore
@@ -50,8 +50,16 @@ function readDirectory(Directory) {
     return files;
 }
 
+function updateNightly(file) {
+    const config = JSON.parse(fs.readFileSync(file));
+    config['cli']['binaryVersion'] = 'nightly';
+    config['cli']['clientVersion'] = 'nightly';
+    fs.writeFileSync(file, JSON.stringify(config, null, 2));
+}
+
 module.exports = {
     cleanup,
     readDirectory,
+    updateNightly,
     run
 }
