@@ -15,7 +15,7 @@ describe('Run neu build command and its options', () => {
             assert.ok(output.data.includes('Usage: neu build [options]'));
         });
     });
-    describe('Test building binaries for supported platforms and resource.neu file', () => {
+    describe('Test building binaries for supported platforms and resources.neu file', () => {
         it('populates ./dist directory with binaries', async() => {
             let output = runner.run('cd test-app && neu build');
             const binaries = runner.readDirectory('./test-app/dist/test-app/');
