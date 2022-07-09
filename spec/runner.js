@@ -37,7 +37,7 @@ function cleanup() {
 }
 
 function readDirectory(path) {
-    const files = [];
+    let files = [];
     try {
         fs.readdirSync(path).forEach(file => {
             files.push(file);
