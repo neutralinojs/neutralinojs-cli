@@ -52,7 +52,13 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
 
         if(copyStorage) {
             utils.log('Copying storage data...');
-            fse.copySync(`.storage`,`dist/${binaryName}/.storage`);
+            try {
+                fse.copySync('.storage',`dist/${binaryName}/.storage`);
+            }
+            catch(err) {
+                utils.error('Unable to copy storage data from the .storage directory. Please check if the directory exists');
+                process.exit(1);
+            }
         }
 
         if (isRelease) {
