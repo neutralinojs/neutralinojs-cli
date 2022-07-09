@@ -1,5 +1,6 @@
 const process = require('process');
 const fs = require('fs');
+const fse = require('fse');
 const config = require('../modules/config');
 const downloader = require('./downloader');
 const utils = require('../utils');
@@ -25,7 +26,7 @@ module.exports.createApp = async (binaryName, template) => {
     catch(err) {
         utils.error('Unable to download resources from internet.' +
                     ' Please check your internet connection and template URLs.');
-        fs.rmdirSync(`../${binaryName}`, { recursive: true });
+        fse.removeSync(`../${binaryName}`);
         process.exit(1);
     }
 
