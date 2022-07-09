@@ -36,10 +36,10 @@ function cleanup() {
     }
 }
 
-function readDirectory(Directory) {
+function readDirectory(path) {
     const files = [];
-    try{
-        fs.readdirSync(Directory).forEach(file => {
+    try {
+        fs.readdirSync(path).forEach(file => {
             files.push(file);
         });
     }
