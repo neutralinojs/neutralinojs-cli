@@ -1,6 +1,6 @@
 const process = require('process');
 const fs = require('fs');
-const fse = require('fse');
+const fse = require('fs-extra');
 const config = require('../modules/config');
 const downloader = require('./downloader');
 const utils = require('../utils');
