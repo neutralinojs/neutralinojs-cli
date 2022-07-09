@@ -8,8 +8,7 @@ let specModule = process.argv.length > 2 ? process.argv[2] : '';
 
 fs.readdirSync(testDir).filter((file) => file.includes(specModule + '.spec.js'))
 .forEach((file) => {
-      mocha.addFile(path.join(testDir, file));
-
+    mocha.addFile(path.join(testDir, file));
 });
 mocha.timeout(50000);
 mocha.run((failures) => {
