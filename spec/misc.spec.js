@@ -33,7 +33,7 @@ describe('Run misc neu commands', () => {
             assert.ok(output.data.includes('Global') &&
             output.data.includes('neu CLI: v'));
         });
-        it('returns project specific neu version details', async() => {
+        it('returns project-specific neu version details', async() => {
             let output = runner.run('cd test-app && neu version');
 
             assert.equal(output.error, null);
