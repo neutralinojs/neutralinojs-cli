@@ -4,6 +4,7 @@ const runner = require('./runner');
 describe('Run neu update command and its options', () => {
     before(() => {
         runner.run('neu create test-app');
+        process.chdir('test-app');
     });
     describe('Test neu update --help command', () => {
         it('returns output of neu update --help', async() => {
@@ -17,7 +18,7 @@ describe('Run neu update command and its options', () => {
     });
     describe('Test update binaries of neutralinojs project', () => {
         it('updates binaries of neutralinojs project', async() => {
-            let output = runner.run('cd test-app && neu update');
+            let output = runner.run('neu update');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
@@ -27,8 +28,8 @@ describe('Run neu update command and its options', () => {
     });
     describe('Test nightly update binaries of neutralinojs project', () => {
         it('updates binaries of neutralinojs project', async() => {
-            runner.updateNightly('./test-app/neutralino.config.json');
-            let output = runner.run('cd test-app && neu update && neu version');
+            runner.updateNightly('./neutralino.config.json');
+            let output = runner.run('neu update && neu version');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
