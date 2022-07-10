@@ -4,6 +4,7 @@ const runner = require('./runner');
 describe('Run neu build command and its options', () => {
     before(() => {
         runner.run('neu create test-app');
+        process.chdir('test-app');
     });
     describe('Test neu build --help command', () => {
         it('returns output of neu build --help', async() => {
@@ -17,8 +18,8 @@ describe('Run neu build command and its options', () => {
     });
     describe('Test building binaries for supported platforms and resources.neu file', () => {
         it('populates ./dist directory with binaries', async() => {
-            let output = runner.run('cd test-app && neu build');
-            const binaries = runner.readDirectory('./test-app/dist/test-app/');
+            let output = runner.run('neu build');
+            const binaries = runner.readDirectory('./dist/test-app/');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
@@ -32,8 +33,8 @@ describe('Run neu build command and its options', () => {
                 binaries.includes('test-app-win_x64.exe'));
         });
         it('creates & populates ./dist directory with binaries and portable ZIP bundle', async() => {
-            let output = runner.run('cd test-app && neu build --release');
-            const applicationBundle = runner.readDirectory('./test-app/dist/');
+            let output = runner.run('neu build --release');
+            const applicationBundle = runner.readDirectory('./dist/');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
@@ -43,9 +44,10 @@ describe('Run neu build command and its options', () => {
             assert.ok(applicationBundle.includes('test-app-release.zip'));
         });
         it('copies the current snapshot of the Neutralinojs storage to the application bundle', async() => {
-            runner.run('cd test-app && mkdir .storage') // .storage doesn't exist by default in the template
-            let output = runner.run('cd test-app && neu build --copy-storage');
-            const storageSnapshot = runner.readDirectory('./test-app/dist/test-app');
+            // process.chdir('test-app');
+            runner.run(' mkdir .storage') // .storage doesn't exist by default in the template
+            let output = runner.run('neu build --copy-storage');
+            const storageSnapshot = runner.readDirectory('./dist/test-app');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
