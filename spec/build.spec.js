@@ -59,6 +59,7 @@ describe('Run neu build command and its options', () => {
         });
     });
     after(() => {
+        process.chdir('..');
         runner.cleanup();
     });
 });

@@ -40,6 +40,7 @@ describe('Run neu update command and its options', () => {
         });
     });
     after(() => {
+        process.chdir('..');
         runner.cleanup();
     });
 });

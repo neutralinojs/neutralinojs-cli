@@ -49,6 +49,7 @@ describe('Run misc neu commands', () => {
         });
     });
     after(() => {
+        process.chdir('..');
         runner.cleanup();
     });
 });
