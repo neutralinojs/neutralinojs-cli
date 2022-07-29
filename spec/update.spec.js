@@ -4,6 +4,7 @@ const runner = require('./runner');
 describe('Run neu update command and its options', () => {
     before(() => {
         runner.run('neu create test-app');
+        process.chdir('test-app');
     });
     describe('Test neu update --help command', () => {
         it('returns output of neu update --help', async() => {
@@ -17,8 +18,8 @@ describe('Run neu update command and its options', () => {
     });
     describe('Test update binaries of neutralinojs project', () => {
         it('updates binaries of neutralinojs project to specified version', async() => {
-            runner.updateVersions('./test-app', '4.6.0', '3.5.0');
-            let output = runner.run('cd test-app && neu update && neu version');
+            runner.updateVersions('4.6.0', '3.5.0');
+            let output = runner.run('neu update && neu version');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
@@ -30,8 +31,8 @@ describe('Run neu update command and its options', () => {
     });
     describe('Test nightly update binaries of neutralinojs project', () => {
         it('updates binaries of neutralinojs project', async() => {
-            runner.updateVersions('./test-app', 'nightly', 'nightly');
-            let output = runner.run('cd test-app && neu update && neu version');
+            runner.updateVersions('nightly', 'nightly');
+            let output = runner.run('neu update && neu version');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
@@ -42,6 +43,7 @@ describe('Run neu update command and its options', () => {
         });
     });
     after(() => {
+        process.chdir('..');
         runner.cleanup();
     });
 });
