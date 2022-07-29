@@ -17,18 +17,21 @@ describe('Run neu update command and its options', () => {
         });
     });
     describe('Test update binaries of neutralinojs project', () => {
-        it('updates binaries of neutralinojs project', async() => {
-            let output = runner.run('neu update');
+        it('updates binaries of neutralinojs project to specified version', async() => {
+            runner.updateVersions('./test-app', '4.6.0', '3.5.0');
+            let output = runner.run('neu update && neu version');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO Run "neu version" to see installed version details.'));
+            assert.ok(output.data.includes('neu: INFO Run "neu version" to see installed version details.') &&
+            output.data.includes('Neutralinojs binaries: v4.6.0') &&
+            output.data.includes('Neutralinojs client: v3.5.0'));
         });
     });
     describe('Test nightly update binaries of neutralinojs project', () => {
         it('updates binaries of neutralinojs project', async() => {
-            runner.updateNightly('./neutralino.config.json');
+            runner.updateVersions('./test-app', 'nightly', 'nightly');
             let output = runner.run('neu update && neu version');
 
             assert.equal(output.error, null);
