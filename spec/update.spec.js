@@ -18,7 +18,7 @@ describe('Run neu update command and its options', () => {
     });
     describe('Test update binaries of neutralinojs project', () => {
         it('updates binaries of neutralinojs project to specified version', async() => {
-            runner.updateVersions('./test-app', '4.6.0', '3.5.0');
+            runner.updateVersions('4.6.0', '3.5.0');
             let output = runner.run('neu update && neu version');
 
             assert.equal(output.error, null);
@@ -31,7 +31,7 @@ describe('Run neu update command and its options', () => {
     });
     describe('Test nightly update binaries of neutralinojs project', () => {
         it('updates binaries of neutralinojs project', async() => {
-            runner.updateVersions('./test-app', 'nightly', 'nightly');
+            runner.updateVersions('nightly', 'nightly');
             let output = runner.run('neu update && neu version');
 
             assert.equal(output.error, null);
