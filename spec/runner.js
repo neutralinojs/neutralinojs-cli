@@ -50,7 +50,7 @@ function readDirectory(path) {
     return files;
 }
 
-function updateVersionsInConfig(file, binaryVersion, clientVersion) {
+function updateVersions(file, binaryVersion, clientVersion) {
     const config = JSON.parse(fs.readFileSync(file));
     config['cli']['binaryVersion'] = binaryVersion;
     config['cli']['clientVersion'] = clientVersion;
@@ -60,6 +60,6 @@ function updateVersionsInConfig(file, binaryVersion, clientVersion) {
 module.exports = {
     cleanup,
     readDirectory,
-    updateVersionsInConfig,
+    updateVersions,
     run
 }
