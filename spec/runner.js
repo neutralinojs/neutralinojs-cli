@@ -50,8 +50,8 @@ function readDirectory(path) {
     return files;
 }
 
-function updateVersions(path, binaryVersion, clientVersion) {
-    const file = `${path}/neutralino.config.json`;
+function updateVersions(binaryVersion, clientVersion) {
+    const file = 'neutralino.config.json';
     const config = JSON.parse(fs.readFileSync(file));
     
     config['cli']['binaryVersion'] = binaryVersion;
