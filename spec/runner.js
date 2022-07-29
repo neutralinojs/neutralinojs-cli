@@ -28,8 +28,8 @@ function decodeUTF8(decode) {
 
 function cleanup() {
     try {
-        fs.rmdirSync('./test-app',{ recursive: true});
-        fs.rmdirSync('./test-template-app',{ recursive: true});
+        fs.rmSync('./test-app',{ recursive: true});
+        fs.rmSync('./test-template-app',{ recursive: true});
     }
     catch(err) {
         // ignore
