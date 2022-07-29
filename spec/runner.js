@@ -50,16 +50,18 @@ function readDirectory(path) {
     return files;
 }
 
-function updateNightly(file) {
+function updateVersions(path, binaryVersion, clientVersion) {
+    const file = `${path}/neutralino.config.json`;
     const config = JSON.parse(fs.readFileSync(file));
-    config['cli']['binaryVersion'] = 'nightly';
-    config['cli']['clientVersion'] = 'nightly';
+    
+    config['cli']['binaryVersion'] = binaryVersion;
+    config['cli']['clientVersion'] = clientVersion;
     fs.writeFileSync(file, JSON.stringify(config, null, 2));
 }
 
 module.exports = {
     cleanup,
     readDirectory,
-    updateNightly,
+    updateVersions,
     run
 }
