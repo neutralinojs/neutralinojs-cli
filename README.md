@@ -1,7 +1,3 @@
-<!-- 
-<div styles="align: center">
-![npm](https://i.postimg.cc/bNn2DmkN/image.png)
-</div> -->
 <p align='center'>
 <img src="https://i.postimg.cc/636PjHCd/image.png" width="350" title="hover text">
 </p>
