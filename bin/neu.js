@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const { Command } = require('commander');
-const neu = require('../src/neu-cli');
-const utils = require('../src/utils');
+import { Command } from 'commander';
+import { bootstrap } from '../src/neu-cli';
+import { getFiglet } from '../src/utils';
 
 const program = new Command();
-neu.bootstrap(program);
+bootstrap(program);
 
-program.addHelpText('beforeAll', utils.getFiglet());
+program.addHelpText('beforeAll', getFiglet());
 program.parse(process.argv);
 
