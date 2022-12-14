@@ -1,4 +1,3 @@
-
 const path = require('path');
 const { exec } = require('child_process');
 const package = require('../../package.json');
