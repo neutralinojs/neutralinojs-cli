@@ -1,4 +1,4 @@
-<h1><p align="center"><a href="https://neutrinojs.org"><img src="https://i.postimg.cc/NMfPVxN4/logo.png"</a></p></h1>
+<h1><p align="center"><a href="https://neutrinojs.org"><img src="images/logo.png"</a></p></h1>
 
 # neu CLI
 ![npm](https://img.shields.io/npm/v/@neutralinojs/neu)
