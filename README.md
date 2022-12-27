@@ -1,4 +1,5 @@
-# neu CLI
+<div align="center"><img src="images/logo.png"/></div>
+
 ![npm](https://img.shields.io/npm/v/@neutralinojs/neu)
 ![npm](https://img.shields.io/npm/dt/@neutralinojs/neu)
 
