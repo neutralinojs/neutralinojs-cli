@@ -1,6 +1,5 @@
-<h1><p align="center"><a href="https://neutrinojs.org"><img src="images/logo.png"</a></p></h1>
+<div align="center"><img src="images/logo.png"/></div>
 
-# neu CLI
 ![npm](https://img.shields.io/npm/v/@neutralinojs/neu)
 ![npm](https://img.shields.io/npm/dt/@neutralinojs/neu)
 
