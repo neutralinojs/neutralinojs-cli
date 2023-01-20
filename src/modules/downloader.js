@@ -9,14 +9,22 @@ const utils = require('../utils');
 let getBinaryDownloadUrl = () => {
     const configObj = config.get();
     let version = configObj.cli.binaryVersion;
-    return constants.remote.binaries.url
+    return constants.remote.binariesUrl
             .replace(/{tag}/g, utils.getVersionTag(version));
+}
+
+let getScriptExtension = () => {
+    const configObj = config.get();
+    let clientLibrary = configObj.cli.clientLibrary;
+    return clientLibrary.includes('.mjs') ? 'mjs' : 'js';
 }
 
 let getClientDownloadUrl = () => {
     const configObj = config.get();
     let version = configObj.cli.clientVersion;
-    return constants.remote.client.url
+    let clientLibrary = configObj.cli.clientLibrary;
+    let scriptUrl = constants.remote.clientUrlPrefix + getScriptExtension();
+    return scriptUrl
             .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
@@ -46,7 +54,7 @@ let downloadBinariesFromRelease = () => {
 let downloadClientFromRelease = () => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
-        const file = fs.createWriteStream('.tmp/neutralino.js');
+        const file = fs.createWriteStream('.tmp/neutralino.' + getScriptExtension());
         utils.log('Downloading the Neutralinojs client..');
         https.get(getClientDownloadUrl(), function (response) {
             response.pipe(file);
@@ -104,10 +112,16 @@ module.exports.downloadAndUpdateBinaries = async () => {
 
 module.exports.downloadAndUpdateClient = async () => {
     const configObj = config.get();
+    if(!configObj.cli.clientLibrary) {
+        utils.log(`neu CLI won't download the client library --` +
+                    ` download @neutralinojs/lib from your Node package manager.`);
+        return;
+    }
     const clientLibrary = utils.trimPath(configObj.cli.clientLibrary);
     await downloadClientFromRelease();
     utils.log('Finalizing and cleaning temp. files...');
-    fse.copySync(`.tmp/${constants.files.clientLibrary}`, `./${clientLibrary}`);
+    fse.copySync(`.tmp/${constants.files.clientLibraryPrefix + getScriptExtension()}`
+            , `./${clientLibrary}`);
     utils.clearCache();
 }
 

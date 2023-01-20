@@ -4,8 +4,10 @@ const config = require('./config');
 const constants = require('../constants');
 const utils = require('../utils');
 
-const HOT_REL_PATCH_REGEX = constants.misc.hotReloadPatchRegex;
+const HOT_REL_LIB_PATCH_REGEX = constants.misc.hotReloadLibPatchRegex;
+const HOT_REL_GLOB_PATCH_REGEX = constants.misc.hotReloadGlobPatchRegex;
 let originalClientLib = null;
+let originalGlobals = null;
 
 async function makeClientLibUrl(port) {
     let configObj = config.get();
@@ -27,13 +29,17 @@ async function makeClientLibUrl(port) {
     return url;
 }
 
-function patchHTMLFile(clientLib) {
+function makeGlobalsUrl(port) {
+    return `http://localhost:${port}/__neutralino_globals.js`;
+}
+
+function patchHTMLFile(scriptFile, regex) {
     let configObj = config.get();
     let patchFile = configObj.cli.frontendLibrary.patchFile.replace(/^\//, '');
     let html = fs.readFileSync(patchFile, 'utf8');
-    let matches = HOT_REL_PATCH_REGEX.exec(html);
+    let matches = regex.exec(html);
     if(matches) {
-        html = html.replace(HOT_REL_PATCH_REGEX, `$1${clientLib}$3`);
+        html = html.replace(regex, `$1${scriptFile}$3`);
         fs.writeFileSync(patchFile, html);
         return matches[2];
     }
@@ -41,8 +47,13 @@ function patchHTMLFile(clientLib) {
 }
 
 module.exports.bootstrap = async (port) => {
-    let clientLibUrl = await makeClientLibUrl(port);
-    originalClientLib = patchHTMLFile(clientLibUrl);
+    let configObj = config.get();
+    if(configObj.cli.clientLibrary) {
+        let clientLibUrl = await makeClientLibUrl(port);
+        originalClientLib = patchHTMLFile(clientLibUrl, HOT_REL_LIB_PATCH_REGEX);
+    }
+    let globalsUrl = await makeGlobalsUrl(port);
+    originalGlobals = patchHTMLFile(globalsUrl, HOT_REL_GLOB_PATCH_REGEX);
     utils.warn(`Hot reload patch was applied successfully. ` +
         `Please avoid sending keyboard interrupts.`);
     utils.log('You are working with your frontend library\'s development environment. ' +
@@ -51,7 +62,10 @@ module.exports.bootstrap = async (port) => {
 
 module.exports.cleanup = () => {
     if(originalClientLib) {
-        patchHTMLFile(originalClientLib);
-        utils.log('Hot reload patch was reverted.');
+        patchHTMLFile(originalClientLib, HOT_REL_LIB_PATCH_REGEX);
     }
+    if(originalGlobals) {
+        patchHTMLFile(originalGlobals, HOT_REL_GLOB_PATCH_REGEX);
+    }
+    utils.log('Hot reload patch was reverted.');
 }
