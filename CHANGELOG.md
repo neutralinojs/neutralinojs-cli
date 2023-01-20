@@ -13,7 +13,7 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 - Clean project files if the `neu create` command wan't successful.
 - Display an error message if the `neu build --copy-storage` fails due to missing `.storage` directory.
 - Support Darwin `arm64` binaries natively without binary translation (`x64` -> `arm64`).
-- Make client library downloading optional and support importing the client library via `@neutralinojs/lib`.
+- Make the client library downloading process optional and support importing the client library via `@neutralinojs/lib`.
 - Download the module version of the client library based on the app configuration.
 
 ## v9.3.1
