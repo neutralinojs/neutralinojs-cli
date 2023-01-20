@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v9.4.0
+
 ### DevOps: new test suite
 - Initiate a new Node.js-based test suite.
 
