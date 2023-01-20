@@ -7,11 +7,13 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ## Unreleased
 
 ### DevOps: new test suite
-- Initiate a new Node.js-based test suite (work in progress).
+- Initiate a new Node.js-based test suite.
 
 ### Bugfixes/Improvements
 - Clean project files if the `neu create` command wan't successful.
 - Display an error message if the `neu build --copy-storage` fails due to missing `.storage` directory.
+- Support Darwin `arm64` binaries natively without binary translation (`x64` -> `arm64`).
+- Make client library downloading optional and support importing the client library via `@neutralinojs/lib`.
 
 ## v9.3.1
 
