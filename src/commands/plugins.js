@@ -17,7 +17,7 @@ module.exports.register = (program) => {
                           ? await pluginloader.addTest(plugin)
                           : await pluginloader.add(plugin);
                         utils.log(
-                          `${plugin} was installed! ${command.test ? 'in test mode' : ''}`
+                          `${plugin} was installed! ${command.test ? 'in test mode' : ""}`
                         );
                     }
                     catch(e) {
