@@ -11,7 +11,8 @@ async function createAsarFile() {
     const configObj = config.get();
     const resourcesDir = utils.trimPath(configObj.cli.resourcesPath);
     const extensionsDir = utils.trimPath(configObj.cli.extensionsPath);
-    const clientLibrary = utils.trimPath(configObj.cli.clientLibrary);
+    const clientLibrary = configObj.cli.clientLibrary ? utils.trimPath(configObj.cli.clientLibrary)
+                            : null;
     const icon = utils.trimPath(configObj.modes.window.icon);
     const binaryName = configObj.cli.binaryName;
 
@@ -23,7 +24,9 @@ async function createAsarFile() {
     }
 
     await fse.copy(`${constants.files.configFile}`, `.tmp/${constants.files.configFile}`, {overwrite: true});
-    await fse.copy(`./${clientLibrary}`, `.tmp/${clientLibrary}`, {overwrite: true});
+    if(clientLibrary) {
+        await fse.copy(`./${clientLibrary}`, `.tmp/${clientLibrary}`, {overwrite: true});
+    }
     await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
 
     await asar.createPackage('.tmp', `dist/${binaryName}/${constants.files.resourceFile}`);
@@ -52,7 +55,13 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
 
         if(copyStorage) {
             utils.log('Copying storage data...');
-            fse.copySync(`.storage`,`dist/${binaryName}/.storage`);
+            try {
+                fse.copySync('.storage',`dist/${binaryName}/.storage`);
+            }
+            catch(err) {
+                utils.error('Unable to copy storage data from the .storage directory. Please check if the directory exists');
+                process.exit(1);
+            }
         }
 
         if (isRelease) {

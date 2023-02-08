@@ -1,0 +1,30 @@
+name: Test suite
+
+on: [push, pull_request]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+        arch: [x64]
+        
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install necessary dependencies and link package
+      working-directory: ./
+      run: |
+        npm ci
+        npm link
+        
+    - name: Install spec dependencies
+      working-directory: ./spec
+      run: npm ci
+
+    - name: Run spec
+      working-directory: ./spec
+      run: npm run test

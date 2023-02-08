@@ -9,12 +9,6 @@ const EXEC_PERMISSION = 0o755;
 function getBinaryName(arch) {
     let platform = process.platform;
 
-    // Use x64 binary for M1 chip (arm64)
-    // Translation is handled by macOS
-    if(platform == 'darwin' && arch == 'arm64') {
-        arch = 'x64';
-    }
-
     if(!(platform in constants.files.binaries))
         return '';
     if(!(arch in constants.files.binaries[process.platform]))

@@ -14,7 +14,11 @@ module.exports.register = (program) => {
                 const configObj = config.get();
                 console.log(`\n--- Project: ${configObj.cli.binaryName} (${configObj.applicationId}) ---`);
                 console.log(`Neutralinojs binaries: ${utils.getVersionTag(configObj.cli.binaryVersion)}`);
-                console.log(`Neutralinojs client: ${utils.getVersionTag(configObj.cli.clientVersion)}`);
+
+                let clientVersion = configObj.cli.clientVersion ? utils.getVersionTag(configObj.cli.clientVersion) :
+                                        'Installed from a package manager';
+                console.log(`Neutralinojs client: ${clientVersion}`);
+
                 if(configObj.version) {
                     console.log(`Project version: v${configObj.version}`);
                 }
