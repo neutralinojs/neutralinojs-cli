@@ -7,13 +7,18 @@ module.exports.register = (program) => {
         .description('displays, adds or removes plugins')
         .option('-a, --add')
         .option('-r, --remove')
+        .option('-t, --test')
         .action(async (plugin, command) => {
             if(plugin) {
                 if(command.add) {
                     try {
                         utils.log(`Installing ${plugin}..`);
-                        await pluginloader.add(plugin);
-                        utils.log(`${plugin} was installed!`);
+                        command.test
+                          ? await pluginloader.addTest(plugin)
+                          : await pluginloader.add(plugin);
+                        utils.log(
+                          `${plugin} was installed! ${command.test ? 'in test mode' : ""}`
+                        );
                     }
                     catch(e) {
                         utils.error(e);
@@ -22,7 +27,9 @@ module.exports.register = (program) => {
                 else if(command.remove)
                     try {
                         utils.log(`Uninstalling ${plugin}..`);
-                        await pluginloader.remove(plugin);
+                        command.test
+                          ? await pluginloader.removeTest(plugin)
+                          : await pluginloader.remove(plugin);
                         utils.log(`${plugin} was uninstalled!`);
                     }
                     catch(e) {
