@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### DevOps 
+- Implement a way to test plugins locally.
+
 ## v9.4.0
 
 ### DevOps: new test suite
