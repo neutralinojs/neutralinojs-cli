@@ -28,8 +28,11 @@ describe('Run neu build command and its options', () => {
             assert.ok(binaries.includes('WebView2Loader.dll') &&
                 binaries.includes('resources.neu') &&
                 binaries.includes('test-app-linux_arm64') &&
+                binaries.includes('test-app-linux_armhf') &&
                 binaries.includes('test-app-linux_x64') &&
                 binaries.includes('test-app-mac_x64') &&
+                binaries.includes('test-app-mac_arm64') &&
+                binaries.includes('test-app-mac_universal') &&
                 binaries.includes('test-app-win_x64.exe'));
         });
         it('creates & populates ./dist directory with binaries and portable ZIP bundle', async() => {
