@@ -33,21 +33,27 @@ let getRepoNameFromTemplate = (template) => {
 }
 
 let downloadBinariesFromRelease = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
         const file = fs.createWriteStream('.tmp/binaries.zip');
         utils.log('Downloading Neutralinojs binaries..');
         https.get(getBinaryDownloadUrl(), function (response) {
             response.pipe(file);
             response.on('end', () => {
-                utils.log('Extracting zip file..');
-                fs.createReadStream('.tmp/binaries.zip')
-                    .pipe(unzipper.Extract({ path: '.tmp/' }))
-                    .promise()
-                        .then(() => resolve())
-                        .catch((e) => reject(e));
+                resolve();
             });
         });
+    });
+}
+
+let extractBinariesFromRelease = () => {
+    return new Promise((resolve, reject) => {
+        utils.log('Extracting zip file..');
+        fs.createReadStream('.tmp/binaries.zip')
+            .pipe(unzipper.Extract({ path: '.tmp/' }))
+            .promise()
+                .then(() => resolve())
+                .catch((e) => reject(e));
     });
 }
 
@@ -66,31 +72,44 @@ let downloadClientFromRelease = () => {
     });
 }
 
-module.exports.downloadTemplate = (template) => {
-    return new Promise((resolve, reject) => {
+let downloadTemplate = (template) => {
+    return new Promise((resolve, _reject) => {
         let templateUrl = constants.remote.templateUrl.replace('{template}', template);
         fs.mkdirSync('.tmp', { recursive: true });
         const file = fs.createWriteStream('.tmp/template.zip');
         https.get(templateUrl, function (response) {
             response.pipe(file);
             response.on('end', () => {
-                utils.log('Extracting template zip file..');
-                fs.createReadStream('.tmp/template.zip')
-                    .pipe(unzipper.Extract({ path: '.tmp/' }))
-                    .promise()
-                        .then(() => {
-                            fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
-                            utils.clearCache();
-                            resolve();
-                        })
-                        .catch((e) => reject(e));
+                resolve();
+                
             });
         });
     });
 }
 
+let extractTemplate = (template) => {
+    return new Promise((resolve, reject) => {
+            utils.log('Extracting template zip file..');
+            fs.createReadStream('.tmp/template.zip')
+                .pipe(unzipper.Extract({ path: '.tmp/' }))
+                .promise()
+                    .then(() => {
+                        fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
+                        utils.clearCache();
+                        resolve();
+                    })
+                    .catch((e) => reject(e));
+        });
+}
+
+module.exports.downloadTemplate = async (template) => {
+    await downloadTemplate(template);
+    await extractTemplate(template);
+}
+
 module.exports.downloadAndUpdateBinaries = async () => {
     await downloadBinariesFromRelease();
+    await extractBinariesFromRelease();
     utils.log('Finalizing and cleaning temp. files.');
     if(!fse.existsSync('bin'))
         fse.mkdirSync('bin');
