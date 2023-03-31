@@ -2,7 +2,7 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const { https } = require('follow-redirects');
 const constants = require('../constants');
-const unzipper = require('unzipper');
+const decompress = require('decompress');
 const config = require('./config');
 const utils = require('../utils');
 
@@ -46,15 +46,9 @@ let downloadBinariesFromRelease = () => {
     });
 }
 
-let extractBinariesFromRelease = () => {
-    return new Promise((resolve, reject) => {
-        utils.log('Extracting zip file..');
-        fs.createReadStream('.tmp/binaries.zip')
-            .pipe(unzipper.Extract({ path: '.tmp/' }))
-            .promise()
-                .then(() => resolve())
-                .catch((e) => reject(e));
-    });
+let extractBinariesFromRelease = async () => {
+    utils.log('Extracting zip file..');
+    await decompress('.tmp/binaries.zip', '.tmp/');
 }
 
 let downloadClientFromRelease = () => {
@@ -87,19 +81,11 @@ let downloadTemplate = (template) => {
     });
 }
 
-let extractTemplate = (template) => {
-    return new Promise((resolve, reject) => {
-            utils.log('Extracting template zip file..');
-            fs.createReadStream('.tmp/template.zip')
-                .pipe(unzipper.Extract({ path: '.tmp/' }))
-                .promise()
-                    .then(() => {
-                        fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
-                        utils.clearCache();
-                        resolve();
-                    })
-                    .catch((e) => reject(e));
-        });
+let extractTemplate = async (template) => {
+    utils.log('Extracting template zip file..');
+    await decompress('.tmp/template.zip', '.tmp/');
+    fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
+    utils.clearCache();
 }
 
 module.exports.downloadTemplate = async (template) => {
