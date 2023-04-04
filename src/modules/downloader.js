@@ -34,15 +34,15 @@ let getRepoNameFromTemplate = (template) => {
 
 let downloadBinariesFromRelease = () => {
     return new Promise((resolve, reject) => {
-        fs.mkdirSync('.tmp', { recursive: true });
-        const file = fs.createWriteStream('.tmp/binaries.zip');
+        fs.mkdirSync( { recursive: true });
+        const file = fs.createWriteStream('binaries.zip');
         utils.log('Downloading Neutralinojs binaries..');
         https.get(getBinaryDownloadUrl(), function (response) {
             response.pipe(file);
             response.on('end', () => {
                 utils.log('Extracting zip file..');
-                fs.createReadStream('.tmp/binaries.zip')
-                    .pipe(unzipper.Extract({ path: '.tmp/' }))
+                fs.createReadStream('binaries.zip')
+                    .pipe(unzipper.Extract({}))
                     .promise()
                         .then(() => resolve())
                         .catch((e) => reject(e));
@@ -54,7 +54,7 @@ let downloadBinariesFromRelease = () => {
 let downloadClientFromRelease = () => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
-        const file = fs.createWriteStream('.tmp/neutralino.' + getScriptExtension());
+        const file = fs.createWriteStream('neutralino.' + getScriptExtension());
         utils.log('Downloading the Neutralinojs client..');
         https.get(getClientDownloadUrl(), function (response) {
             response.pipe(file);
@@ -69,17 +69,17 @@ let downloadClientFromRelease = () => {
 module.exports.downloadTemplate = (template) => {
     return new Promise((resolve, reject) => {
         let templateUrl = constants.remote.templateUrl.replace('{template}', template);
-        fs.mkdirSync('.tmp', { recursive: true });
-        const file = fs.createWriteStream('.tmp/template.zip');
+        fs.mkdirSync({ recursive: true });
+        const file = fs.createWriteStream('template.zip');
         https.get(templateUrl, function (response) {
             response.pipe(file);
             response.on('end', () => {
                 utils.log('Extracting template zip file..');
-                fs.createReadStream('.tmp/template.zip')
+                fs.createReadStream('template.zip')
                     .pipe(unzipper.Extract({ path: '.tmp/' }))
                     .promise()
                         .then(() => {
-                            fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
+                            fse.copySync(`${getRepoNameFromTemplate(template)}-main`, '.');
                             utils.clearCache();
                             resolve();
                         })
@@ -98,14 +98,14 @@ module.exports.downloadAndUpdateBinaries = async () => {
     for(let platform in constants.files.binaries) {
         for(let arch in constants.files.binaries[platform]) {
             let binaryFile = constants.files.binaries[platform][arch];
-            if(fse.existsSync(`.tmp/${binaryFile}`)) {
-                fse.copySync(`.tmp/${binaryFile}`, `bin/${binaryFile}`);
+            if(fse.existsSync(`${binaryFile}`)) {
+                fse.copySync(`${binaryFile}`, `bin/${binaryFile}`);
             }
         }
     }
 
     for(let dependency of constants.files.dependencies) {
-        fse.copySync(`.tmp/${dependency}`,`bin/${dependency}`);
+        fse.copySync(`${dependency}`,`bin/${dependency}`);
     }
     utils.clearCache();
 }
@@ -120,7 +120,7 @@ module.exports.downloadAndUpdateClient = async () => {
     const clientLibrary = utils.trimPath(configObj.cli.clientLibrary);
     await downloadClientFromRelease();
     utils.log('Finalizing and cleaning temp. files...');
-    fse.copySync(`.tmp/${constants.files.clientLibraryPrefix + getScriptExtension()}`
+    fse.copySync(`${constants.files.clientLibraryPrefix + getScriptExtension()}`
             , `./${clientLibrary}`);
     utils.clearCache();
 }
