@@ -2,9 +2,9 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const { https } = require('follow-redirects');
 const constants = require('../constants');
-const unzipper = require('unzipper');
 const config = require('./config');
 const utils = require('../utils');
+const decompress = require('decompress');
 
 let getBinaryDownloadUrl = () => {
     const configObj = config.get();
@@ -35,17 +35,16 @@ let getRepoNameFromTemplate = (template) => {
 let downloadBinariesFromRelease = () => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
-        const file = fs.createWriteStream('.tmp/binaries.zip');
+        const zipFilename = '.tmp/binaries.zip';
+        const file = fs.createWriteStream(zipFilename);
         utils.log('Downloading Neutralinojs binaries..');
         https.get(getBinaryDownloadUrl(), function (response) {
             response.pipe(file);
             response.on('end', () => {
-                utils.log('Extracting zip file..');
-                fs.createReadStream('.tmp/binaries.zip')
-                    .pipe(unzipper.Extract({ path: '.tmp/' }))
-                    .promise()
-                        .then(() => resolve())
-                        .catch((e) => reject(e));
+                utils.log('Extracting zip file...');
+                decompress(zipFilename, '.tmp/')
+                    .then(() => resolve())
+                    .catch((e) => reject(e));
             });
         });
     });
@@ -70,20 +69,19 @@ module.exports.downloadTemplate = (template) => {
     return new Promise((resolve, reject) => {
         let templateUrl = constants.remote.templateUrl.replace('{template}', template);
         fs.mkdirSync('.tmp', { recursive: true });
-        const file = fs.createWriteStream('.tmp/template.zip');
+        const zipFilename = '.tmp/template.zip';
+        const file = fs.createWriteStream(zipFilename);
         https.get(templateUrl, function (response) {
             response.pipe(file);
             response.on('end', () => {
-                utils.log('Extracting template zip file..');
-                fs.createReadStream('.tmp/template.zip')
-                    .pipe(unzipper.Extract({ path: '.tmp/' }))
-                    .promise()
-                        .then(() => {
-                            fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
-                            utils.clearCache();
-                            resolve();
-                        })
-                        .catch((e) => reject(e));
+                utils.log('Extracting template zip file...');
+                decompress(zipFilename, '.tmp/')
+                    .then(() => {
+                        fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
+                        utils.clearCache();
+                        resolve();
+                    })
+                    .catch((e) => reject(e));
             });
         });
     });
