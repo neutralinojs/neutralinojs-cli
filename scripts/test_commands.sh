@@ -90,7 +90,7 @@ cd .. && xvfb-run neu run --frontend-lib-dev &
 sleep 20s
 kill -HUP $(pgrep neutralino)
 sleep 10s
-sudo kill `lsof -t -i:3000`
+kill `lsof -t -i:3000`
 echo
 
 displayCmd "neu run --help"
