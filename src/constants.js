@@ -17,7 +17,8 @@ module.exports = {
       },
       darwin: {
         x64: "neutralino-mac_x64",
-        arm64: "neutralino-mac_arm64"
+        arm64: "neutralino-mac_arm64",
+        universal: "neutralino-mac_universal"
       },
       win32: {
         x64: "neutralino-win_x64.exe"
