@@ -26,7 +26,7 @@ module.exports.runApp = async (options = {}) => {
         }
 
         let binaryPath = `bin${path.sep}${binaryName}`;
-        let args = " --load-dir-res --path=. --export-auth-info --neu-dev-extension";
+        let args = ` --load-dir-res --path=${path.resolve('.')} --export-auth-info --neu-dev-extension`;
         if(options.argsOpt)
             args += " " + options.argsOpt;
 
