@@ -6,6 +6,11 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Bugfixes/Improvements
+
+- Use the `decompress` library instead of `unzipper` to fix issues with latest Node.js runtime versions.
+- Generate the Mac universal binary with the `neu build` command.
+
 ## v9.5.0
 
 ### DevOps 
