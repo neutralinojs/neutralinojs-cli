@@ -24,7 +24,7 @@ module.exports = {
         x64: "neutralino-win_x64.exe"
       }
     },
-    dependencies: ["WebView2Loader.dll"]
+    dependencies: []
   },
   misc: {
     hotReloadLibPatchRegex: /(<script.*src=")(.*neutralino.js)(".*><\/script>)/g,
