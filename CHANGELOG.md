@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v9.6.0
+
 ### Core: Bundler
 - Avoid copying the `WebView2Loader.dll` file to the final app package since it was removed from the Neutralinojs framework.
 
