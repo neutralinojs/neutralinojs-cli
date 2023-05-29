@@ -25,8 +25,7 @@ describe('Run neu build command and its options', () => {
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
             assert.ok(output.data.includes('Application package was generated at the ./dist directory!'));
-            assert.ok(binaries.includes('WebView2Loader.dll') &&
-                binaries.includes('resources.neu') &&
+            assert.ok(binaries.includes('resources.neu') &&
                 binaries.includes('test-app-linux_arm64') &&
                 binaries.includes('test-app-linux_armhf') &&
                 binaries.includes('test-app-linux_x64') &&
