@@ -6,7 +6,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/neutralinojs/neutralinojs-cli.svg)](https://github.com/neutralinojs/neutralinojs-cli/commits/main)
 ![Build status](https://github.com/neutralinojs/neutralinojs-cli/actions/workflows/test_suite.yml/badge.svg)
 
-The official CLI of Neutralinojs. See neu CLI [documentation](https://neutralino.js.org/docs/cli/neu-cli/) for more details.
+The official CLI of Neutralinojs. See neu CLI [documentation](https://neutralino.js.org/docs/cli/neu-cli/) for more details. Release notes are available at [this page](https://neutralino.js.org/docs/release-notes/cli).
 
 ```bash
 npm i -g @neutralinojs/neu
