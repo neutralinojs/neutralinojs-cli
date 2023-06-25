@@ -32,7 +32,7 @@
     "chalk": "^4.1.0",
     "chokidar": "^3.5.1",
     "commander": "^7.2.0",
-    "configstore": "^5.0.1",
+    "configstore": "^6.0.0",
     "decompress": "^4.2.1",
     "edit-json-file": "^1.6.2",
     "figlet": "^1.5.0",
