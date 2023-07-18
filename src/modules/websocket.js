@@ -18,7 +18,7 @@ module.exports.start = (options = {}) => {
         return;
     }
 
-    ws = new WS(`ws://localhost:${authInfo.port}?extensionId=js.neutralino.devtools`);
+    ws = new WS(`ws://127.0.0.1:${authInfo.port}?extensionId=js.neutralino.devtools`);
 
     ws.onerror = () => {
         retryLater(options);
