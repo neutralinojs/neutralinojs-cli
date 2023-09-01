@@ -28,6 +28,14 @@ let getClientDownloadUrl = () => {
             .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
+let getTypesDownloadUrl = () => {
+    const configObj = config.get();
+    let version = configObj.cli.clientVersion;
+    let scriptUrl = constants.remote.clientUrlPrefix + 'd.ts';
+    return scriptUrl
+        .replace(/{tag}/g, utils.getVersionTag(version));
+}
+
 let getRepoNameFromTemplate = (template) => {
     return template.split('/')[1];
 }
@@ -56,6 +64,21 @@ let downloadClientFromRelease = () => {
         const file = fs.createWriteStream('.tmp/neutralino.' + getScriptExtension());
         utils.log('Downloading the Neutralinojs client..');
         https.get(getClientDownloadUrl(), function (response) {
+            response.pipe(file);
+            file.on('finish', () => {
+                file.close();
+                resolve();
+            });
+        });
+    });
+}
+
+let downloadTypesFromRelease = () => {
+    return new Promise((resolve, reject) => {
+        fs.mkdirSync('.tmp', { recursive: true });
+        const file = fs.createWriteStream('.tmp/neutralino.d.ts');
+        utils.log('Downloading the Neutralinojs types..');
+        https.get(getTypesDownloadUrl(), function (response) {
             response.pipe(file);
             file.on('finish', () => {
                 file.close();
@@ -117,9 +140,12 @@ module.exports.downloadAndUpdateClient = async () => {
     }
     const clientLibrary = utils.trimPath(configObj.cli.clientLibrary);
     await downloadClientFromRelease();
+    await downloadTypesFromRelease();
     utils.log('Finalizing and cleaning temp. files...');
     fse.copySync(`.tmp/${constants.files.clientLibraryPrefix + getScriptExtension()}`
             , `./${clientLibrary}`);
+    fse.copySync(`.tmp/neutralino.d.ts`
+            , `./${clientLibrary.replace(/[.][a-z]*$/, '.d.ts')}`);
     utils.clearCache();
 }
 
