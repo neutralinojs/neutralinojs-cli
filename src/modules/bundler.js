@@ -25,7 +25,11 @@ async function createAsarFile() {
 
     await fse.copy(`${constants.files.configFile}`, `.tmp/${constants.files.configFile}`, {overwrite: true});
     if(clientLibrary) {
+        let typesFile = clientLibrary.replace(/.js$/, '.d.ts');
         await fse.copy(`./${clientLibrary}`, `.tmp/${clientLibrary}`, {overwrite: true});
+        if(fs.existsSync(`.tmp/${typesFile}`)) {
+            fse.removeSync(`.tmp/${typesFile}`);
+        }
     }
     await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
 
