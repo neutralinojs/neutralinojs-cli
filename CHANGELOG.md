@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Core: Downloader/bundler
+- Download the TypeScript definition file for standalone client library mode. This won't include the TypeScript definition file to the final application bundle.
+
 ## v9.6.1
 
 ### Bugfixes/Improvements
