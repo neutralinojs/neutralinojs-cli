@@ -7,7 +7,7 @@ const constants = require('./constants');
 const CONFIG_FILE = constants.files.configFile;
 
 let error = (message) => {
-    console.error(`neu: ${chalk.bgRed.black('ERROR')} ${message}`);
+    console.error(`neu: ${chalk.bgRed.black('ERRR')} ${message}`);
 }
 
 let isNeutralinojsProject = () => {
@@ -35,7 +35,7 @@ let log = (message) => {
 }
 
 let warn = (message) => {
-    console.warn(`neu: ${chalk.bgYellow.black('WARNING')} ${message}`);
+    console.warn(`neu: ${chalk.bgYellow.black('WARN')} ${message}`);
 }
 
 let trimPath = (path) => {

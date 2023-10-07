@@ -2,7 +2,8 @@ module.exports = {
   remote: {
     binariesUrl:"https://github.com/neutralinojs/neutralinojs/releases/download/{tag}/neutralinojs-{tag}.zip",
     clientUrlPrefix: "https://github.com/neutralinojs/neutralino.js/releases/download/{tag}/neutralino.",
-    templateUrl: "https://github.com/{template}/archive/main.zip"
+    templateUrl: "https://github.com/{template}/archive/main.zip",
+    releasesApiUrl: "https://api.github.com/repos/neutralinojs/{repo}/releases/latest"
   },
   files: {
     configFile: "neutralino.config.json",

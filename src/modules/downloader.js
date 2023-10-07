@@ -6,11 +6,35 @@ const config = require('./config');
 const utils = require('../utils');
 const decompress = require('decompress');
 
-let getBinaryDownloadUrl = () => {
-    const configObj = config.get();
-    let version = configObj.cli.binaryVersion;
-    return constants.remote.binariesUrl
-            .replace(/{tag}/g, utils.getVersionTag(version));
+let cachedLatestClientVersion = null;
+
+let getLatestVersion = (repo) => {
+    return new Promise((resolve, reject) => {
+        function fallback() {
+            utils.warn('Unable to fetch the latest version tag from GitHub. Using nightly releases...');
+            resolve('nightly');
+        }
+
+        let opt = {
+            headers: {'User-Agent': 'Neutralinojs CLI'}
+        };
+        https.get(constants.remote.releasesApiUrl.replace('{repo}', repo), opt, function (response) {
+            let body = '';
+            response.on('data', (data) => body += data);
+            response.on('end', () => {
+                if(response.statusCode != 200) {
+                    return fallback();
+                }
+                let apiRes = JSON.parse(body);
+                let version = apiRes.tag_name.replace('v', '');
+                utils.log(`Found the latest release tag ${utils.getVersionTag(version)} for ${repo}...`);
+                resolve(version);
+            });
+            response.on('error', () => {
+                fallback();
+            });
+        });
+    });
 }
 
 let getScriptExtension = () => {
@@ -19,72 +43,101 @@ let getScriptExtension = () => {
     return clientLibrary.includes('.mjs') ? 'mjs' : 'js';
 }
 
-let getClientDownloadUrl = () => {
+let getBinaryDownloadUrl = async (latest) => {
+    const configObj = config.get();
+    let version = configObj.cli.binaryVersion;
+
+    if(!version || latest) {
+        version = await getLatestVersion('neutralinojs');
+        config.update('cli.binaryVersion', version);
+    }
+    return constants.remote.binariesUrl
+        .replace(/{tag}/g, utils.getVersionTag(version));
+}
+
+let getClientDownloadUrl = async (latest, types = false) => {
     const configObj = config.get();
     let version = configObj.cli.clientVersion;
-    let clientLibrary = configObj.cli.clientLibrary;
-    let scriptUrl = constants.remote.clientUrlPrefix + getScriptExtension();
+
+    if(!version || latest) {
+        if(cachedLatestClientVersion) {
+            version = cachedLatestClientVersion;
+        }
+        else {
+            version = await getLatestVersion('neutralino.js');
+        }
+        cachedLatestClientVersion = version;
+        config.update('cli.clientVersion', version);
+    }
+
+    let scriptUrl = constants.remote.clientUrlPrefix + (types ? 'd.ts' : getScriptExtension());
     return scriptUrl
             .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
-let getTypesDownloadUrl = () => {
-    const configObj = config.get();
-    let version = configObj.cli.clientVersion;
-    let scriptUrl = constants.remote.clientUrlPrefix + 'd.ts';
-    return scriptUrl
-        .replace(/{tag}/g, utils.getVersionTag(version));
+let getTypesDownloadUrl = (latest) => {
+    return getClientDownloadUrl(latest, true);
 }
 
 let getRepoNameFromTemplate = (template) => {
     return template.split('/')[1];
 }
 
-let downloadBinariesFromRelease = () => {
+let downloadBinariesFromRelease = (latest) => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
         const zipFilename = '.tmp/binaries.zip';
         const file = fs.createWriteStream(zipFilename);
         utils.log('Downloading Neutralinojs binaries..');
-        https.get(getBinaryDownloadUrl(), function (response) {
-            response.pipe(file);
-            response.on('end', () => {
-                utils.log('Extracting zip file...');
-                decompress(zipFilename, '.tmp/')
-                    .then(() => resolve())
-                    .catch((e) => reject(e));
-            });
+        getBinaryDownloadUrl(latest)
+            .then((url) => {
+                https.get(url, function (response) {
+                    response.pipe(file);
+                    response.on('end', () => {
+                        utils.log('Extracting binaries.zip file...');
+                        decompress(zipFilename, '.tmp/')
+                            .then(() => resolve())
+                            .catch((e) => reject(e));
+                    });
+                });
         });
     });
 }
 
-let downloadClientFromRelease = () => {
+let downloadClientFromRelease = (latest) => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
         const file = fs.createWriteStream('.tmp/neutralino.' + getScriptExtension());
         utils.log('Downloading the Neutralinojs client..');
-        https.get(getClientDownloadUrl(), function (response) {
-            response.pipe(file);
-            file.on('finish', () => {
-                file.close();
-                resolve();
+        getClientDownloadUrl(latest)
+            .then((url) => {
+                https.get(url, function (response) {
+                    response.pipe(file);
+                    file.on('finish', () => {
+                        file.close();
+                        resolve();
+                    });
+                });
             });
-        });
     });
 }
 
-let downloadTypesFromRelease = () => {
+let downloadTypesFromRelease = (latest) => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
         const file = fs.createWriteStream('.tmp/neutralino.d.ts');
         utils.log('Downloading the Neutralinojs types..');
-        https.get(getTypesDownloadUrl(), function (response) {
-            response.pipe(file);
-            file.on('finish', () => {
-                file.close();
-                resolve();
+
+        getTypesDownloadUrl(latest)
+            .then((url) => {
+                https.get(url, function (response) {
+                    response.pipe(file);
+                    file.on('finish', () => {
+                        file.close();
+                        resolve();
+                    });
+                });
             });
-        });
     });
 }
 
@@ -110,8 +163,8 @@ module.exports.downloadTemplate = (template) => {
     });
 }
 
-module.exports.downloadAndUpdateBinaries = async () => {
-    await downloadBinariesFromRelease();
+module.exports.downloadAndUpdateBinaries = async (latest = false) => {
+    await downloadBinariesFromRelease(latest);
     utils.log('Finalizing and cleaning temp. files.');
     if(!fse.existsSync('bin'))
         fse.mkdirSync('bin');
@@ -131,7 +184,7 @@ module.exports.downloadAndUpdateBinaries = async () => {
     utils.clearCache();
 }
 
-module.exports.downloadAndUpdateClient = async () => {
+module.exports.downloadAndUpdateClient = async (latest = false) => {
     const configObj = config.get();
     if(!configObj.cli.clientLibrary) {
         utils.log(`neu CLI won't download the client library --` +
@@ -139,8 +192,8 @@ module.exports.downloadAndUpdateClient = async () => {
         return;
     }
     const clientLibrary = utils.trimPath(configObj.cli.clientLibrary);
-    await downloadClientFromRelease();
-    await downloadTypesFromRelease();
+    await downloadClientFromRelease(latest);
+    await downloadTypesFromRelease(latest);
     utils.log('Finalizing and cleaning temp. files...');
     fse.copySync(`.tmp/${constants.files.clientLibraryPrefix + getScriptExtension()}`
             , `./${clientLibrary}`);

@@ -5,10 +5,11 @@ module.exports.register = (program) => {
     program
         .command('update')
         .description('updates neutralinojs binaries and client library')
-        .action(async (name, command) => {
+        .option('-l, --latest')
+        .action(async (command) => {
             utils.checkCurrentProject();
-            await downloader.downloadAndUpdateBinaries();
-            await downloader.downloadAndUpdateClient();
+            await downloader.downloadAndUpdateBinaries(command.latest);
+            await downloader.downloadAndUpdateClient(command.latest);
 
             utils.showArt();
             utils.log('Run "neu version" to see installed version details.');
