@@ -8,7 +8,7 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ### Core: Downloader
 - Download the latest Neutralinojs framework resources with the `--latest` option in the `neu update` command.
-- If framework versions are not present in the app/template configuration, download the latest framework resources automatically. The CLI will download nightly releases if it can't fetch the latest release because of an GitHub API-related issue (i.e., Exceeded rate limits).
+- If framework versions are not present in the app/template configuration, download the latest framework resources automatically. The CLI will download nightly releases if it can't fetch the latest release tag because of an GitHub API-related issue (i.e., Exceeded rate limits).
 
 ## v9.7.0
 
