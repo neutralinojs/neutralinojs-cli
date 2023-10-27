@@ -4,6 +4,7 @@ const archiver = require('archiver');
 const asar = require('asar');
 const config = require('./config');
 const constants = require('../constants');
+const frontendlib = require('./frontendlib');
 const utils = require('../utils');
 
 async function createAsarFile() {
@@ -40,6 +41,10 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
     try {
+        if(frontendlib.containsFrontendLibApp()) {
+            await frontendlib.runCommand('buildCommand');
+        }
+
         await createAsarFile();
         utils.log('Copying binaries...');
 

@@ -3,26 +3,32 @@ const websocket = require('../modules/websocket');
 const runner = require('../modules/runner');
 const utils = require('../utils');
 const config = require('../modules/config');
+const frontendlib = require('../modules/frontendlib');
 
 module.exports.register = (program) => {
     program
         .command('run')
         .description('fetches config from neutralino.config.json & runs the app')
         .option('--disable-auto-reload')
-        .option('--frontend-lib-dev')
         .option('--arch <arch>')
         .action(async (command) => {
             utils.checkCurrentProject();
             let configObj = config.get();
+            let containsFrontendLibApp = frontendlib.containsFrontendLibApp();
             let argsOpt = "";
 
-            if(!command.disableAutoReload && !command.frontendLibDev) {
+            if(containsFrontendLibApp) {
+                frontendlib.runCommand('devCommand');
+                await frontendlib.waitForFrontendLibApp();
+            }
+
+            if(!command.disableAutoReload && !containsFrontendLibApp) {
                 argsOpt += "--neu-dev-auto-reload";
                 filewatcher.start();
             }
 
             websocket.start({
-                frontendLibDev: command.frontendLibDev
+                frontendLibDev: containsFrontendLibApp
             });
 
             // Add additional process ARGs that comes after --
@@ -33,7 +39,7 @@ module.exports.register = (program) => {
                                 .join(' ');
             }
 
-            if(command.frontendLibDev && configObj.cli.frontendLibrary.devUrl) {
+            if(containsFrontendLibApp && configObj.cli.frontendLibrary.devUrl) {
                 argsOpt += ` --url=${configObj.cli.frontendLibrary.devUrl}`
             }
 

@@ -1,6 +1,7 @@
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const frontendlib = require('./frontendlib');
 const constants = require('../constants');
 const utils = require('../utils');
 
@@ -20,6 +21,10 @@ module.exports.runApp = async (options = {}) => {
     return new Promise((resolve, reject) => {
         let arch = options.arch || process.arch;
         let binaryName = getBinaryName(arch);
+
+        if(frontendlib.containsFrontendLibApp()) {
+            frontendlib.runCommand('devCommand');
+        }
 
         if(!binaryName) {
             return reject(`Unsupported platform or CPU architecture: ${process.platform}_${arch}`);
@@ -48,7 +53,7 @@ module.exports.runApp = async (options = {}) => {
                 utils.log(runnerMsg);
             }
 
-            resolve()
+            resolve();
         });
     });
 }

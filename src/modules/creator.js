@@ -3,6 +3,7 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const config = require('../modules/config');
 const downloader = require('./downloader');
+const frontendlib = require('../modules/frontendlib');
 const utils = require('../utils');
 
 module.exports.createApp = async (binaryName, template) => {
@@ -32,6 +33,10 @@ module.exports.createApp = async (binaryName, template) => {
 
     config.update('cli.binaryName', binaryName);
     config.update('modes.window.title', binaryName);
+
+    if(frontendlib.containsFrontendLibApp()) {
+        await frontendlib.runCommand('initCommand');
+    }
 
     console.log('-------');
     utils.log(`Enter 'cd ${binaryName} && neu run' to run your application.`);

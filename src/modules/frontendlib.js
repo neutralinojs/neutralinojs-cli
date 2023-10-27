@@ -1,5 +1,8 @@
 const fs = require('fs');
+const process = require('process');
+const spawnCommand = require('spawn-command');
 const recursive = require('recursive-readdir');
+const tpu = require('tcp-port-used');
 const config = require('./config');
 const constants = require('../constants');
 const utils = require('../utils');
@@ -68,4 +71,48 @@ module.exports.cleanup = () => {
         patchHTMLFile(originalGlobals, HOT_REL_GLOB_PATCH_REGEX);
     }
     utils.log('Hot reload patch was reverted.');
+}
+
+
+module.exports.runCommand = (commandKey) => {
+    return new Promise((resolve, reject) => {
+        let configObj = config.get();
+        let frontendLib = configObj.cli?.frontendLibrary;
+
+        if(frontendLib?.projectPath && frontendLib?.[commandKey]) {
+            let projectPath = utils.trimPath(frontendLib.projectPath);
+            let cmd = frontendLib[commandKey];
+
+            utils.log(`Running ${commandKey}: ${cmd}...`);
+            const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
+            proc.on('exit', (code) => {
+                utils.log(`${commandKey} completed with exit code: ${code}`);
+                resolve();
+            });
+        }
+    });
+}
+
+module.exports.containsFrontendLibApp = () => {
+    let configObj = config.get();
+    return !!configObj.cli?.frontendLibrary;
+}
+
+module.exports.waitForFrontendLibApp = async () => {
+    let configObj = config.get();
+    let devUrl = configObj.cli?.frontendLibrary?.devUrl;
+    let port = new URL(devUrl).port;
+
+    let inter = setInterval(() => {
+        utils.log(`App will be launched when ${devUrl} is ready...`);
+    }, 500);
+
+    try {
+        await tpu.waitUntilUsed(3000, 200, 10000);
+    }
+    catch(e) {
+        utils.error(`Timeout exceeded while waiting till local TCP port: ${port}`);
+        process.exit(1);
+    }
+    clearInterval(inter);
 }

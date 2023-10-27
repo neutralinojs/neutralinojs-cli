@@ -2,7 +2,7 @@ const fs = require('fs');
 const WS = require('websocket').w3cwebsocket;
 const { v4: uuidv4 } = require('uuid');
 const constants = require('../constants');
-const frontendlib = require('./frontendlib.js');
+const frontendlib = require('./frontendlib');
 const utils = require('../utils');
 
 let ws = null;
