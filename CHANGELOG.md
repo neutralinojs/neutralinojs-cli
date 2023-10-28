@@ -6,6 +6,13 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Core: frontend-library-based development
+Added new configuration options to the `cli.frontendLibrary` key of the `neutralino.config.json`:
+- `projectPath`: Sets the project path of the frontend-library project. This path will be used as the current directory while executing the frontend-app-related commands.
+- `initCommand`: A command that gets executed after downloading an app template with the `neu create` command.
+- `devCommand`: This command will run with the `neu run` command to start the frontend development server. The CLI doesn't wait for `devCommand` completion, instead, it will wait for the frontend development server via the [`tcp-port-used`](https://www.npmjs.com/package/tcp-port-used) package. 
+- `buildCommand`: The `neu build` command will execute this command before generating the app bundle, so you can generate static resources of your frontend app using this command.
+
 ## v9.8.0
 
 ### Core: Downloader
