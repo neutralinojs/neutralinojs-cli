@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v10.0.0
+
 ### Core: frontend-library-based development
 Added new configuration options to the `cli.frontendLibrary` key of the `neutralino.config.json`:
 - `projectPath`: Sets the project path of the frontend-library project. This path will be used as the current directory while executing the frontend-app-related commands.
