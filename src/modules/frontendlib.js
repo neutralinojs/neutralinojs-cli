@@ -57,10 +57,10 @@ module.exports.bootstrap = async (port) => {
     }
     let globalsUrl = await makeGlobalsUrl(port);
     originalGlobals = patchHTMLFile(globalsUrl, HOT_REL_GLOB_PATCH_REGEX);
-    utils.warn(`Hot reload patch was applied successfully. ` +
-        `Please avoid sending keyboard interrupts.`);
-    utils.log('You are working with your frontend library\'s development environment. ' +
-        'Hot reload and other tooling will work alongside with Neutralinojs API.');
+    utils.warn('Global variables patch was applied successfully. ' +
+        'Please avoid sending keyboard interrupts.');
+    utils.log(`You are working with your frontend library's development environment. ` +
+        'Your frontend-library-based app will run with Neutralino and be able to use the Neutralinojs API.');
 }
 
 module.exports.cleanup = () => {
@@ -70,7 +70,7 @@ module.exports.cleanup = () => {
     if(originalGlobals) {
         patchHTMLFile(originalGlobals, HOT_REL_GLOB_PATCH_REGEX);
     }
-    utils.log('Hot reload patch was reverted.');
+    utils.log('Global variables patch was reverted.');
 }
 
 
