@@ -60,7 +60,7 @@ module.exports.bootstrap = async (port) => {
     utils.warn('Global variables patch was applied successfully. ' +
         'Please avoid sending keyboard interrupts.');
     utils.log(`You are working with your frontend library's development environment. ` +
-        'Your app will run in in Neutralino and be able to use the Neutralinojs API.');
+        'Your frontend-library-based app will run with Neutralino and be able to use the Neutralinojs API.');
 }
 
 module.exports.cleanup = () => {
