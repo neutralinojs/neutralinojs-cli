@@ -49,6 +49,19 @@ function patchHTMLFile(scriptFile, regex) {
     return null;
 }
 
+function getPortByProtocol(protocol) {
+    switch (protocol) {
+        case 'http:':
+          return 80;
+        case 'https:':
+            return 443;
+        case 'ftp:':
+          return 21;
+        default:
+            return -1;
+      }
+}
+
 module.exports.bootstrap = async (port) => {
     let configObj = config.get();
     if(configObj.cli.clientLibrary) {
@@ -100,15 +113,21 @@ module.exports.containsFrontendLibApp = () => {
 
 module.exports.waitForFrontendLibApp = async () => {
     let configObj = config.get();
-    let devUrl = configObj.cli?.frontendLibrary?.devUrl;
-    let port = new URL(devUrl).port;
+    let devUrlString = configObj.cli?.frontendLibrary?.devUrl;
+    let url = new URL(devUrlString);
+    let portString = url.port;
+    let port = portString ? Number.parseInt(portString) : getPortByProtocol(url.protocol)
+    if (port < 0) {
+        utils.error(`Could not get frontendLibrary port of ${devUrlString} with protocol ${url.protocol}`);
+        process.exit(1);
+    }
 
     let inter = setInterval(() => {
-        utils.log(`App will be launched when ${devUrl} is ready...`);
+        utils.log(`App will be launched when ${devUrlString} on port ${port} is ready...`);
     }, 500);
 
     try {
-        await tpu.waitUntilUsed(3000, 200, 10000);
+        await tpu.waitUntilUsed(port, 200, 10000);
     }
     catch(e) {
         utils.error(`Timeout exceeded while waiting till local TCP port: ${port}`);
