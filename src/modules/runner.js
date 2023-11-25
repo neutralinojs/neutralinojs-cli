@@ -22,10 +22,6 @@ module.exports.runApp = async (options = {}) => {
         let arch = options.arch || process.arch;
         let binaryName = getBinaryName(arch);
 
-        if(frontendlib.containsFrontendLibApp()) {
-            frontendlib.runCommand('devCommand');
-        }
-
         if(!binaryName) {
             return reject(`Unsupported platform or CPU architecture: ${process.platform}_${arch}`);
         }
