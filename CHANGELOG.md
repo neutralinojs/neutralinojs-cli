@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v10.1.0
+
 ### Bugfixes/improvements
 - Fixed several issues in the frontend-library-based development flow (i.e., removed the hardcoded port number, fixed double `devCommand` execution, etc.,).
 
