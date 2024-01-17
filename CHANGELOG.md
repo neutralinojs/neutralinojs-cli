@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Bugfixes/improvements
+- Fixed app development issues with the Vite server.
+
 ## v10.1.0
 
 ### Bugfixes/improvements
