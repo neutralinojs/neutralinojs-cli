@@ -18,7 +18,8 @@ module.exports.start = (options = {}) => {
         return;
     }
 
-    ws = new WS(`ws://127.0.0.1:${authInfo.port}?extensionId=js.neutralino.devtools`);
+    ws = new WS(`ws://127.0.0.1:${authInfo.nlPort}?extensionId=js.neutralino.devtools
+                    &connectToken=${authInfo.nlConnectToken}`);
 
     ws.onerror = () => {
         retryLater(options);
@@ -27,7 +28,7 @@ module.exports.start = (options = {}) => {
     ws.onopen = () => {
         utils.log('neu CLI connected with the application.');
         if(options.frontendLibDev) {
-            frontendlib.bootstrap(authInfo.port);
+            frontendlib.bootstrap(authInfo.nlPort);
         }
     };
 
@@ -58,7 +59,7 @@ module.exports.dispatch = (event, data) => {
         ws.send(JSON.stringify({
             id: uuidv4(),
             method: 'app.broadcast',
-            accessToken: authInfo.accessToken,
+            accessToken: authInfo.nlToken,
             data: {
                 event,
                 data
