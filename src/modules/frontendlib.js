@@ -88,11 +88,11 @@ module.exports.cleanup = () => {
 
 
 module.exports.runCommand = (commandKey) => {
-    return new Promise((resolve, reject) => {
-        let configObj = config.get();
-        let frontendLib = configObj.cli?.frontendLibrary;
+    let configObj = config.get();
+    let frontendLib = configObj.cli?.frontendLibrary;
 
-        if(frontendLib?.projectPath && frontendLib?.[commandKey]) {
+    if(frontendLib?.projectPath && frontendLib?.[commandKey]) {
+        return new Promise((resolve, reject) => {
             let projectPath = utils.trimPath(frontendLib.projectPath);
             let cmd = frontendLib[commandKey];
 
@@ -102,8 +102,8 @@ module.exports.runCommand = (commandKey) => {
                 utils.log(`${commandKey} completed with exit code: ${code}`);
                 resolve();
             });
-        }
-    });
+        });
+    }
 }
 
 module.exports.containsFrontendLibApp = () => {
