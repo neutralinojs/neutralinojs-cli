@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v11.0.0
+
 ### Core: Runner
 - Change the WebSocket connection based on the v5 framework APIs.
 
