@@ -6,6 +6,12 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Core: Runner
+- Change the WebSocket connection based on the v5 framework APIs.
+
+### Bugfixes/improvements
+- Fixed issues with the frontend library command execution.
+
 ## v10.1.1
 
 ### Bugfixes/improvements
