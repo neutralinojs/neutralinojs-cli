@@ -42,6 +42,10 @@ let trimPath = (path) => {
     return path?.replace(/^\//, '');
 }
 
+let clearBuild = () => {
+    fse.removeSync('/dist');
+}
+
 let clearCache = () => {
     fse.removeSync('.tmp');
 }
@@ -60,5 +64,6 @@ module.exports = {
     warn,
     trimPath,
     clearCache,
-    getVersionTag
+    getVersionTag,
+    clearBuild
 }
