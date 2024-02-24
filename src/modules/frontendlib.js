@@ -16,10 +16,10 @@ async function makeClientLibUrl(port) {
     let configObj = config.get();
     let resourcesPath = configObj.cli.resourcesPath.replace(/^\//, '');
     let files = await recursive(resourcesPath);
-    let clientLib = files
-        .find((file) => /neutralino\.js$/.test(file))
-        ?.replace(/\\/g, '/'); //Fix path on windows;
-
+    let clientLib = files.find((file) => /neutralino\.js$/.test(file));
+    if (clientLib) {
+        clientLib = clientLib.replace(/\\/g, '/'); // Fix path on Windows
+    }
     let url = `http://localhost:${port}`;
 
     if(clientLib) {
@@ -89,9 +89,9 @@ module.exports.cleanup = () => {
 
 module.exports.runCommand = (commandKey) => {
     let configObj = config.get();
-    let frontendLib = configObj.cli?.frontendLibrary;
+    let frontendLib = configObj.cli ? configObj.cli.frontendLibrary : undefined;
 
-    if(frontendLib?.projectPath && frontendLib?.[commandKey]) {
+    if (frontendLib && frontendLib.projectPath && frontendLib[commandKey]) {
         return new Promise((resolve, reject) => {
             let projectPath = utils.trimPath(frontendLib.projectPath);
             let cmd = frontendLib[commandKey];
@@ -108,12 +108,12 @@ module.exports.runCommand = (commandKey) => {
 
 module.exports.containsFrontendLibApp = () => {
     let configObj = config.get();
-    return !!configObj.cli?.frontendLibrary;
+    return !!(configObj.cli && configObj.cli.frontendLibrary);
 }
 
 module.exports.waitForFrontendLibApp = async () => {
     let configObj = config.get();
-    let devUrlString = configObj.cli?.frontendLibrary?.devUrl;
+    let devUrlString = configObj.cli && configObj.cli.frontendLibrary ? configObj.cli.frontendLibrary.devUrl : undefined;
     let url = new URL(devUrlString);
     let portString = url.port;
     let port = portString ? Number.parseInt(portString) : getPortByProtocol(url.protocol)

@@ -159,7 +159,7 @@ module.exports.removeTest = (pluginPath, uninstallSuccessCallback) => {
       pluginName = pluginPath;
     }
 
-    if (!pluginName && (!statsObj?.isDirectory() || !fs.existsSync(pluginPath))) {
+    if (!pluginName && (!statsObj || !statsObj.isDirectory() || !fs.existsSync(pluginPath))) {
       utils.error(`${pluginPath} is not a valid file path`);
 
       process.exit(1);
