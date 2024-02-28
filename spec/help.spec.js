@@ -1,7 +1,7 @@
 const assert = require('assert');
 const runner = require('./runner');
 
-describe('Run misc neu commands', () => {
+describe('Run neu help command', () => {
     before(() => {
         runner.run('neu create test-app');
         process.chdir('test-app');
