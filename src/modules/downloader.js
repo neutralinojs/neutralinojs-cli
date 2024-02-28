@@ -181,7 +181,7 @@ module.exports.downloadAndUpdateBinaries = async (latest = false) => {
     for(let dependency of constants.files.dependencies) {
         fse.copySync(`.tmp/${dependency}`,`bin/${dependency}`);
     }
-    utils.clearDirectory('.tmo');
+    utils.clearDirectory('.tmp');
 }
 
 module.exports.downloadAndUpdateClient = async (latest = false) => {
