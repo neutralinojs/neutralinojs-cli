@@ -81,7 +81,7 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             archive.directory(`dist/${binaryName}`, false);
             await archive.finalize();
         }
-        utils.clearCache();
+        utils.clearDirectory('.tmp');
     }
     catch (e) {
         utils.error(e);

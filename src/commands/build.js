@@ -10,7 +10,7 @@ module.exports.register = (program) => {
         .action(async (command) => {
             utils.checkCurrentProject();
             utils.log('Removing current build...');
-            utils.clearBuild();
+            utils.clearDirectory('dist');
             utils.log('Bundling app...');
             await bundler.bundleApp(command.release, command.copyStorage);
             utils.showArt();
