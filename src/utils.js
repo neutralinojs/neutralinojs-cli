@@ -50,6 +50,13 @@ let getVersionTag = (version) => {
     return version != 'nightly' ? 'v' + version : version;
 }
 
+let removeExistingFiles = (path) => {
+    if(fse.existsSync(path)){
+        log("Removing existing files...")
+        fse.rmSync(path, { recursive: true });
+    }
+}
+
 module.exports = {
     error,
     isNeutralinojsProject,
@@ -60,5 +67,6 @@ module.exports = {
     warn,
     trimPath,
     clearCache,
-    getVersionTag
+    getVersionTag,
+    removeExistingFiles
 }

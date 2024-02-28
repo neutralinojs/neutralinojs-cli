@@ -8,6 +8,7 @@ module.exports.register = (program) => {
         .option('-l, --latest')
         .action(async (command) => {
             utils.checkCurrentProject();
+            utils.removeExistingFiles("./bin")
             await downloader.downloadAndUpdateBinaries(command.latest);
             await downloader.downloadAndUpdateClient(command.latest);
 

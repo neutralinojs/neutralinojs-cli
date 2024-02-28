@@ -9,6 +9,7 @@ module.exports.register = (program) => {
         .option('--copy-storage')
         .action(async (command) => {
             utils.checkCurrentProject();
+            utils.removeExistingFiles("./dist")
             utils.log('Bundling app...');
             await bundler.bundleApp(command.release, command.copyStorage);
             utils.showArt();
