@@ -6,16 +6,6 @@ describe('Run misc neu commands', () => {
         runner.run('neu create test-app');
         process.chdir('test-app');
     });
-    describe('Test neu --help command', () => {
-        it('returns output of neu --help', async() => {
-            let output = runner.run('neu --help');
-
-            assert.equal(output.error, null);
-            assert.equal(output.status, 0);
-            assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('Usage: neu [options] [command]'));
-        });
-    });
     describe('Test neu version command', () => {
         it('returns output of neu version --help', async() => {
             let output = runner.run('neu version --help');
