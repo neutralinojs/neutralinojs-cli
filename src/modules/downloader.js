@@ -154,7 +154,7 @@ module.exports.downloadTemplate = (template) => {
                 decompress(zipFilename, '.tmp/')
                     .then(() => {
                         fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
-                        utils.clearCache();
+                        utils.clearDirectory('.tmp');
                         resolve();
                     })
                     .catch((e) => reject(e));
@@ -181,7 +181,7 @@ module.exports.downloadAndUpdateBinaries = async (latest = false) => {
     for(let dependency of constants.files.dependencies) {
         fse.copySync(`.tmp/${dependency}`,`bin/${dependency}`);
     }
-    utils.clearCache();
+    utils.clearDirectory('.tmp');
 }
 
 module.exports.downloadAndUpdateClient = async (latest = false) => {
@@ -199,6 +199,6 @@ module.exports.downloadAndUpdateClient = async (latest = false) => {
             , `./${clientLibrary}`);
     fse.copySync(`.tmp/neutralino.d.ts`
             , `./${clientLibrary.replace(/[.][a-z]*$/, '.d.ts')}`);
-    utils.clearCache();
+    utils.clearDirectory('.tmp');
 }
 
