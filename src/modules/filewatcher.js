@@ -27,7 +27,7 @@ function startFileWatcher() {
         '.*.log$'
     ];
 
-    if(configObj?.cli?.autoReloadExclude) {
+    if (configObj && configObj.cli && configObj.cli.autoReloadExclude) {
         exclude.push(configObj.cli.autoReloadExclude);
     }
     let watcherOptions = {

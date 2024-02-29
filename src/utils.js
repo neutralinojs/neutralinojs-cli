@@ -39,7 +39,7 @@ let warn = (message) => {
 }
 
 let trimPath = (path) => {
-    return path?.replace(/^\//, '');
+    return path ? path.replace(/^\//, ''): path;
 }
 
 let clearDirectory = (path) => {
