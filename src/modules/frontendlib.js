@@ -97,7 +97,12 @@ module.exports.runCommand = (commandKey) => {
             let cmd = frontendLib[commandKey];
 
             utils.log(`Running ${commandKey}: ${cmd}...`);
-            const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
+            let env = { ...process.env };
+
+            if (frontendLib.dontStartBrowser === undefined || frontendLib.dontStartBrowser) {
+                env.BROWSER = "none";
+            }
+            const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath, env: env });
             proc.on('exit', (code) => {
                 utils.log(`${commandKey} completed with exit code: ${code}`);
                 resolve();
