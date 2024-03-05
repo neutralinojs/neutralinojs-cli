@@ -9,6 +9,7 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ### Bugfixes/improvements
 - Clean existing app build files before creating another build using the `neu build` command.
 - Support older Node versions by removing the optional chaining feature usage.
+- Fix the endless port waiting issue with the `--frontend-lib-dev` option.
 
 ## v11.0.0
 
