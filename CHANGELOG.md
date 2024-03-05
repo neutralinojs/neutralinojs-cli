@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v11.0.1
+
 ### Bugfixes/improvements
 - Clean existing app build files before creating another build using the `neu build` command.
 - Support older Node versions by removing the optional chaining feature usage.
