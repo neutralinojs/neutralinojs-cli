@@ -24,7 +24,7 @@ describe('Run neu build command and its options', () => {
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('Application package was generated at the ./dist directory!'));
+            assert.ok(output.data.includes('Application package was generated at the dist directory!'));
             assert.ok(binaries.includes('resources.neu') &&
                 binaries.includes('test-app-linux_arm64') &&
                 binaries.includes('test-app-linux_armhf') &&
@@ -41,7 +41,7 @@ describe('Run neu build command and its options', () => {
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('Application package was generated at the ./dist directory!') &&
+            assert.ok(output.data.includes('Application package was generated at the dist directory!') &&
                 output.data.includes('Making app bundle ZIP file'));
             assert.ok(applicationBundle.includes('test-app-release.zip'));
         });
@@ -53,7 +53,7 @@ describe('Run neu build command and its options', () => {
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('Application package was generated at the ./dist directory!') &&
+            assert.ok(output.data.includes('Application package was generated at the dist directory!') &&
                 output.data.includes('Copying binaries') &&
                 output.data.includes('Copying storage data'));
             assert.ok(storageSnapshot.includes('.storage'));

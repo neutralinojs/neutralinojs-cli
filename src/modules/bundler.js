@@ -16,12 +16,13 @@ async function createAsarFile() {
                             : null;
     const icon = utils.trimPath(configObj.modes.window.icon);
     const binaryName = configObj.cli.binaryName;
+    const buildDir = configObj.distributionPath ? utils.trimPath(configObj.distributionPath) : 'dist';
 
     fs.mkdirSync(`.tmp`, { recursive: true });
     await fse.copy(`./${resourcesDir}`, `.tmp/${resourcesDir}`, {overwrite: true});
 
     if(extensionsDir && fs.existsSync(extensionsDir)) {
-        await fse.copy(`./${extensionsDir}`, `dist/${binaryName}/${extensionsDir}`, {overwrite: true});
+        await fse.copy(`./${extensionsDir}`, `${buildDir}/${binaryName}/${extensionsDir}`, {overwrite: true});
     }
 
     await fse.copy(`${constants.files.configFile}`, `.tmp/${constants.files.configFile}`, {overwrite: true});
@@ -34,12 +35,14 @@ async function createAsarFile() {
     }
     await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
 
-    await asar.createPackage('.tmp', `dist/${binaryName}/${constants.files.resourceFile}`);
+    await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${constants.files.resourceFile}`);
 }
 
 module.exports.bundleApp = async (isRelease, copyStorage) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
+    const buildDir = configObj.distributionPath ? utils.trimPath(configObj.distributionPath) : 'dist';
+    
     try {
         if(frontendlib.containsFrontendLibApp()) {
             await frontendlib.runCommand('buildCommand');
@@ -53,19 +56,19 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
                 let originalBinaryFile = constants.files.binaries[platform][arch];
                 let destinationBinaryFile = originalBinaryFile.replace('neutralino', binaryName);
                 if(fse.existsSync(`bin/${originalBinaryFile}`)) {
-                    fse.copySync(`bin/${originalBinaryFile}`, `dist/${binaryName}/${destinationBinaryFile}`);
+                    fse.copySync(`bin/${originalBinaryFile}`, `${buildDir}/${binaryName}/${destinationBinaryFile}`);
                 }
             }
         }
 
         for(let dependency of constants.files.dependencies) {
-            fse.copySync(`bin/${dependency}`,`dist/${binaryName}/${dependency}`);
+            fse.copySync(`bin/${dependency}`,`${buildDir}/${binaryName}/${dependency}`);
         }
 
         if(copyStorage) {
             utils.log('Copying storage data...');
             try {
-                fse.copySync('.storage',`dist/${binaryName}/.storage`);
+                fse.copySync('.storage',`${buildDir}/${binaryName}/.storage`);
             }
             catch(err) {
                 utils.error('Unable to copy storage data from the .storage directory. Please check if the directory exists');
@@ -75,10 +78,10 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
 
         if (isRelease) {
             utils.log('Making app bundle ZIP file...');
-            let output = fs.createWriteStream(`dist/${binaryName}-release.zip`);
+            let output = fs.createWriteStream(`${buildDir}/${binaryName}-release.zip`);
             let archive = archiver('zip', { zlib: { level: 9 } });
             archive.pipe(output);
-            archive.directory(`dist/${binaryName}`, false);
+            archive.directory(`${buildDir}/${binaryName}`, false);
             await archive.finalize();
         }
         utils.clearDirectory('.tmp');

@@ -1,5 +1,6 @@
 const utils = require('../utils');
 const bundler = require('../modules/bundler');
+const config = require('../modules/config');
 
 module.exports.register = (program) => {
     program
@@ -9,12 +10,14 @@ module.exports.register = (program) => {
         .option('--copy-storage')
         .action(async (command) => {
             utils.checkCurrentProject();
+            const configObj = config.get()
             utils.log('Removing current build...');
-            utils.clearDirectory('dist');
+            const buildDir = configObj.distributionPath ? utils.trimPath(configObj.distributionPath) : 'dist';
+            utils.clearDirectory(buildDir);
             utils.log('Bundling app...');
             await bundler.bundleApp(command.release, command.copyStorage);
             utils.showArt();
-            utils.log('Application package was generated at the ./dist directory!');
+            utils.log(`Application package was generated at the ${buildDir} directory!`);
             utils.log('Distribution guide: https://neutralino.js.org/docs/distribution/overview');
         });
 }
