@@ -199,6 +199,8 @@ module.exports.downloadAndUpdateClient = async (latest = false) => {
             , `./${clientLibrary}`);
     fse.copySync(`.tmp/neutralino.d.ts`
             , `./${clientLibrary.replace(/[.][a-z]*$/, '.d.ts')}`);
+    fse.copySync(`.tmp/neutralino.js`
+            , `./${clientLibrary.replace(/[.][a-z]*$/, '.js')}`);
     utils.clearDirectory('.tmp');
 }
 
