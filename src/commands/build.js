@@ -12,7 +12,7 @@ module.exports.register = (program) => {
             utils.checkCurrentProject();
             const configObj = config.get()
             utils.log('Removing current build...');
-            const buildDir = configObj.distributionPath ? utils.trimPath(configObj.distributionPath) : 'dist';
+            const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
             utils.clearDirectory(buildDir);
             utils.log('Bundling app...');
             await bundler.bundleApp(command.release, command.copyStorage);

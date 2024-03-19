@@ -16,7 +16,7 @@ async function createAsarFile() {
                             : null;
     const icon = utils.trimPath(configObj.modes.window.icon);
     const binaryName = configObj.cli.binaryName;
-    const buildDir = configObj.distributionPath ? utils.trimPath(configObj.distributionPath) : 'dist';
+    const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
 
     fs.mkdirSync(`.tmp`, { recursive: true });
     await fse.copy(`./${resourcesDir}`, `.tmp/${resourcesDir}`, {overwrite: true});
@@ -41,8 +41,8 @@ async function createAsarFile() {
 module.exports.bundleApp = async (isRelease, copyStorage) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
-    const buildDir = configObj.distributionPath ? utils.trimPath(configObj.distributionPath) : 'dist';
-    
+    const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
+
     try {
         if(frontendlib.containsFrontendLibApp()) {
             await frontendlib.runCommand('buildCommand');
