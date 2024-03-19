@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Core: Bundler
+- Add `cli.distributionPath` into the `neutralino.config.json` file to customize the default `dist` distribution directory.
+
 ## v11.0.1
 
 ### Bugfixes/improvements
