@@ -40,6 +40,7 @@
     "spawn-command": "^0.0.2-1",
     "tcp-port-used": "^1.0.2",
     "uuid": "^8.3.2",
+    "webpack": "^5.91.0",
     "websocket": "^1.0.34"
   },
   "bin": {
