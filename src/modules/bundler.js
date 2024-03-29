@@ -33,7 +33,18 @@ async function createAsarFile() {
             fse.removeSync(`.tmp/${typesFile}`);
         }
     }
-    await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
+
+    // This check prevents the 'neu' CLI tool from failing to build an application properly if the
+    // 'icon' variable is undefined.
+    // If it is mandatory for 'icon' to be defined, then the documentation should mention this as it
+    // currently does not mention anything regarding this.
+    if (icon != undefined)
+    {
+        // This method throws an error if 'icon' is undefined, resulting in the following error message
+        // being logged to the console:
+        // neu: ERRR Error: ENOENT: no such file or directory, stat 'C:\Users\John\Neutralino-App-Project\undefined'
+        await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
+    }
 
     await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${constants.files.resourceFile}`);
 }
