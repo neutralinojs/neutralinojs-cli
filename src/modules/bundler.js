@@ -6,6 +6,7 @@ const config = require('./config');
 const constants = require('../constants');
 const frontendlib = require('./frontendlib');
 const utils = require('../utils');
+const path = require("path");
 
 async function createAsarFile() {
     utils.log(`Generating ${constants.files.resourceFile}...`);
@@ -14,7 +15,7 @@ async function createAsarFile() {
     const extensionsDir = utils.trimPath(configObj.cli.extensionsPath);
     const clientLibrary = configObj.cli.clientLibrary ? utils.trimPath(configObj.cli.clientLibrary)
                             : null;
-    const icon = utils.trimPath(configObj.modes.window.icon);
+    let icon = utils.trimPath(configObj.modes.window.icon);
     const binaryName = configObj.cli.binaryName;
     const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
 
@@ -34,17 +35,26 @@ async function createAsarFile() {
         }
     }
 
+    let iconDestinationFilePath = "";
+
     // This check prevents the 'neu' CLI tool from failing to build an application properly if the
     // 'icon' variable is undefined.
     // If it is mandatory for 'icon' to be defined, then the documentation should mention this as it
     // currently does not mention anything regarding this.
-    if (icon != undefined)
+    if (icon == undefined)
     {
-        // This method throws an error if 'icon' is undefined, resulting in the following error message
-        // being logged to the console:
-        // neu: ERRR Error: ENOENT: no such file or directory, stat 'C:\Users\John\Neutralino-App-Project\undefined'
-        await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
+        icon = utils.getNeutralinoIconFilePath();
+
+        iconDestinationFilePath = `.tmp/icon.png`;
     }
+    else
+    {
+        icon = `./${resourcesDir}${icon}`;
+
+        iconDestinationFilePath = `.tmp/${icon.replace(`./${resourcesDir}`, "")}`;
+    }
+
+    await fse.copy(icon, iconDestinationFilePath, {overwrite: true});
 
     await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${constants.files.resourceFile}`);
 }
