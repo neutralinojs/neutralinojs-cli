@@ -8,7 +8,7 @@ const decompress = require('decompress');
 
 let cachedLatestClientVersion = null;
 
-let getLatestVersion = (repo) => {
+let getLatestVersion = (repo, proxy) => {
     return new Promise((resolve, reject) => {
         function fallback() {
             utils.warn('Unable to fetch the latest version tag from GitHub. Using nightly releases...');
@@ -18,6 +18,9 @@ let getLatestVersion = (repo) => {
         let opt = {
             headers: {'User-Agent': 'Neutralinojs CLI'}
         };
+        if (proxy) {
+            opt.proxy = proxy;
+        }
         https.get(constants.remote.releasesApiUrl.replace('{repo}', repo), opt, function (response) {
             let body = '';
             response.on('data', (data) => body += data);
@@ -43,19 +46,19 @@ let getScriptExtension = () => {
     return clientLibrary.includes('.mjs') ? 'mjs' : 'js';
 }
 
-let getBinaryDownloadUrl = async (latest) => {
+let getBinaryDownloadUrl = async (latest, proxy) => {
     const configObj = config.get();
     let version = configObj.cli.binaryVersion;
 
     if(!version || latest) {
-        version = await getLatestVersion('neutralinojs');
+        version = await getLatestVersion('neutralinojs', proxy);
         config.update('cli.binaryVersion', version);
     }
     return constants.remote.binariesUrl
         .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
-let getClientDownloadUrl = async (latest, types = false) => {
+let getClientDownloadUrl = async (latest, proxy, types = false) => {
     const configObj = config.get();
     let version = configObj.cli.clientVersion;
 
@@ -64,7 +67,7 @@ let getClientDownloadUrl = async (latest, types = false) => {
             version = cachedLatestClientVersion;
         }
         else {
-            version = await getLatestVersion('neutralino.js');
+            version = await getLatestVersion('neutralino.js', proxy);
         }
         cachedLatestClientVersion = version;
         config.update('cli.clientVersion', version);
@@ -75,23 +78,27 @@ let getClientDownloadUrl = async (latest, types = false) => {
             .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
-let getTypesDownloadUrl = (latest) => {
-    return getClientDownloadUrl(latest, true);
+let getTypesDownloadUrl = (latest, proxy) => {
+    return getClientDownloadUrl(latest, proxy, true);
 }
 
 let getRepoNameFromTemplate = (template) => {
     return template.split('/')[1];
 }
 
-let downloadBinariesFromRelease = (latest) => {
+let downloadBinariesFromRelease = (latest, proxy) => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
         const zipFilename = '.tmp/binaries.zip';
         const file = fs.createWriteStream(zipFilename);
         utils.log('Downloading Neutralinojs binaries..');
-        getBinaryDownloadUrl(latest)
+        getBinaryDownloadUrl(latest, proxy)
             .then((url) => {
-                https.get(url, function (response) {
+                const options = {};
+                if (proxy) {
+                    options.proxy = proxy;
+                }
+                https.get(url, options, function (response) {
                     response.pipe(file);
                     response.on('end', () => {
                         utils.log('Extracting binaries.zip file...');
@@ -104,14 +111,18 @@ let downloadBinariesFromRelease = (latest) => {
     });
 }
 
-let downloadClientFromRelease = (latest) => {
+let downloadClientFromRelease = (latest, proxy) => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
         const file = fs.createWriteStream('.tmp/neutralino.' + getScriptExtension());
         utils.log('Downloading the Neutralinojs client..');
-        getClientDownloadUrl(latest)
+        getClientDownloadUrl(latest, proxy)
             .then((url) => {
-                https.get(url, function (response) {
+                const options = {};
+                if (proxy) {
+                    options.proxy = proxy;
+                }
+                https.get(url, options, function (response) {
                     response.pipe(file);
                     file.on('finish', () => {
                         file.close();
@@ -122,15 +133,19 @@ let downloadClientFromRelease = (latest) => {
     });
 }
 
-let downloadTypesFromRelease = (latest) => {
+let downloadTypesFromRelease = (latest, proxy) => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
         const file = fs.createWriteStream('.tmp/neutralino.d.ts');
         utils.log('Downloading the Neutralinojs types..');
 
-        getTypesDownloadUrl(latest)
+        getTypesDownloadUrl(latest, proxy)
             .then((url) => {
-                https.get(url, function (response) {
+                const options = {};
+                if (proxy) {
+                    options.proxy = proxy;
+                }
+                https.get(url, options, function (response) {
                     response.pipe(file);
                     file.on('finish', () => {
                         file.close();
@@ -141,13 +156,17 @@ let downloadTypesFromRelease = (latest) => {
     });
 }
 
-module.exports.downloadTemplate = (template) => {
+module.exports.downloadTemplate = (template, proxy) => {
     return new Promise((resolve, reject) => {
         let templateUrl = constants.remote.templateUrl.replace('{template}', template);
         fs.mkdirSync('.tmp', { recursive: true });
         const zipFilename = '.tmp/template.zip';
         const file = fs.createWriteStream(zipFilename);
-        https.get(templateUrl, function (response) {
+        const options = {};
+        if (proxy) {
+            options.proxy = proxy;
+        }
+        https.get(templateUrl, options, function (response) {
             response.pipe(file);
             response.on('end', () => {
                 utils.log('Extracting template zip file...');
@@ -163,8 +182,8 @@ module.exports.downloadTemplate = (template) => {
     });
 }
 
-module.exports.downloadAndUpdateBinaries = async (latest = false) => {
-    await downloadBinariesFromRelease(latest);
+module.exports.downloadAndUpdateBinaries = async (latest = false, proxy) => {
+    await downloadBinariesFromRelease(latest, proxy);
     utils.log('Finalizing and cleaning temp. files.');
     if(!fse.existsSync('bin'))
         fse.mkdirSync('bin');
@@ -184,7 +203,7 @@ module.exports.downloadAndUpdateBinaries = async (latest = false) => {
     utils.clearDirectory('.tmp');
 }
 
-module.exports.downloadAndUpdateClient = async (latest = false) => {
+module.exports.downloadAndUpdateClient = async (latest = false, proxy) => {
     const configObj = config.get();
     if(!configObj.cli.clientLibrary) {
         utils.log(`neu CLI won't download the client library --` +
@@ -192,8 +211,8 @@ module.exports.downloadAndUpdateClient = async (latest = false) => {
         return;
     }
     const clientLibrary = utils.trimPath(configObj.cli.clientLibrary);
-    await downloadClientFromRelease(latest);
-    await downloadTypesFromRelease(latest);
+    await downloadClientFromRelease(latest, proxy);
+    await downloadTypesFromRelease(latest, proxy);
     utils.log('Finalizing and cleaning temp. files...');
     fse.copySync(`.tmp/${constants.files.clientLibraryPrefix + getScriptExtension()}`
             , `./${clientLibrary}`);
@@ -201,4 +220,3 @@ module.exports.downloadAndUpdateClient = async (latest = false) => {
             , `./${clientLibrary.replace(/[.][a-z]*$/, '.d.ts')}`);
     utils.clearDirectory('.tmp');
 }
-
