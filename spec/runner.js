@@ -36,20 +36,6 @@ function cleanup() {
     }
 }
 
-function readDirectory(path) {
-    let files = [];
-    try {
-        fs.readdirSync(path).forEach(file => {
-            files.push(file);
-        });
-    }
-    catch(err) {
-        // ignore
-    }
-
-    return files;
-}
-
 function updateVersions(binaryVersion, clientVersion) {
     const file = 'neutralino.config.json';
     const config = JSON.parse(fs.readFileSync(file));
@@ -61,7 +47,6 @@ function updateVersions(binaryVersion, clientVersion) {
 
 module.exports = {
     cleanup,
-    readDirectory,
     updateVersions,
     run
 }
