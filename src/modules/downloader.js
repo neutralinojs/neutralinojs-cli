@@ -223,7 +223,7 @@ module.exports.checkIfTemplateValid = (template) => {
                     if(jsonData.message === 'Not Found') {
                         resolve(false);
                     }
-                    else if(jsonData.message.includes("API rate limit exceeded")) {
+                    else if(jsonData.message && jsonData.message.includes("API rate limit exceeded")) {
                         utils.warn('Unable to check the template validity due to API rate limits.');
                         resolve(true);
                     }
