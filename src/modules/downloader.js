@@ -204,7 +204,6 @@ module.exports.downloadAndUpdateClient = async (latest = false) => {
 
 module.exports.checkIfTemplateValid = (template) => {
     return new Promise((resolve) => {
-        console.log(constants.remote.templateCheckUrl.replace('{template}', template));
         https.get(constants.remote.templateCheckUrl.replace('{template}', template), {
             headers: {
                 'X-GitHub-Api-Version': '2022-11-28',
@@ -221,11 +220,15 @@ module.exports.checkIfTemplateValid = (template) => {
             response.on('end', () => {
                 try {
                     const jsonData = JSON.parse(data);
-                    if(jsonData.message !== 'Not Found') {
+                    if(jsonData.message === 'Not Found') {
+                        resolve(false);
+                    }
+                    else if(jsonData.message.includes("API rate limit exceeded")) {
+                        utils.warn('Unable to check the template validity due to API rate limits.');
                         resolve(true);
                     }
                     else{
-                        resolve(false);
+                        resolve(true);
                     }
                 } catch (error) {
                     utils.warn('Unable to check the template validity.');
