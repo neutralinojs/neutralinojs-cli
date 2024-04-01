@@ -14,6 +14,15 @@ module.exports.createApp = async (binaryName, template) => {
     if(!template) {
         template = 'neutralinojs/neutralinojs-minimal';
     }
+
+    utils.log(`Checking if ${template} is a valid template...`);
+
+    const isValidTemplate = await downloader.checkIfTemplateValid(template)
+    if( !isValidTemplate ) {
+        utils.error(`${template} is not a valid template.`);
+        process.exit(1);
+    }
+
     utils.log(`Downloading ${template} template to ${binaryName} directory...`);
 
     fs.mkdirSync(binaryName, { recursive: true });
