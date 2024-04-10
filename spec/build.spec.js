@@ -1,5 +1,6 @@
 const assert = require('assert');
 const runner = require('./runner');
+const fs = require('fs');
 
 describe('Run neu build command and its options', () => {
     before(() => {
@@ -19,7 +20,7 @@ describe('Run neu build command and its options', () => {
     describe('Test building binaries for supported platforms and resources.neu file', () => {
         it('populates ./dist directory with binaries', async() => {
             let output = runner.run('neu build');
-            const binaries = runner.readDirectory('./dist/test-app/');
+            const binaries = fs.readdirSync('./dist/test-app/');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
@@ -36,7 +37,7 @@ describe('Run neu build command and its options', () => {
         });
         it('creates & populates ./dist directory with binaries and portable ZIP bundle', async() => {
             let output = runner.run('neu build --release');
-            const applicationBundle = runner.readDirectory('./dist/');
+            const applicationBundle = fs.readdirSync('./dist/');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
@@ -48,7 +49,7 @@ describe('Run neu build command and its options', () => {
         it('copies the current snapshot of the Neutralinojs storage to the application bundle', async() => {
             runner.run(' mkdir .storage') // .storage doesn't exist by default in the template
             let output = runner.run('neu build --copy-storage');
-            const storageSnapshot = runner.readDirectory('./dist/test-app');
+            const storageSnapshot = fs.readdirSync('./dist/test-app');
 
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
