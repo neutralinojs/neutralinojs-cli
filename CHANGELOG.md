@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Bugfixes/improvements
+- Check and validate `neutralino.config.json` file before executing app-specific commands.
+
 ## v11.1.0
 
 ### Core: Bundler
