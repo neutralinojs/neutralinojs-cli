@@ -29,14 +29,14 @@ let checkCurrentProject = () => {
             `Please check whether the current directory has a Neutralinojs project.`);
         process.exit(1);
     }
-    const config = fs.readFileSync(CONFIG_FILE)
+    const config = fs.readFileSync(CONFIG_FILE);
     try {
         JSON.parse(config);
     } catch (error) {
-        console.error(`neu: ${chalk.bgRed.black('ERRR')} ${CONFIG_FILE} is not a valid JSON File.`)
+        error(`${CONFIG_FILE} is not a valid JSON File.`);
         process.exit(1);
     }
-    var validate = validator({
+    const validate = validator({
         required: true,
         type: 'object',
         properties: {
