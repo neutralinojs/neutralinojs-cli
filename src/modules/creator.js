@@ -6,12 +6,12 @@ const downloader = require('./downloader');
 const frontendlib = require('../modules/frontendlib');
 const utils = require('../utils');
 
-module.exports.createApp = async (binaryName, template) => {
+module.exports.createApp = async (binaryName, template, proxy) => {
     if (fs.existsSync(`./${binaryName}`)) {
         utils.error('App name already exists');
         process.exit(1);
     }
-    if(!template) {
+    if (!template) {
         template = 'neutralinojs/neutralinojs-minimal';
     }
     utils.log(`Downloading ${template} template to ${binaryName} directory...`);
@@ -20,13 +20,13 @@ module.exports.createApp = async (binaryName, template) => {
     process.chdir(binaryName); // Change the path context for the following methods
 
     try {
-        await downloader.downloadTemplate(template);
-        await downloader.downloadAndUpdateBinaries();
-        await downloader.downloadAndUpdateClient();
-    }
-    catch(err) {
-        utils.error('Unable to download resources from internet.' +
-                    ' Please check your internet connection and template URLs.');
+        // Pass proxy information to downloader functions
+        await downloader.downloadTemplate(template, proxy);
+        await downloader.downloadAndUpdateBinaries(false, proxy);
+        await downloader.downloadAndUpdateClient(false, proxy);
+    } catch (err) {
+        utils.error('Unable to download resources from the internet.' +
+            ' Please check your internet connection and template URLs.');
         fse.removeSync(`../${binaryName}`);
         process.exit(1);
     }
@@ -34,7 +34,7 @@ module.exports.createApp = async (binaryName, template) => {
     config.update('cli.binaryName', binaryName);
     config.update('modes.window.title', binaryName);
 
-    if(frontendlib.containsFrontendLibApp()) {
+    if (frontendlib.containsFrontendLibApp()) {
         await frontendlib.runCommand('initCommand');
     }
 
