@@ -33,6 +33,9 @@ let getLatestVersion = (repo) => {
             response.on('error', () => {
                 fallback();
             });
+        })
+        .on('error', () => {
+            fallback();
         });
     });
 }
@@ -202,43 +205,33 @@ module.exports.downloadAndUpdateClient = async (latest = false) => {
     utils.clearDirectory('.tmp');
 }
 
-module.exports.checkIfTemplateValid = (template) => {
+module.exports.isValidTemplate = (template) => {
     return new Promise((resolve) => {
-        https.get(constants.remote.templateCheckUrl.replace('{template}', template), {
-            headers: {
-                'User-Agent': 'Neutralinojs CLI'
-            }
-        }, function (response) {
-            let data = '';
-            
-            response.on('data', (chunk) => {
-                data += chunk;
-            });
-            
-            response.on('end', () => {
-                try {
-                    const jsonData = JSON.parse(data);
-                    if(jsonData.message === 'Not Found') {
-                        resolve(false);
-                    }
-                    else if(jsonData.message && jsonData.message.includes("API rate limit exceeded")) {
-                        utils.warn('Unable to check the template validity due to API rate limits.');
-                        resolve(true);
-                    }
-                    else{
-                        resolve(true);
-                    }
-                } catch (error) {
-                    utils.warn('Unable to check the template validity.');
-                    resolve(true);
-                }
-            });
-            
-            response.on('error', () => {
-                utils.warn('Unable to check the template validity.');
+        let opt = {
+            headers: { 'User-Agent': 'Neutralinojs CLI' }
+        };
+
+        function fallback() {
+            utils.warn('Unable to check the template validity via the GitHub API. Assume that the template is valid...');
+            resolve(true);
+        }
+
+        https.get(constants.remote.templateCheckUrl.replace('{template}', template), opt,
+        function (response) {
+            response.req.abort();
+            if(response.statusCode == 200) {
                 resolve(true);
-            });
+            }
+            else if(response.statusCode == 404) {
+                resolve(false);
+            }
+            else {
+                fallback();
+            }
+        })
+        .on('error', (e) => {
+            fallback();
         });
     });
-    
+
 }

@@ -15,11 +15,11 @@ module.exports.createApp = async (binaryName, template) => {
         template = 'neutralinojs/neutralinojs-minimal';
     }
 
-    utils.log(`Checking if ${template} is a valid template...`);
+    utils.log(`Checking if ${template} is a valid Neutralinojs app template...`);
 
-    const isValidTemplate = await downloader.checkIfTemplateValid(template)
-    if( !isValidTemplate ) {
-        utils.error(`${template} is not a valid template.`);
+    const isValidTemplate = await downloader.isValidTemplate(template);
+    if(!isValidTemplate) {
+        utils.error(`${template} is not a valid Neutralinojs app template.`);
         process.exit(1);
     }
 
