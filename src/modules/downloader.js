@@ -16,13 +16,13 @@ let getLatestVersion = (repo) => {
         }
 
         let opt = {
-            headers: {'User-Agent': 'Neutralinojs CLI'}
+            headers: { 'User-Agent': 'Neutralinojs CLI' }
         };
         https.get(constants.remote.releasesApiUrl.replace('{repo}', repo), opt, function (response) {
             let body = '';
             response.on('data', (data) => body += data);
             response.on('end', () => {
-                if(response.statusCode != 200) {
+                if (response.statusCode != 200) {
                     return fallback();
                 }
                 let apiRes = JSON.parse(body);
@@ -47,7 +47,7 @@ let getBinaryDownloadUrl = async (latest) => {
     const configObj = config.get();
     let version = configObj.cli.binaryVersion;
 
-    if(!version || latest) {
+    if (!version || latest) {
         version = await getLatestVersion('neutralinojs');
         config.update('cli.binaryVersion', version);
     }
@@ -59,8 +59,8 @@ let getClientDownloadUrl = async (latest, types = false) => {
     const configObj = config.get();
     let version = configObj.cli.clientVersion;
 
-    if(!version || latest) {
-        if(cachedLatestClientVersion) {
+    if (!version || latest) {
+        if (cachedLatestClientVersion) {
             version = cachedLatestClientVersion;
         }
         else {
@@ -72,7 +72,7 @@ let getClientDownloadUrl = async (latest, types = false) => {
 
     let scriptUrl = constants.remote.clientUrlPrefix + (types ? 'd.ts' : getScriptExtension());
     return scriptUrl
-            .replace(/{tag}/g, utils.getVersionTag(version));
+        .replace(/{tag}/g, utils.getVersionTag(version));
 }
 
 let getTypesDownloadUrl = (latest) => {
@@ -100,7 +100,7 @@ let downloadBinariesFromRelease = (latest) => {
                             .catch((e) => reject(e));
                     });
                 });
-        });
+            });
     });
 }
 
@@ -166,29 +166,29 @@ module.exports.downloadTemplate = (template) => {
 module.exports.downloadAndUpdateBinaries = async (latest = false) => {
     await downloadBinariesFromRelease(latest);
     utils.log('Finalizing and cleaning temp. files.');
-    if(!fse.existsSync('bin'))
+    if (!fse.existsSync('bin'))
         fse.mkdirSync('bin');
 
-    for(let platform in constants.files.binaries) {
-        for(let arch in constants.files.binaries[platform]) {
+    for (let platform in constants.files.binaries) {
+        for (let arch in constants.files.binaries[platform]) {
             let binaryFile = constants.files.binaries[platform][arch];
-            if(fse.existsSync(`.tmp/${binaryFile}`)) {
+            if (fse.existsSync(`.tmp/${binaryFile}`)) {
                 fse.copySync(`.tmp/${binaryFile}`, `bin/${binaryFile}`);
             }
         }
     }
 
-    for(let dependency of constants.files.dependencies) {
-        fse.copySync(`.tmp/${dependency}`,`bin/${dependency}`);
+    for (let dependency of constants.files.dependencies) {
+        fse.copySync(`.tmp/${dependency}`, `bin/${dependency}`);
     }
     utils.clearDirectory('.tmp');
 }
 
 module.exports.downloadAndUpdateClient = async (latest = false) => {
     const configObj = config.get();
-    if(!configObj.cli.clientLibrary) {
+    if (!configObj.cli.clientLibrary) {
         utils.log(`neu CLI won't download the client library --` +
-                    ` download @neutralinojs/lib from your Node package manager.`);
+            ` download @neutralinojs/lib from your Node package manager.`);
         return;
     }
     const clientLibrary = utils.trimPath(configObj.cli.clientLibrary);
@@ -196,9 +196,49 @@ module.exports.downloadAndUpdateClient = async (latest = false) => {
     await downloadTypesFromRelease(latest);
     utils.log('Finalizing and cleaning temp. files...');
     fse.copySync(`.tmp/${constants.files.clientLibraryPrefix + getScriptExtension()}`
-            , `./${clientLibrary}`);
+        , `./${clientLibrary}`);
     fse.copySync(`.tmp/neutralino.d.ts`
-            , `./${clientLibrary.replace(/[.][a-z]*$/, '.d.ts')}`);
+        , `./${clientLibrary.replace(/[.][a-z]*$/, '.d.ts')}`);
     utils.clearDirectory('.tmp');
 }
 
+module.exports.checkIfTemplateValid = (template) => {
+    return new Promise((resolve) => {
+        https.get(constants.remote.templateCheckUrl.replace('{template}', template), {
+            headers: {
+                'User-Agent': 'Neutralinojs CLI'
+            }
+        }, function (response) {
+            let data = '';
+            
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+            
+            response.on('end', () => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    if(jsonData.message === 'Not Found') {
+                        resolve(false);
+                    }
+                    else if(jsonData.message && jsonData.message.includes("API rate limit exceeded")) {
+                        utils.warn('Unable to check the template validity due to API rate limits.');
+                        resolve(true);
+                    }
+                    else{
+                        resolve(true);
+                    }
+                } catch (error) {
+                    utils.warn('Unable to check the template validity.');
+                    resolve(true);
+                }
+            });
+            
+            response.on('error', () => {
+                utils.warn('Unable to check the template validity.');
+                resolve(true);
+            });
+        });
+    });
+    
+}

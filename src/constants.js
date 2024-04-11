@@ -3,7 +3,8 @@ module.exports = {
     binariesUrl:"https://github.com/neutralinojs/neutralinojs/releases/download/{tag}/neutralinojs-{tag}.zip",
     clientUrlPrefix: "https://github.com/neutralinojs/neutralino.js/releases/download/{tag}/neutralino.",
     templateUrl: "https://github.com/{template}/archive/main.zip",
-    releasesApiUrl: "https://api.github.com/repos/neutralinojs/{repo}/releases/latest"
+    releasesApiUrl: "https://api.github.com/repos/neutralinojs/{repo}/releases/latest",
+    templateCheckUrl: "https://api.github.com/repos/{template}/contents/neutralino.config.json"
   },
   files: {
     configFile: "neutralino.config.json",
