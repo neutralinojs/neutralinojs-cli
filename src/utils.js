@@ -5,7 +5,6 @@ const figlet = require('figlet');
 const chalk = require('chalk');
 const constants = require('./constants');
 const CONFIG_FILE = constants.files.configFile;
-const anymatch = require('anymatch');
 
 let error = (message) => {
     console.error(`neu: ${chalk.bgRed.black('ERRR')} ${message}`);
@@ -53,8 +52,8 @@ let getVersionTag = (version) => {
 
 let filterFiles = (src, pattern) => {
     if(!Array.isArray(pattern)) pattern = [pattern];
-    const matcher = anymatch(pattern.map(p => "**/" + trimPath(p)));
-    const found = matcher(src);
+    const regex = new RegExp(pattern.join('|'));
+    const found = src.match(regex);
     return !found;
 }
 
