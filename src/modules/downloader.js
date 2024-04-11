@@ -212,7 +212,7 @@ module.exports.isValidTemplate = (template) => {
         };
 
         function fallback() {
-            utils.warn('Unable to check the template validity via the GitHub API. Assume that the template is valid...');
+            utils.warn('Unable to check the template validity via the GitHub API. Assuming that the template is valid...');
             resolve(true);
         }
 
