@@ -206,8 +206,6 @@ module.exports.checkIfTemplateValid = (template) => {
     return new Promise((resolve) => {
         https.get(constants.remote.templateCheckUrl.replace('{template}', template), {
             headers: {
-                'X-GitHub-Api-Version': '2022-11-28',
-                "Accept": "application/vnd.github+json",
                 'User-Agent': 'Neutralinojs CLI'
             }
         }, function (response) {
