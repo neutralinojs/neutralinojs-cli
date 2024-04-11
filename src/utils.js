@@ -5,7 +5,7 @@ const figlet = require('figlet');
 const chalk = require('chalk');
 const constants = require('./constants');
 const CONFIG_FILE = constants.files.configFile;
-const validator = require('is-my-json-valid')
+const config = require('./modules/config')
 
 let error = (message) => {
     console.error(`neu: ${chalk.bgRed.black('ERRR')} ${message}`);
@@ -29,33 +29,9 @@ let checkCurrentProject = () => {
             `Please check whether the current directory has a Neutralinojs project.`);
         process.exit(1);
     }
-    const config = fs.readFileSync(CONFIG_FILE);
-    try {
-        JSON.parse(config);
-    } catch (error) {
-        error(`${CONFIG_FILE} is not a valid JSON File.`);
-        process.exit(1);
-    }
-    const validate = validator({
-        required: true,
-        type: 'object',
-        properties: {
-            applicationId: {
-                required: true,
-                type: 'string'
-            },
-            url: {
-                required: true,
-                type: 'string'
-            },
-            defaultMode: {
-                required: true,
-                type: 'string'
-            },
-        }
-    })
-    if (!validate(JSON.parse(config))) {
-        error(`Invalid ${CONFIG_FILE}. applicationId, url, defaultMode are required properties in configuration file.`);
+    const configObj =  config.get();
+    if(Object.keys(configObj).length == 0) {
+        error(`${CONFIG_FILE} is not a valid Neutralinojs configuration JSON file.`);
         process.exit(1);
     }
 }
