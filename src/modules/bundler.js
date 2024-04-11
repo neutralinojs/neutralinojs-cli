@@ -6,7 +6,6 @@ const config = require('./config');
 const constants = require('../constants');
 const frontendlib = require('./frontendlib');
 const utils = require('../utils');
-const { glob } = require('glob')
 
 async function createAsarFile() {
     utils.log(`Generating ${constants.files.resourceFile}...`);
@@ -20,25 +19,10 @@ async function createAsarFile() {
     const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
 
     fs.mkdirSync(`.tmp`, { recursive: true });
-    let resourceFiles = await glob("**", { cwd: resourcesDir, matchBase: true, nodir: true })
-    if (configObj.cli.resourcesIgnore) {
-        const resourcesIgnoreFiles = await glob(configObj.cli.resourcesIgnore, { cwd: resourcesDir, matchBase: true, nodir: true })
-        resourceFiles = resourceFiles.filter(file => !resourcesIgnoreFiles.includes(file))
-    }
-    for (const file of resourceFiles) {
-        console.log(file)
-        await fse.copy(`./${resourcesDir}/${file}`, `.tmp/${resourcesDir}/${file}`, { overwrite: true });
-    }
+    await fse.copy(`./${resourcesDir}`, `.tmp/${resourcesDir}`, { overwrite: true, filter: (src) => configObj.cli.resourcesIgnore ? utils.filterFiles(src, configObj.cli.resourcesIgnore) : true });
 
     if (extensionsDir && fs.existsSync(extensionsDir)) {
-        let extensionsFiles = await glob("**", { cwd: extensionsDir, matchBase: true, nodir: true })
-        if (configObj.cli.extensionsIgnore) {
-            const extensionsIgnoreFiles = await glob(configObj.cli.extensionsIgnore, { cwd: extensionsDir, matchBase: true, nodir: true })
-            extensionsFiles = extensionsFiles.filter(file => !extensionsIgnoreFiles.includes(file))
-        }
-        for (const file of extensionsFiles) {
-            await fse.copy(`./${extensionsDir}/${file}`, `${buildDir}/${binaryName}/${extensionsDir}/${file}`, { overwrite: true });
-        }
+        await fse.copy(`./${extensionsDir}`, `${buildDir}/${binaryName}/${extensionsDir}`, { overwrite: true, filter: (src) => configObj.cli.extensionsIgnore ? utils.filterFiles(src, configObj.cli.extensionsIgnore) : true });
     }
 
     await fse.copy(`${constants.files.configFile}`, `.tmp/${constants.files.configFile}`, { overwrite: true });
