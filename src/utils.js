@@ -6,7 +6,6 @@ const chalk = require('chalk');
 const constants = require('./constants');
 const CONFIG_FILE = constants.files.configFile;
 const config = require('./modules/config')
-const axios = require('axios');
 const package = require('../package.json')
 
 let error = (message) => {
