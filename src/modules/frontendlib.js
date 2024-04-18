@@ -123,8 +123,7 @@ module.exports.waitForFrontendLibApp = async () => {
     }
 
     let timewaited = 0;
-    utils.spinner.text = `(${timewaited}s) Waiting for App to be launched on ${devUrlString} on port ${port}...\n`;
-    utils.spinner.start();
+    utils.spinner.start(`(${timewaited}s) Waiting for App to be launched on ${devUrlString} on port ${port}...\n`);
 
     let inter = setInterval(() => {
         timewaited += 0.1;
