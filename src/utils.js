@@ -52,38 +52,44 @@ const originalConsoleLog = console.log;
 
 console.log = (message) => {
     if (spinner.isSpinning) {
-        spinner.prefixText += `${message}\n`;
+        if(message.includes("neu: 🛇")){
+            spinner.stopAndPersist({
+                symbol: chalk.red('neu: 🛇'),
+                text: message.slice(18) // remove "neu: 🛇" prefix from the original log
+            })
+        } else {
+            spinner.prefixText += ` ${message}\n`;
+        }
     } else {
         originalConsoleLog(message);
     }
 }
 
-let log = (message) => {
+let stopSpinner = () => {
     if(spinner.isSpinning){
-        spinner.prefixText += `${chalk.blue(' neu: 🛈')} ${message}\n`;
-    } else {
-        console.log(`${chalk.blue('neu: 🛈')} ${message}`);
+        spinner.stopAndPersist({
+            prefixText: spinner.prefixText,
+            text: ' '
+        })
     }
+}
+
+let log = (message) => {
+    console.log(`${chalk.blue('neu: 🛈')} ${message}`);
 }
 
 let warn = (message) => {
-    if(spinner.isSpinning){
-        spinner.prefixText += `${chalk.yellow(' neu: ⚠️ ')} ${message}\n`;
-    } else {
-        console.warn(`${chalk.yellow('neu: ⚠️ ')} ${message}`);
-    }
+    console.log(`${chalk.yellow('neu: ⚠️ ')} ${message}`);
+}
+
+let success = (message) => {
+    console.log(`${chalk.green('neu: ✔ ')} ${message}`);
 }
 
 let error = (message) => {
-    if(spinner.isSpinning){
-        spinner.stopAndPersist({
-            symbol: chalk.red('neu: 🛇'),
-            text: message
-        })
-    } else {
-        console.error(`${chalk.red('neu: 🛇')} ${message}`);
-    }
+    console.log(`${chalk.red('neu: 🛇')} ${message}`);
 }
+
 
 module.exports = {
     error,
@@ -93,8 +99,10 @@ module.exports = {
     checkCurrentProject,
     log,
     warn,
+    success,
     trimPath,
     getVersionTag,
     clearDirectory,
-    spinner
+    spinner,
+    stopSpinner,
 }

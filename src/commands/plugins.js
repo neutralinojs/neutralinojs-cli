@@ -16,9 +16,10 @@ module.exports.register = (program) => {
                         command.test
                           ? await pluginloader.addTest(plugin)
                           : await pluginloader.add(plugin);
-                        utils.spinner.succeed(
+                        utils.success(
                           `${plugin} was installed! ${command.test ? 'in test mode' : ""}`
                         );
+                        utils.stopSpinner()
                     }
                     catch(e) {
                         utils.error(e);
@@ -30,7 +31,8 @@ module.exports.register = (program) => {
                         command.test
                           ? await pluginloader.removeTest(plugin)
                           : await pluginloader.remove(plugin);
-                        utils.spinner.succeed(`${plugin} was uninstalled!`);
+                        utils.success(`${plugin} was uninstalled!`);
+                        utils.stopSpinner()
                     }
                     catch(e) {
                         utils.error(e);

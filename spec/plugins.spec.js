@@ -19,7 +19,7 @@ describe('Run neu plugins command and its options', () => {
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO @neutralinojs/appify was installed!'));
+            assert.ok(output.data.includes('@neutralinojs/appify was installed!'));
         });
     });
     describe('Test neu plugins command', () => {
@@ -39,7 +39,7 @@ describe('Run neu plugins command and its options', () => {
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO @neutralinojs/appify was uninstalled!'));
+            assert.ok(output.data.includes('@neutralinojs/appify was uninstalled!'));
         });
     });
 });

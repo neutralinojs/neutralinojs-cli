@@ -13,7 +13,8 @@ module.exports.register = (program) => {
             await downloader.downloadAndUpdateClient(command.latest);
 
             utils.showArt();
-            utils.spinner.succeed('Run "neu version" to see installed version details.');
+            utils.success('Run "neu version" to see installed version details.')
+            utils.stopSpinner()
         });
 }
 

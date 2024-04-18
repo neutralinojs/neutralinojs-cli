@@ -24,7 +24,7 @@ describe('Run neu update command and its options', () => {
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO Run "neu version" to see installed version details.') &&
+            assert.ok(output.data.includes('Run "neu version" to see installed version details.') &&
             output.data.includes('Neutralinojs binaries: v4.6.0') &&
             output.data.includes('Neutralinojs client: v3.5.0'));
         });
@@ -37,7 +37,7 @@ describe('Run neu update command and its options', () => {
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO Run "neu version" to see installed version details.') &&
+            assert.ok(output.data.includes('Run "neu version" to see installed version details.') &&
             output.data.includes('Neutralinojs binaries: nightly') &&
             output.data.includes('Neutralinojs client: nightly'));
         });

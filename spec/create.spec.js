@@ -19,7 +19,7 @@ describe('Run neu create command and its options', () => {
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO Enter \'cd test-app && neu run\' to run your application'));
+            assert.ok(output.data.includes('Enter \'cd test-app && neu run\' to run your application'));
         });
         it('returns with successfully creating neutralinojs app with specified template', async() => {
             let output = runner.run('neu create test-template-app --template=neutralinojs/neutralinojs-zero');
@@ -27,7 +27,7 @@ describe('Run neu create command and its options', () => {
             assert.equal(output.error, null);
             assert.equal(output.status, 0);
             assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO Enter \'cd test-template-app && neu run\' to run your application'));
+            assert.ok(output.data.includes('Enter \'cd test-template-app && neu run\' to run your application'));
         });
     });
     after(() => {

@@ -49,5 +49,6 @@ module.exports.createApp = async (binaryName, template) => {
     }
 
     console.log('-------');
-    utils.spinner.succeed(`Enter 'cd ${binaryName} && neu run' to run your application.`);
+    utils.success(`Enter 'cd ${binaryName} && neu run' to run your application.`);
+    utils.stopSpinner()
 }

@@ -138,6 +138,7 @@ module.exports.waitForFrontendLibApp = async () => {
         utils.spinner.fail(`Timeout exceeded while waiting till local TCP port: ${port}\n`);
         process.exit(1);
     }
-    utils.spinner.succeed(`App launched on ${devUrlString} on port ${port} in ${timewaited.toFixed(1)} seconds.\n`);
+    utils.success(`App launched on ${devUrlString} on port ${port} in ${timewaited.toFixed(1)} seconds.\n`);
+    utils.stopSpinner()
     clearInterval(inter);
 }
