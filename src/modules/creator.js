@@ -11,6 +11,7 @@ module.exports.createApp = async (binaryName, template) => {
         utils.error('App name already exists');
         process.exit(1);
     }
+    utils.spinner.start('Creating Neutralinojs app...');
     if(!template) {
         template = 'neutralinojs/neutralinojs-minimal';
     }
@@ -48,5 +49,5 @@ module.exports.createApp = async (binaryName, template) => {
     }
 
     console.log('-------');
-    utils.log(`Enter 'cd ${binaryName} && neu run' to run your application.`);
+    utils.spinner.succeed(`Enter 'cd ${binaryName} && neu run' to run your application.`);
 }

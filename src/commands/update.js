@@ -8,11 +8,12 @@ module.exports.register = (program) => {
         .option('-l, --latest')
         .action(async (command) => {
             utils.checkCurrentProject();
+            utils.spinner.start("Updating Neutralinojs binaries, Client library and Type definitions...");
             await downloader.downloadAndUpdateBinaries(command.latest);
             await downloader.downloadAndUpdateClient(command.latest);
 
             utils.showArt();
-            utils.log('Run "neu version" to see installed version details.');
+            utils.spinner.succeed('Run "neu version" to see installed version details.');
         });
 }
 

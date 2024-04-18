@@ -12,11 +12,11 @@ module.exports.register = (program) => {
             if(plugin) {
                 if(command.add) {
                     try {
-                        utils.log(`Installing ${plugin}..`);
+                        utils.spinner.start(`Installing ${plugin}..`);
                         command.test
                           ? await pluginloader.addTest(plugin)
                           : await pluginloader.add(plugin);
-                        utils.log(
+                        utils.spinner.succeed(
                           `${plugin} was installed! ${command.test ? 'in test mode' : ""}`
                         );
                     }
@@ -26,11 +26,11 @@ module.exports.register = (program) => {
                 }
                 else if(command.remove)
                     try {
-                        utils.log(`Uninstalling ${plugin}..`);
+                        utils.spinner.start(`Uninstalling ${plugin}..`);
                         command.test
                           ? await pluginloader.removeTest(plugin)
                           : await pluginloader.remove(plugin);
-                        utils.log(`${plugin} was uninstalled!`);
+                        utils.spinner.succeed(`${plugin} was uninstalled!`);
                     }
                     catch(e) {
                         utils.error(e);

@@ -6,10 +6,7 @@ const chalk = require('chalk');
 const constants = require('./constants');
 const CONFIG_FILE = constants.files.configFile;
 const config = require('./modules/config')
-
-let error = (message) => {
-    console.error(`neu: ${chalk.bgRed.black('ERRR')} ${message}`);
-}
+const ora = require('ora')
 
 let isNeutralinojsProject = () => {
     return fs.existsSync(CONFIG_FILE);
@@ -36,14 +33,6 @@ let checkCurrentProject = () => {
     }
 }
 
-let log = (message) => {
-    console.log(`neu: ${chalk.bgGreen.black('INFO')} ${message}`);
-}
-
-let warn = (message) => {
-    console.warn(`neu: ${chalk.bgYellow.black('WARN')} ${message}`);
-}
-
 let trimPath = (path) => {
     return path ? path.replace(/^\//, '') : path;
 }
@@ -56,6 +45,46 @@ let getVersionTag = (version) => {
     return version != 'nightly' ? 'v' + version : version;
 }
 
+const spinner = ora()
+spinner.prefixText = '';
+
+const originalConsoleLog = console.log;
+
+console.log = (message) => {
+    if (spinner.isSpinning) {
+        spinner.prefixText += `${message}\n`;
+    } else {
+        originalConsoleLog(message);
+    }
+}
+
+let log = (message) => {
+    if(spinner.isSpinning){
+        spinner.prefixText += `${chalk.blue(' neu: 🛈')} ${message}\n`;
+    } else {
+        console.log(`${chalk.blue('neu: 🛈')} ${message}`);
+    }
+}
+
+let warn = (message) => {
+    if(spinner.isSpinning){
+        spinner.prefixText += `${chalk.yellow(' neu: ⚠️ ')} ${message}\n`;
+    } else {
+        console.warn(`${chalk.yellow('neu: ⚠️ ')} ${message}`);
+    }
+}
+
+let error = (message) => {
+    if(spinner.isSpinning){
+        spinner.stopAndPersist({
+            symbol: chalk.red('neu: 🛇'),
+            text: message
+        })
+    } else {
+        console.error(`${chalk.red('neu: 🛇')} ${message}`);
+    }
+}
+
 module.exports = {
     error,
     isNeutralinojsProject,
@@ -66,5 +95,6 @@ module.exports = {
     warn,
     trimPath,
     getVersionTag,
-    clearDirectory
+    clearDirectory,
+    spinner
 }

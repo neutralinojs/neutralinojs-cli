@@ -122,16 +122,22 @@ module.exports.waitForFrontendLibApp = async () => {
         process.exit(1);
     }
 
+    let timewaited = 0;
+    utils.spinner.text = `(${timewaited}s) Waiting for App to be launched on ${devUrlString} on port ${port}...\n`;
+    utils.spinner.start();
+
     let inter = setInterval(() => {
-        utils.log(`App will be launched when ${devUrlString} on port ${port} is ready...`);
-    }, 500);
+        timewaited += 0.1;
+        utils.spinner.text = `(${Math.round(timewaited)}s) Waiting for App to be launched on ${devUrlString} on port ${port}...\n`
+    }, 100);
 
     try {
-        await tpu.waitUntilUsedOnHost(port, url.hostname, 200, 10000);
+        await tpu.waitUntilUsedOnHost(port, url.hostname, 200, 50000);
     }
     catch(e) {
-        utils.error(`Timeout exceeded while waiting till local TCP port: ${port}`);
+        utils.spinner.fail(`Timeout exceeded while waiting till local TCP port: ${port}\n`);
         process.exit(1);
     }
+    utils.spinner.succeed(`App launched on ${devUrlString} on port ${port} in ${timewaited.toFixed(1)} seconds.\n`);
     clearInterval(inter);
 }

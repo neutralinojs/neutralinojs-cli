@@ -7,6 +7,16 @@ const Configstore = require('configstore');
 const config = new Configstore(package.name);
 const utils = require('../utils');
 
+let isPluginInstalled = (pluginName) => {
+  try {
+      require.resolve(pluginName);
+      return true;
+  }
+  catch (e) {
+      return false;
+  }
+}
+
 module.exports.registerPlugins = async (program, modules) => {
     if(!config.has('plugins'))
         return;
@@ -53,17 +63,6 @@ let add = (pluginName) => {
         }
     });
 };
-
-let isPluginInstalled = (pluginName) => {
-    try {
-        require.resolve(pluginName);
-        return true;
-    }
-    catch (e) {
-        return false;
-    }
-}
-
 
 module.exports.addTest = (pluginPath) => {
     let statsObj;
@@ -212,8 +211,11 @@ module.exports.removeTest = (pluginPath, uninstallSuccessCallback) => {
   };
 
 module.exports.list = () => {
-    if(!config.has('plugins'))
-        return;
+  console.log(config.has('plugins'));
+    if(!config.has('plugins')){
+      utils.log('No plugins are installed!');
+      return;
+    }
     for(let plugin of config.get('plugins'))
         console.log(plugin);
 }
