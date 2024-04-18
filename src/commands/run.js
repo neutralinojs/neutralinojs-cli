@@ -53,5 +53,6 @@ module.exports.register = (program) => {
 
             filewatcher.stop();
             websocket.stop();
+            utils.checkLatestVersion();
         });
 }

@@ -38,6 +38,7 @@ module.exports.register = (program) => {
             }
             else
                 pluginloader.list(plugin);
+            utils.checkLatestVersion();
         });
 }
 

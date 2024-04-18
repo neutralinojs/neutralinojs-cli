@@ -27,6 +27,7 @@ module.exports.register = (program) => {
                 utils.log(`Run this command inside your project directory` +
                             ` to get project specific Neutralinojs version.`);
             }
+            utils.checkLatestVersion();
         });
 }
 

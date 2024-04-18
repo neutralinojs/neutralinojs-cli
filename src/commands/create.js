@@ -9,6 +9,7 @@ module.exports.register = (program) => {
         .action(async (binaryName, command) => {
             await creator.createApp(binaryName, command.template);
             utils.showArt();
+            utils.checkLatestVersion();
         });
 }
 

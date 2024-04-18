@@ -6,6 +6,8 @@ const chalk = require('chalk');
 const constants = require('./constants');
 const CONFIG_FILE = constants.files.configFile;
 const config = require('./modules/config')
+const axios = require('axios');
+const package = require('../package.json')
 
 let error = (message) => {
     console.error(`neu: ${chalk.bgRed.black('ERRR')} ${message}`);
@@ -36,6 +38,18 @@ let checkCurrentProject = () => {
     }
 }
 
+let checkLatestVersion = async () => {
+    const response = await axios.get(`https://registry.npmjs.org/${package.name}`);
+    const data = response.data;
+    const versionsArray = Object.keys(data.time);
+    const latestVersion = versionsArray[versionsArray.length - 1];
+    if (package.version !== latestVersion) {
+        warn(`Please update to the latest version: ${latestVersion}`);
+    } else {
+        return;
+    }
+}
+
 let log = (message) => {
     console.log(`neu: ${chalk.bgGreen.black('INFO')} ${message}`);
 }
@@ -62,6 +76,7 @@ module.exports = {
     getFiglet,
     showArt,
     checkCurrentProject,
+    checkLatestVersion,
     log,
     warn,
     trimPath,
