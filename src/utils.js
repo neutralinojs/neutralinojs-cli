@@ -39,16 +39,24 @@ let checkCurrentProject = () => {
 }
 
 let checkLatestVersion = async () => {
-    const response = await axios.get(`https://registry.npmjs.org/${package.name}`);
-    const data = response.data;
-    const versionsArray = Object.keys(data.time);
-    const latestVersion = versionsArray[versionsArray.length - 1];
-    if (package.version !== latestVersion) {
-        warn(`Please update to the latest version: ${latestVersion}`);
-    } else {
-        return;
+    try {
+        const response = await fetch(`https://registry.npmjs.org/${package.name}`);
+        if (!response.ok) {
+            error(`HTTP error! Status: ${response.status}`);
+        }     
+        const data = await response.json();
+        const versionsArray = Object.keys(data.time);
+        const latestVersion = versionsArray[versionsArray.length - 1];       
+        if (package.version !== latestVersion) {
+            warn(`Please update to the latest version: ${latestVersion}`);
+        } else {
+            return;
+        }
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
+
 
 let log = (message) => {
     console.log(`neu: ${chalk.bgGreen.black('INFO')} ${message}`);
