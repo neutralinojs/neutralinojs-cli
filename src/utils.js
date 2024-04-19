@@ -1,7 +1,6 @@
 const fs = require('fs');
 const fse = require('fs-extra');
 const process = require('process');
-const figlet = require('figlet');
 const chalk = require('chalk');
 const constants = require('./constants');
 const CONFIG_FILE = constants.files.configFile;
@@ -16,7 +15,15 @@ let isNeutralinojsProject = () => {
 }
 
 let getFiglet = () => {
-    return figlet.textSync('Neutralinojs');
+    const figletText = `
+        \b\b\b\b\b\b\b _   _            _             _ _             _
+        \b\b\b\b\b\b\b| \\ | | ___ _   _| |_ _ __ __ _| (_)_ __   ___ (_)___
+        \b\b\b\b\b\b\b|  \\| |/ _ \\ | | | __| '__/ _' | | | '_ \\ / _ \\| / __|
+        \b\b\b\b\b\b\b| |\\  |  __/ |_| | |_| | | (_| | | | | | | (_) | \\__ \\
+        \b\b\b\b\b\b\b|_| \\_|\\___|\\__,_|\\__|_|  \\__,_|_|_|_| |_|\\___// |___/
+        \b\b\b\b\b\b\b                                              |__/
+    `
+    return figletText;
 }
 
 let showArt = () => {
