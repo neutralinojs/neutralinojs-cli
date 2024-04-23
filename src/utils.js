@@ -51,8 +51,8 @@ let checkLatestVersion = async () => {
         } else {
             return;
         }
-    } catch (error) {
-        console.error('Error:', error);
+    } catch (err) {
+        error(err);
     }
 }
 
