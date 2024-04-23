@@ -15,7 +15,8 @@ let isNeutralinojsProject = () => {
 }
 
 let getFiglet = () => {
-    const figletText = `\b\b\b\b\b\b\b  _   _            _             _ _             _
+    const figletText = 
+    `   \b\b\b\b\b\b\b  _   _            _             _ _             _
         \b\b\b\b\b\b\b| \\ | | ___ _   _| |_ _ __ __ _| (_)_ __   ___ (_)___
         \b\b\b\b\b\b\b|  \\| |/ _ \\ | | | __| '__/ _' | | | '_ \\ / _ \\| / __|
         \b\b\b\b\b\b\b| |\\  |  __/ |_| | |_| | | (_| | | | | | | (_) | \\__ \\
