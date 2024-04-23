@@ -4,7 +4,8 @@
   "description": "neu CLI for Neutralinojs",
   "main": "./bin/neu.js",
   "scripts": {
-    "start": "node ./bin/neu.js"
+    "start": "node ./bin/neu.js",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
   },
   "repository": {
     "type": "git",
@@ -59,5 +60,8 @@
     "chrome",
     "browser",
     "codezri"
-  ]
+  ],
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  }
 }
