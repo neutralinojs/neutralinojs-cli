@@ -36,7 +36,14 @@ module.exports.createApp = async (binaryName, template) => {
     catch(err) {
         utils.error('Unable to download resources from internet.' +
                     ' Please check your internet connection and template URLs.');
-        fse.removeSync(`../${binaryName}`);
+
+        const parentDirPath = path.resolve('..');
+        const binaryPath = path.resolve('.');
+        process.chdir(parentDirPath);
+        fse.removeSync(binaryPath)        
+        
+        utils.log(`Removed created directory. (${binaryName})`);
+        
         process.exit(1);
     }
 
