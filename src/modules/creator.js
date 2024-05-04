@@ -5,6 +5,7 @@ const config = require('../modules/config');
 const downloader = require('./downloader');
 const frontendlib = require('../modules/frontendlib');
 const utils = require('../utils');
+const path = require('path');
 
 module.exports.createApp = async (binaryName, template) => {
     if (fs.existsSync(`./${binaryName}`)) {
