@@ -6,8 +6,13 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## Core: Bundler
+- Introduce the `--clean` flag to the `neu build` command to clean previous build files.
+
 ### Bugfixes/improvements
 - Check and validate `neutralino.config.json` file before executing app-specific commands.
+- Check app template validity before downloading content from a specific GitHub repository using the officialGitHub API.
+- Add the app icon to the final app bundle only the specific project uses an app icon.
 
 ## v11.1.0
 
