@@ -8,12 +8,15 @@ module.exports.register = (program) => {
         .description('builds binaries for all supported platforms and resources.neu file')
         .option('-r, --release')
         .option('--copy-storage')
+        .option('--clean')
         .action(async (command) => {
             utils.checkCurrentProject();
             const configObj = config.get()
-            utils.log('Removing current build...');
             const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
-            utils.clearDirectory(buildDir);
+            if(command.clean) {
+                utils.log(`Cleaning current build files from ${buildDir}...`);
+                utils.clearDirectory(buildDir);
+            }
             utils.log('Bundling app...');
             await bundler.bundleApp(command.release, command.copyStorage);
             utils.showArt();
