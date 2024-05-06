@@ -13,8 +13,8 @@ npm i -g @neutralinojs/neu
 ```
 ### Requirements
 
-- Node.js v14 or above.
-- npm or yarn package manager.
+- Node.js v14 or later version.
+- npm, yarn, or any Node.js package manager.
 
 ### License
 
