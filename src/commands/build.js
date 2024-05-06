@@ -14,7 +14,7 @@ module.exports.register = (program) => {
             const configObj = config.get()
             const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
             if(command.clean) {
-                utils.log(`Cleaning current build files from ${buildDir}...`);
+                utils.log(`Cleaning previous build files from ${buildDir}...`);
                 utils.clearDirectory(buildDir);
             }
             utils.log('Bundling app...');

@@ -33,7 +33,9 @@ async function createAsarFile() {
             fse.removeSync(`.tmp/${typesFile}`);
         }
     }
-    await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
+    if(icon) {
+        await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
+    }
 
     await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${constants.files.resourceFile}`);
 }
