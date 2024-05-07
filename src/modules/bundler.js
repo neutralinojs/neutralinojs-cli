@@ -19,10 +19,22 @@ async function createAsarFile() {
     const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
 
     fs.mkdirSync(`.tmp`, { recursive: true });
-    await fse.copy(`./${resourcesDir}`, `.tmp/${resourcesDir}`, { overwrite: true, filter: (src) => configObj.cli.resourcesExclude ? utils.filterFiles(src, configObj.cli.resourcesExclude) : true });
+    await fse.copy(`./${resourcesDir}`, `.tmp/${resourcesDir}`, {
+        overwrite: true,
+        filter: configObj.cli.resourcesExclude
+            && ((src) =>
+                (!new RegExp(configObj.cli.resourcesExclude).test(src))
+            )
+    });
 
     if (extensionsDir && fs.existsSync(extensionsDir)) {
-        await fse.copy(`./${extensionsDir}`, `${buildDir}/${binaryName}/${extensionsDir}`, { overwrite: true, filter: (src) => configObj.cli.extensionsExclude ? utils.filterFiles(src, configObj.cli.extensionsExclude) : true });
+        await fse.copy(`./${extensionsDir}`, `${buildDir}/${binaryName}/${extensionsDir}`, {
+            overwrite: true,
+            filter: configObj.cli.extensionsExclude
+                && ((src) =>
+                    (!new RegExp(configObj.cli.extensionsExclude).test(src))
+                )
+        });
     }
 
     await fse.copy(`${constants.files.configFile}`, `.tmp/${constants.files.configFile}`, { overwrite: true });
