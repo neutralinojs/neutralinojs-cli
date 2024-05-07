@@ -63,6 +63,13 @@ let getVersionTag = (version) => {
     return version != 'nightly' ? 'v' + version : version;
 }
 
+let filterFiles = (src, pattern) => {
+    if(!Array.isArray(pattern)) pattern = [pattern];
+    const regex = new RegExp(pattern.join('|'));
+    const found = src.match(regex);
+    return !found;
+}
+
 module.exports = {
     error,
     isNeutralinojsProject,
@@ -73,5 +80,6 @@ module.exports = {
     warn,
     trimPath,
     getVersionTag,
-    clearDirectory
+    clearDirectory,
+    filterFiles
 }
