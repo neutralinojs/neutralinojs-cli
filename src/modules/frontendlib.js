@@ -114,6 +114,7 @@ module.exports.containsFrontendLibApp = () => {
 module.exports.waitForFrontendLibApp = async () => {
     let configObj = config.get();
     let devUrlString = configObj.cli && configObj.cli.frontendLibrary ? configObj.cli.frontendLibrary.devUrl : undefined;
+    let timeout = configObj.cli && configObj.cli.frontendLibrary ? configObj.cli.frontendLibrary.waitTimeout : 10000;
     let url = new URL(devUrlString);
     let portString = url.port;
     let port = portString ? Number.parseInt(portString) : getPortByProtocol(url.protocol)
@@ -124,10 +125,10 @@ module.exports.waitForFrontendLibApp = async () => {
 
     let inter = setInterval(() => {
         utils.log(`App will be launched when ${devUrlString} on port ${port} is ready...`);
-    }, 500);
+    }, 2500);
 
     try {
-        await tpu.waitUntilUsedOnHost(port, url.hostname, 200, 10000);
+        await tpu.waitUntilUsedOnHost(port, url.hostname, 200, timeout);
     }
     catch(e) {
         utils.error(`Timeout exceeded while waiting till local TCP port: ${port}`);
