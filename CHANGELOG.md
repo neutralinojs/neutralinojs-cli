@@ -8,6 +8,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Core: Bundler
 - Introduce the `--clean` flag to the `neu build` command to clean previous build files.
+- Add file excluding feature for the app bundle and extensions directory via `cli.resourcesExclude` and `cli.extensionsExclude` configuration properties. For example, now developers can use the `"resourcesExclude": ".*\\.scss$|.*\\.d.ts$"` configuration to exclude `*.scss` and `*.d.ts` files from the final app bundle.
+- Let app developers customize the frontend library development server wait time using the `cli.frontendLibrary.waitTimeout` configuration property.
 
 ### Bugfixes/improvements
 - Check and validate `neutralino.config.json` file before executing app-specific commands.
