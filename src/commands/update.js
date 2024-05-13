@@ -13,7 +13,6 @@ module.exports.register = (program) => {
 
             utils.showArt();
             utils.log('Run "neu version" to see installed version details.');
-            utils.checkLatestVersion();
         });
 }
 

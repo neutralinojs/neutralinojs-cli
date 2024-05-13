@@ -10,6 +10,7 @@ module.exports.register = (program) => {
             utils.showArt();
             console.log('--- Global ---');
             console.log(`neu CLI: v${package.version}`);
+            await utils.checkLatestVersion();
             if(utils.isNeutralinojsProject()) {
                 const configObj = config.get();
                 console.log(`\n--- Project: ${configObj.cli.binaryName} (${configObj.applicationId}) ---`);
@@ -27,7 +28,6 @@ module.exports.register = (program) => {
                 utils.log(`Run this command inside your project directory` +
                             ` to get project specific Neutralinojs version.`);
             }
-            utils.checkLatestVersion();
         });
 }
 

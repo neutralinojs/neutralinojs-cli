@@ -19,7 +19,6 @@ module.exports.register = (program) => {
             utils.showArt();
             utils.log(`Application package was generated at the ${buildDir} directory!`);
             utils.log('Distribution guide: https://neutralino.js.org/docs/distribution/overview');
-            utils.checkLatestVersion();
         });
 }
 

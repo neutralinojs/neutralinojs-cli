@@ -1,6 +1,7 @@
 const fs = require('fs');
 const fse = require('fs-extra');
 const process = require('process');
+const exec = require('child_process').exec;
 const figlet = require('figlet');
 const chalk = require('chalk');
 const constants = require('./constants');
@@ -37,23 +38,17 @@ let checkCurrentProject = () => {
     }
 }
 
-let checkLatestVersion = async () => {
-    try {
-        const response = await fetch(`https://registry.npmjs.org/${package.name}`);
-        if (!response.ok) {
-            error(`HTTP error! Status: ${response.status}`);
-        }     
-        const data = await response.json();
-        const versionsArray = Object.keys(data.time);
-        const latestVersion = versionsArray[versionsArray.length - 1];       
-        if (package.version !== latestVersion) {
-            warn(`Please update to the latest version: ${latestVersion}`);
-        } else {
-            return;
-        }
-    } catch (err) {
-        error(err);
-    }
+let checkLatestVersion = () => {
+    return new Promise((resolve) => {
+        exec(`npm view ${package.name} version`, (err, versionInfo) => {
+            let latestVersion = versionInfo.trim();
+            if (!err && package.version !== latestVersion) {
+                warn(`You are using an older neu CLI version. Install the latest version ` +
+                    `by entering 'npm install -g ${package.name}'`);
+            }
+            resolve();
+        });
+    });
 }
 
 
