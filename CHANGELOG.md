@@ -11,6 +11,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 - Add file excluding feature for the app bundle and extensions directory via `cli.resourcesExclude` and `cli.extensionsExclude` configuration properties. For example, now developers can use the `"resourcesExclude": ".*\\.scss$|.*\\.d.ts$"` configuration to exclude `*.scss` and `*.d.ts` files from the final app bundle.
 - Let app developers customize the frontend library development server wait time using the `cli.frontendLibrary.waitTimeout` configuration property.
 
+## Core: Version
+- The `neu version` command now compares the installed CLI version with the latest released version using the `npm view` command and displays a warning messages if the users has an older version.
+
 ### Bugfixes/improvements
 - Check and validate `neutralino.config.json` file before executing app-specific commands.
 - Check app template validity before downloading content from a specific GitHub repository using the officialGitHub API.
