@@ -52,8 +52,9 @@ let checkLatestVersion = () => {
             if (!err && package.version !== latestVersion) {
                 warn(`You are using an older neu CLI version. Install the latest version ` +
                     `by entering 'npm install -g ${package.name}'`);
+                resolve(false);
             }
-            resolve();
+            resolve(true);
         });
     });
 }

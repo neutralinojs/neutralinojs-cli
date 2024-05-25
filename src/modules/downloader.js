@@ -8,13 +8,9 @@ const decompress = require('decompress');
 
 let cachedLatestClientVersion = null;
 
-let getLatestVersion = (repo) => {
-    return new Promise((resolve, reject) => {
-        function fallback() {
-            utils.warn('Unable to fetch the latest version tag from GitHub. Using nightly releases...');
-            resolve('nightly');
-        }
 
+let getRemoteLatestVersion = (repo) => {
+    return new Promise((resolve, reject) => {
         let opt = {
             headers: { 'User-Agent': 'Neutralinojs CLI' }
         };
@@ -23,20 +19,35 @@ let getLatestVersion = (repo) => {
             response.on('data', (data) => body += data);
             response.on('end', () => {
                 if (response.statusCode != 200) {
-                    return fallback();
+                    return reject();
                 }
                 let apiRes = JSON.parse(body);
                 let version = apiRes.tag_name.replace('v', '');
-                utils.log(`Found the latest release tag ${utils.getVersionTag(version)} for ${repo}...`);
                 resolve(version);
             });
             response.on('error', () => {
-                fallback();
+                reject();
             });
         })
         .on('error', () => {
-            fallback();
+            reject();
         });
+    });
+}
+
+let getLatestVersion = (repo) => {
+    return new Promise((resolve, reject) => {
+        function fallback() {
+            utils.warn('Unable to fetch the latest version tag from GitHub. Using nightly releases...');
+            resolve('nightly');
+        }
+
+        getRemoteLatestVersion(repo)
+            .then((version) => {
+                utils.log(`Found the latest release tag ${utils.getVersionTag(version)} for ${repo}...`);
+                resolve(version);
+            })
+            .catch((error) => fallback());
     });
 }
 
@@ -235,3 +246,5 @@ module.exports.isValidTemplate = (template) => {
     });
 
 }
+
+module.exports.getRemoteLatestVersion = getRemoteLatestVersion;
