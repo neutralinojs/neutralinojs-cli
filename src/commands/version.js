@@ -16,16 +16,16 @@ module.exports.register = (program) => {
                 const configObj = config.get();
                 const latestBinVersion = await getRemoteLatestVersion('neutralinojs');
                 const latestLibVersion = await getRemoteLatestVersion('neutralino.js');
-                const clientVersion = configObj.cli.clientVersion ? configObj.cli.clientVersion :
+                const clientVersion = configObj.cli.clientVersion ? utils.getVersionTag(configObj.cli.clientVersion) :
                         'Installed from a package manager';
                 const latestBin = configObj.cli.binaryVersion == latestBinVersion;
-                const latestLib = configObj.cli.clientVersion && (configObj.cli.clientVersion == latestLibVersion);
+                const latestLib = configObj.cli.clientVersion ? (configObj.cli.clientVersion == latestLibVersion) : null;
 
                 console.log(`\n--- Project: ${configObj.cli.binaryName} (${configObj.applicationId}) ---`);
                 console.log(`Neutralinojs binaries: ${utils.getVersionTag(configObj.cli.binaryVersion)} ${latestBin ? '(latest)' : ''}`);
-                console.log(`Neutralinojs client: ${utils.getVersionTag(clientVersion)} ${latestLib ? '(latest)' : ''}`);
+                console.log(`Neutralinojs client: ${clientVersion} ${latestLib ? '(latest)' : ''}`);
 
-                if(!latestBin || !latestLib) {
+                if(!latestBin || latestLib === false) {
                     utils.warn(`This project doesn't use the latest Neutralinojs framework. Run ` +
                         `'neu update --latest' to download the latest framework binaries and the client library.`);
                 }

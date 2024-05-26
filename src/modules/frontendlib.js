@@ -114,7 +114,7 @@ module.exports.containsFrontendLibApp = () => {
 module.exports.waitForFrontendLibApp = async () => {
     let configObj = config.get();
     let devUrlString = configObj.cli && configObj.cli.frontendLibrary ? configObj.cli.frontendLibrary.devUrl : undefined;
-    let timeout = configObj.cli && configObj.cli.frontendLibrary ? configObj.cli.frontendLibrary.waitTimeout : 10000;
+    let timeout = configObj.cli && configObj.cli.frontendLibrary && configObj.cli.frontendLibrary.waitTimeout | 20000;
     let url = new URL(devUrlString);
     let portString = url.port;
     let port = portString ? Number.parseInt(portString) : getPortByProtocol(url.protocol)
