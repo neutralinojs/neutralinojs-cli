@@ -17,6 +17,10 @@ module.exports.register = (program) => {
             let containsFrontendLibApp = frontendlib.containsFrontendLibApp();
             let argsOpt = "";
 
+            websocket.start({
+                frontendLibDev: containsFrontendLibApp
+            });
+            
             if(containsFrontendLibApp) {
                 frontendlib.runCommand('devCommand');
                 await frontendlib.waitForFrontendLibApp();
@@ -26,10 +30,6 @@ module.exports.register = (program) => {
                 argsOpt += "--neu-dev-auto-reload";
                 filewatcher.start();
             }
-
-            websocket.start({
-                frontendLibDev: containsFrontendLibApp
-            });
 
             // Add additional process ARGs that comes after --
             let parseStopIndex = process.argv.indexOf('--');
