@@ -5,7 +5,9 @@ const asar = require('@electron/asar');
 const config = require('./config');
 const constants = require('../constants');
 const frontendlib = require('./frontendlib');
+const projectRunner = require('./projectRunner');
 const utils = require('../utils');
+const path = require('path');
 
 async function createAsarFile() {
     utils.log(`Generating ${constants.files.resourceFile}...`);
@@ -57,10 +59,17 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
     const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
+    const projectRunnerConfig = configObj.cli ? configObj.cli.projectRunner : undefined;
 
     try {
         if (frontendlib.containsFrontendLibApp()) {
             await frontendlib.runCommand('buildCommand');
+        }
+
+        if(projectRunner.containsRunnerApp()) {
+            if(projectRunnerConfig.buildCommand){
+                await projectRunner.runCommand('buildCommand', true);
+            }
         }
 
         await createAsarFile();
@@ -88,6 +97,25 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             catch (err) {
                 utils.error('Unable to copy storage data from the .storage directory. Please check if the directory exists');
                 process.exit(1);
+            }
+        }
+
+        if(projectRunner.containsRunnerApp() && projectRunnerConfig && projectRunnerConfig.buildPath){
+            utils.log('Copying Project Runner build...');
+
+            if(fse.existsSync(projectRunnerConfig.buildPath)){
+                // copy contents from builddir/appname -> buildDir/appname/bin
+                fse.mkdirSync(`${buildDir}/${binaryName}/bin`, { recursive: true });
+                fse.readdirSync(`${buildDir}/${binaryName}`, { withFileTypes: true, recursive: true }).forEach(file => {
+                    if(file.isDirectory() && file.name == "bin") return;
+                    const sourcePath = path.join(`${buildDir}/${binaryName}`, file.name);
+                    fse.moveSync(sourcePath, `${buildDir}/${binaryName}/bin/${file.name}`, { overwrite: true });
+                });
+                
+                // copy projectRunner buildPath -> buildDir/appname
+                fse.copySync(projectRunnerConfig.buildPath, `${buildDir}/${binaryName}/`);
+            } else {
+                utils.error('Unable to copy projectRunner data from the build directory. Please check if the directory exists');
             }
         }
 

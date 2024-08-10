@@ -99,7 +99,7 @@ module.exports.runCommand = (commandKey) => {
             utils.log(`Running ${commandKey}: ${cmd}...`);
             const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
             proc.on('exit', (code) => {
-                utils.log(`${commandKey} completed with exit code: ${code}`);
+                utils.log(`FrontendLib: ${commandKey} completed with exit code: ${code}`);
                 resolve();
             });
         });
