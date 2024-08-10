@@ -3,7 +3,7 @@ const spawnCommand = require('spawn-command');
 const config = require('./config');
 const utils = require('../utils');
 
-module.exports.containsRunnerApp = async () => {
+module.exports.containsRunnerApp = () => {
   let configObj = config.get();
   return !!(configObj.cli && configObj.cli.projectRunner);
 }
