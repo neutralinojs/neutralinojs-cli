@@ -78,7 +78,7 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
         for (let platform in constants.files.binaries) {
             for (let arch in constants.files.binaries[platform]) {
                 let originalBinaryFile = constants.files.binaries[platform][arch];
-                let destinationBinaryFile = originalBinaryFile.replace('neutralino', binaryName);
+                let destinationBinaryFile = projectRunner.containsRunnerApp() ? originalBinaryFile : originalBinaryFile.replace('neutralino', binaryName);
                 if (fse.existsSync(`bin/${originalBinaryFile}`)) {
                     fse.copySync(`bin/${originalBinaryFile}`, `${buildDir}/${binaryName}/${destinationBinaryFile}`);
                 }
