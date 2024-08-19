@@ -7,6 +7,7 @@ const constants = require('../constants');
 const frontendlib = require('./frontendlib');
 const hostproject = require('./hostproject');
 const utils = require('../utils');
+const {patchWindowsExecutable} = require('./exepatch');
 const path = require('path');
 
 async function createAsarFile() {
@@ -85,6 +86,23 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
                     fse.copySync(`bin/${originalBinaryFile}`, `${buildDir}/${binaryName}/${destinationBinaryFile}`);
                 }
             }
+        }
+
+        utils.log('Patching windows executables...');
+        try {
+            await Promise.all(Object.keys(constants.files.binaries.win32).map(async (arch) => {
+                const origBinaryName = constants.files.binaries.win32[arch];
+                const filepath = hostproject.hasHostProject() ? `bin/${origBinaryName}` : origBinaryName.replace('neutralino', binaryName);
+                const winPath = `${buildDir}/${binaryName}/${filepath}`;
+                if (await fse.exists(winPath)) {
+                    await patchWindowsExecutable(winPath);
+                }
+            }))
+        }
+        catch (err) {
+            console.error(err);
+            utils.error('Could not patch windows executable');
+            process.exit(1);
         }
 
         for (let dependency of constants.files.dependencies) {
