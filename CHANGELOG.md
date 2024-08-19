@@ -6,6 +6,11 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v11.2.2
+
+### Bugfixes/improvements
+- Fix initial loading issues with frontend library development file patching.
+
 ## v11.2.0
 
 ## Core: Bundler

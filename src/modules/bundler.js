@@ -1,6 +1,6 @@
 const fse = require('fs-extra');
 const fs = require('fs');
-const archiver = require('archiver');
+const zl = require('zip-lib');
 const asar = require('@electron/asar');
 const config = require('./config');
 const constants = require('../constants');
@@ -107,14 +107,9 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
                 process.exit(1);
             }
         }
-
         if (isRelease) {
             utils.log('Making app bundle ZIP file...');
-            let output = fs.createWriteStream(`${buildDir}/${binaryName}-release.zip`);
-            let archive = archiver('zip', { zlib: { level: 9 } });
-            archive.pipe(output);
-            archive.directory(`${buildDir}/${binaryName}`, false);
-            await archive.finalize();
+            await zl.archiveFolder(`${buildDir}/${binaryName}`, `${buildDir}/${binaryName}-release.zip`);
         }
         utils.clearDirectory('.tmp');
     }
