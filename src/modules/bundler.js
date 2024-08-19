@@ -5,7 +5,7 @@ const asar = require('@electron/asar');
 const config = require('./config');
 const constants = require('../constants');
 const frontendlib = require('./frontendlib');
-const projectRunner = require('./projectRunner');
+const hostproject = require('./hostproject');
 const utils = require('../utils');
 const path = require('path');
 
@@ -52,24 +52,26 @@ async function createAsarFile() {
         await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
     }
 
-    await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${constants.files.resourceFile}`);
+    let resourceFile = constants.files.resourceFile;
+    if(hostproject.hasHostProject()) {
+        resourceFile = `bin/${resourceFile}`;
+    }
+    await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${resourceFile}`);
 }
 
 module.exports.bundleApp = async (isRelease, copyStorage) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
     const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
-    const projectRunnerConfig = configObj.cli ? configObj.cli.projectRunner : undefined;
+    const hostProjectConfig = configObj.cli ? configObj.cli.hostProject : undefined;
 
     try {
         if (frontendlib.containsFrontendLibApp()) {
             await frontendlib.runCommand('buildCommand');
         }
 
-        if(projectRunner.containsRunnerApp()) {
-            if(projectRunnerConfig.buildCommand){
-                await projectRunner.runCommand('buildCommand', true);
-            }
+        if(hostproject.hasHostProject()) {
+            await hostproject.runCommand('buildCommand');
         }
 
         await createAsarFile();
@@ -78,7 +80,7 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
         for (let platform in constants.files.binaries) {
             for (let arch in constants.files.binaries[platform]) {
                 let originalBinaryFile = constants.files.binaries[platform][arch];
-                let destinationBinaryFile = projectRunner.containsRunnerApp() ? originalBinaryFile : originalBinaryFile.replace('neutralino', binaryName);
+                let destinationBinaryFile = hostproject.hasHostProject() ? `bin/${originalBinaryFile}` : originalBinaryFile.replace('neutralino', binaryName);
                 if (fse.existsSync(`bin/${originalBinaryFile}`)) {
                     fse.copySync(`bin/${originalBinaryFile}`, `${buildDir}/${binaryName}/${destinationBinaryFile}`);
                 }
@@ -100,21 +102,9 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             }
         }
 
-        if(projectRunner.containsRunnerApp() && projectRunnerConfig && projectRunnerConfig.buildPath){
-            utils.log('Copying Project Runner build...');
-
-            if(fse.existsSync(projectRunnerConfig.buildPath)){
-                fse.mkdirSync(`${buildDir}/${binaryName}/bin`, { recursive: true });
-                fse.readdirSync(`${buildDir}/${binaryName}`, { withFileTypes: true, recursive: true }).forEach(file => {
-                    if(file.isDirectory() && file.name == "bin") return;
-                    const sourcePath = path.join(`${buildDir}/${binaryName}`, file.name);
-                    fse.moveSync(sourcePath, `${buildDir}/${binaryName}/bin/${file.name}`, { overwrite: true });
-                });
-                
-                fse.copySync(projectRunnerConfig.buildPath, `${buildDir}/${binaryName}/`);
-            } else {
-                utils.error('Unable to copy projectRunner data from the build directory. Please check if the directory exists');
-            }
+        if(hostproject.hasHostProject() && hostProjectConfig && hostProjectConfig.buildPath){
+            utils.log('Copying host project files...');
+            fse.copySync(utils.trimPath(hostProjectConfig.buildPath), `${buildDir}/${binaryName}/`);
         }
 
         if (isRelease) {
