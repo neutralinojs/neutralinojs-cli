@@ -1,6 +1,6 @@
 const fse = require('fs-extra');
 const fs = require('fs');
-const archiver = require('archiver');
+const zl = require('zip-lib');
 const asar = require('@electron/asar');
 const config = require('./config');
 const constants = require('../constants');
@@ -104,7 +104,6 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             utils.log('Copying Project Runner build...');
 
             if(fse.existsSync(projectRunnerConfig.buildPath)){
-                // copy contents from builddir/appname -> buildDir/appname/bin
                 fse.mkdirSync(`${buildDir}/${binaryName}/bin`, { recursive: true });
                 fse.readdirSync(`${buildDir}/${binaryName}`, { withFileTypes: true, recursive: true }).forEach(file => {
                     if(file.isDirectory() && file.name == "bin") return;
@@ -112,7 +111,6 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
                     fse.moveSync(sourcePath, `${buildDir}/${binaryName}/bin/${file.name}`, { overwrite: true });
                 });
                 
-                // copy projectRunner buildPath -> buildDir/appname
                 fse.copySync(projectRunnerConfig.buildPath, `${buildDir}/${binaryName}/`);
             } else {
                 utils.error('Unable to copy projectRunner data from the build directory. Please check if the directory exists');
@@ -121,11 +119,7 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
 
         if (isRelease) {
             utils.log('Making app bundle ZIP file...');
-            let output = fs.createWriteStream(`${buildDir}/${binaryName}-release.zip`);
-            let archive = archiver('zip', { zlib: { level: 9 } });
-            archive.pipe(output);
-            archive.directory(`${buildDir}/${binaryName}`, false);
-            await archive.finalize();
+            await zl.archiveFolder(`${buildDir}/${binaryName}`, `${buildDir}/${binaryName}-release.zip`);
         }
         utils.clearDirectory('.tmp');
     }
