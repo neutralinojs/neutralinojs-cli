@@ -1,20 +1,34 @@
 const fse = require('fs-extra');
 const png2icons = require('png2icons');
+const path = require('path');
 
 const config = require('./config');
 // 1033 means "English (United States)" locale in Windows
 const EN_US = 1033;
 
+// works like `a ?? b ?? c ?? ...`
+const pickNotNullish = (...values) => {
+    for (let i = 0; i < values.length - 1; i++) {
+        if (values[i] !== undefined && values[i] !== null) {
+            return values[i];
+        }
+    }
+    return values[values.length - 1];
+}
+
 const getWindowsMetadata = (config) => {
+    const copyright = pickNotNullish(
+        config.copyright,
+        `Copyright © ${new Date().getFullYear()} ${pickNotNullish(config.author, 'All rights reserved.')}`
+    );
     const versionStrings = {
         CompanyName: config.author,
-        FileDescription: config.description ?? 'A Neutralinojs application',
+        FileDescription: pickNotNullish(config.description, 'A Neutralinojs application'),
         ProductVersion: config.version,
-        LegalCopyright: config.copyright ??
-            `Copyright © ${new Date().getFullYear()} ${config.author ?? 'All rights reserved.'}`,
+        LegalCopyright: copyright,
         InternalName: config.cli.binaryName,
         OriginalFilename: config.cli.binaryName,
-        ProductName: config.applicationName ?? config.cli.binaryName,
+        ProductName: pickNotNullish(config.applicationName, config.cli.binaryName),
         SpecialBuild: config.cli.binaryName,
     };
     // Strip away any undefined values from the versionStrings object
@@ -50,9 +64,28 @@ const patchWindowsExecutable = async (src) => {
     const exe = peLibrary.NtExecutable.from(await fse.readFile(src));
     const res = peLibrary.NtExecutableResource.from(exe);
 
-    const iconPath = configObj.applicationIcon ??
-        configObj?.modes?.window?.icon ?? // Get the icon from the window's config
-        `${__dirname}/../../images/defaultIcon.png`; // Default to a neutralinojs icon
+    // If an icon was not set for the project, try to get the icon from the window's config
+    let windowIcon = null;
+    if (configObj.modes && configObj.modes.window && configObj.modes.window.icon) {
+        windowIcon = configObj.modes.window.icon;
+        // Do not use non-PNG window icons.
+        if (windowIcon.split('.').pop().toLowerCase() !== 'png') {
+            windowIcon = null;
+        } else {
+            // Remove the leading slash if it exists, we need a path relative to CWD.
+            if (windowIcon[0] === '/') {
+                windowIcon = windowIcon.slice(1);
+            }
+            // Get the path from the resources directory relative to CWD.
+            windowIcon = path.join(process.cwd(), windowIcon);
+        }
+    }
+
+    const iconPath = pickNotNullish(
+        configObj.applicationIcon,
+        windowIcon,
+        `${__dirname}/../../images/defaultIcon.png` // Default to a neutralinojs icon
+    );
     const icoBuffer = await convertPngToIco(iconPath);
     // Create an icon file that contains the icon
     const iconFile = resedit.Data.IconFile.from(icoBuffer);
@@ -67,8 +100,14 @@ const patchWindowsExecutable = async (src) => {
 
     // Fill in version info
     const vi = resedit.Resource.VersionInfo.createEmpty();
-    const [major, minor, patch] = (configObj.version ?? '1.0.0').split(".");
-    vi.setFileVersion(major ?? 1, minor ?? 0, patch ?? 0, 0, EN_US);
+    const [major, minor, patch] = pickNotNullish(configObj.version, '1.0.0').split(".");
+    vi.setFileVersion(
+        pickNotNullish(major, 1), // Version number
+        pickNotNullish(minor, 0),
+        pickNotNullish(patch, 0),
+        0, // Revision number, isn't used in most JS applications so use a 0.
+        EN_US
+    );
     vi.setStringValues({
         lang: EN_US,
         codepage: 1200
