@@ -4,7 +4,7 @@ const fse = require('fs-extra');
 const config = require('../modules/config');
 const downloader = require('./downloader');
 const frontendlib = require('../modules/frontendlib');
-const projectRunner = require('../modules/projectRunner');
+const hostproject = require('../modules/hostproject');
 const utils = require('../utils');
 
 module.exports.createApp = async (binaryName, template) => {
@@ -48,8 +48,8 @@ module.exports.createApp = async (binaryName, template) => {
         await frontendlib.runCommand('initCommand');
     }
 
-    if(projectRunner.containsRunnerApp()) {
-        await projectRunner.runCommand('initCommand');
+    if(hostproject.hasHostProject()) {
+        await hostproject.runCommand('initCommand');
     }
 
     console.log('-------');
