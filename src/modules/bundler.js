@@ -5,8 +5,10 @@ const asar = require('@electron/asar');
 const config = require('./config');
 const constants = require('../constants');
 const frontendlib = require('./frontendlib');
+const projectRunner = require('./projectRunner');
 const utils = require('../utils');
 const {patchWindowsExecutable} = require('./exepatch');
+const path = require('path');
 
 async function createAsarFile() {
     utils.log(`Generating ${constants.files.resourceFile}...`);
@@ -58,10 +60,17 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
     const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
+    const projectRunnerConfig = configObj.cli ? configObj.cli.projectRunner : undefined;
 
     try {
         if (frontendlib.containsFrontendLibApp()) {
             await frontendlib.runCommand('buildCommand');
+        }
+
+        if(projectRunner.containsRunnerApp()) {
+            if(projectRunnerConfig.buildCommand){
+                await projectRunner.runCommand('buildCommand', true);
+            }
         }
 
         await createAsarFile();
@@ -70,7 +79,7 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
         for (let platform in constants.files.binaries) {
             for (let arch in constants.files.binaries[platform]) {
                 let originalBinaryFile = constants.files.binaries[platform][arch];
-                let destinationBinaryFile = originalBinaryFile.replace('neutralino', binaryName);
+                let destinationBinaryFile = projectRunner.containsRunnerApp() ? originalBinaryFile : originalBinaryFile.replace('neutralino', binaryName);
                 if (fse.existsSync(`bin/${originalBinaryFile}`)) {
                     fse.copySync(`bin/${originalBinaryFile}`, `${buildDir}/${binaryName}/${destinationBinaryFile}`);
                 }
@@ -81,7 +90,8 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
         try {
             await Promise.all(Object.keys(constants.files.binaries.win32).map(async (arch) => {
                 const origBinaryName = constants.files.binaries.win32[arch];
-                const winPath = `${buildDir}/${binaryName}/${origBinaryName.replace('neutralino', binaryName)}`;
+                const filename = projectRunner.containsRunnerApp() ? origBinaryName : origBinaryName.replace('neutralino', binaryName);
+                const winPath = `${buildDir}/${binaryName}/${filename}`;
                 if (await fse.exists(winPath)) {
                     await patchWindowsExecutable(winPath);
                 }
@@ -107,6 +117,24 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
                 process.exit(1);
             }
         }
+
+        if(projectRunner.containsRunnerApp() && projectRunnerConfig && projectRunnerConfig.buildPath){
+            utils.log('Copying Project Runner build...');
+
+            if(fse.existsSync(projectRunnerConfig.buildPath)){
+                fse.mkdirSync(`${buildDir}/${binaryName}/bin`, { recursive: true });
+                fse.readdirSync(`${buildDir}/${binaryName}`, { withFileTypes: true, recursive: true }).forEach(file => {
+                    if(file.isDirectory() && file.name == "bin") return;
+                    const sourcePath = path.join(`${buildDir}/${binaryName}`, file.name);
+                    fse.moveSync(sourcePath, `${buildDir}/${binaryName}/bin/${file.name}`, { overwrite: true });
+                });
+
+                fse.copySync(projectRunnerConfig.buildPath, `${buildDir}/${binaryName}/`);
+            } else {
+                utils.error('Unable to copy projectRunner data from the build directory. Please check if the directory exists');
+            }
+        }
+
         if (isRelease) {
             utils.log('Making app bundle ZIP file...');
             await zl.archiveFolder(`${buildDir}/${binaryName}`, `${buildDir}/${binaryName}-release.zip`);
