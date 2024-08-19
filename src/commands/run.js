@@ -4,6 +4,7 @@ const runner = require('../modules/runner');
 const utils = require('../utils');
 const config = require('../modules/config');
 const frontendlib = require('../modules/frontendlib');
+const projectRunner = require('../modules/projectRunner');
 
 module.exports.register = (program) => {
     program
@@ -14,6 +15,17 @@ module.exports.register = (program) => {
         .action(async (command) => {
             utils.checkCurrentProject();
             let configObj = config.get();
+
+            if(configObj.cli && configObj.cli.projectRunner) {
+                try {
+                    await projectRunner.runApp();
+                    process.exit(0);
+                } catch (error) {
+                    utils.log(error);
+                    process.exit(1);
+                }
+            }
+
             let containsFrontendLibApp = frontendlib.containsFrontendLibApp();
             let argsOpt = "";
 
