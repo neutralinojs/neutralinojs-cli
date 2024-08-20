@@ -1,4 +1,3 @@
-const process = require('process');
 const spawnCommand = require('spawn-command');
 const config = require('./config');
 const utils = require('../utils');
@@ -25,27 +24,5 @@ module.exports.runCommand = async (commandKey) => {
               resolve();
           });
       });
-  }
-}
-
-module.exports.runApp = async () => {
-  let configObj = config.get();
-  let hostProject = configObj.cli ? configObj.cli.hostProject : undefined;
-
-  if (hostProject && hostProject.projectPath && hostProject.devCommand) {
-      return new Promise((resolve) => {
-          let projectPath = utils.trimPath(hostProject.projectPath);
-          let cmd = hostProject.devCommand;
-
-          utils.log(`Starting the host app: ${cmd} ...`);
-          const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath});
-          proc.on('exit', (code) => {
-              utils.log(`Host app stopped with exit code: ${code}`);
-              resolve();
-          });
-      });
-  } else {
-    utils.error(`Missing host project configuration.`);
-    process.exit(1);
   }
 }
