@@ -4,7 +4,7 @@ const { https } = require('follow-redirects');
 const constants = require('../constants');
 const config = require('./config');
 const utils = require('../utils');
-const decompress = require('decompress');
+const zl = require('zip-lib');
 
 let cachedLatestClientVersion = null;
 
@@ -109,7 +109,7 @@ let downloadBinariesFromRelease = (latest) => {
                     response.pipe(file);
                     response.on('end', () => {
                         utils.log('Extracting binaries.zip file...');
-                        decompress(zipFilename, '.tmp/')
+                        zl.extract(zipFilename, '.tmp/')
                             .then(() => resolve())
                             .catch((e) => reject(e));
                     });
@@ -165,7 +165,7 @@ module.exports.downloadTemplate = (template) => {
             response.pipe(file);
             response.on('end', () => {
                 utils.log('Extracting template zip file...');
-                decompress(zipFilename, '.tmp/')
+                zl.extract(zipFilename, '.tmp/')
                     .then(() => {
                         fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
                         utils.clearDirectory('.tmp');
