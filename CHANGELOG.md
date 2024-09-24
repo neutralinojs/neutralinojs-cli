@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v11.3.0
+
 ### Host projects support
 Developers can launch Neutralinojs from any programming language using child process APIs (i.e., `subprocess` in Python) and communicate with the framework process using the extension API. The new `hostProject` configuration object extends the official CLI to help developers easily create, run, and build these host projects. For example, the following host project configuration instructs the CLI to run a Node.js host project:
 
