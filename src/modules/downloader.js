@@ -66,7 +66,7 @@ let getBinaryDownloadUrl = async (latest) => {
         config.update('cli.binaryVersion', version);
     }
     return constants.remote.binariesUrl
-        .replace(/{tag}/g, utils.getVersionTag(version));
+        .replace(/\{tag\}/g, utils.getVersionTag(version));
 }
 
 let getClientDownloadUrl = async (latest, types = false) => {
@@ -86,7 +86,7 @@ let getClientDownloadUrl = async (latest, types = false) => {
 
     let scriptUrl = constants.remote.clientUrlPrefix + (types ? 'd.ts' : getScriptExtension());
     return scriptUrl
-        .replace(/{tag}/g, utils.getVersionTag(version));
+        .replace(/\{tag\}/g, utils.getVersionTag(version));
 }
 
 let getTypesDownloadUrl = (latest) => {
