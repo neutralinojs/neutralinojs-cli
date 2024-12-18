@@ -188,6 +188,11 @@ module.exports.downloadAndUpdateBinaries = async (latest = false) => {
             let binaryFile = constants.files.binaries[platform][arch];
             if (fse.existsSync(`.tmp/${binaryFile}`)) {
                 fse.copySync(`.tmp/${binaryFile}`, `bin/${binaryFile}`);
+                // Ensure that correct permissions are set
+                // Non-applicable on Windows platform and not needed for Windows executables
+                if (process.platform !== 'win32' && platform !== 'win32') {
+                    fse.chmodSync(`bin/${binaryFile}`, '755');
+                }
             }
         }
     }
