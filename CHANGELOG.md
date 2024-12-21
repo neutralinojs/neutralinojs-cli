@@ -6,6 +6,10 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Bugfixes/improvements
+
+- Add execution permissions for binaries after downloading them in Unix-based and Unix-like platforms. 
+
 ## v11.3.0
 
 ### Host projects support
