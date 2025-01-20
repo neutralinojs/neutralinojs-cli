@@ -5,6 +5,12 @@ const utils = require('../utils');
 const config = require('../modules/config');
 const frontendlib = require('../modules/frontendlib');
 const hostproject = require('../modules/hostproject');
+function wrapQuotedArguments(arg) {
+    if (arg.includes(' ') && !arg.startsWith('"') && !arg.endsWith('"')) {
+        return `"${arg}"`;
+    }
+    return arg;
+}
 
 module.exports.register = (program) => {
     program
@@ -42,6 +48,7 @@ module.exports.register = (program) => {
             if(parseStopIndex != -1) {
                 argsOpt += ' ' + process.argv
                                 .slice(parseStopIndex + 1)
+                                .map(wrapQuotedArguments)
                                 .join(' ');
             }
 
