@@ -1,6 +1,7 @@
 const utils = require('../utils');
 const bundler = require('../modules/bundler');
 const config = require('../modules/config');
+const fileCopier = require('../modules/fileCopier');
 
 module.exports.register = (program) => {
     program
@@ -20,6 +21,7 @@ module.exports.register = (program) => {
             utils.log('Bundling app...');
             await bundler.bundleApp(command.release, command.copyStorage);
             utils.showArt();
+            await fileCopier.copier()
             utils.log(`Application package was generated at the ${buildDir} directory!`);
             utils.log('Distribution guide: https://neutralino.js.org/docs/distribution/overview');
         });
