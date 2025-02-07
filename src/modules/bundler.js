@@ -125,6 +125,10 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             fse.copySync(utils.trimPath(hostProjectConfig.buildPath), `${buildDir}/${binaryName}/`);
         }
 
+        if(configObj.cli.macOutputAsAppBundle){
+            renameMacApp(`${buildDir}/${binaryName}/`, binaryName);
+        }
+
         if (isRelease) {
             utils.log('Making app bundle ZIP file...');
             await zl.archiveFolder(`${buildDir}/${binaryName}`, `${buildDir}/${binaryName}-release.zip`);
@@ -134,4 +138,18 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
     catch (e) {
         utils.error(e);
     }
+}
+
+function renameMacApp(outputDir, appName) {
+    const architectures = ['mac_x64', 'mac_arm64', 'mac_universal'];
+
+    architectures.forEach((arch) => {
+        const oldPath = path.join(outputDir, `${appName}-${arch}`);
+        const newPath = path.join(outputDir, `${appName}-${arch}.app`);
+
+        if (fs.existsSync(oldPath)) {
+            fs.renameSync(oldPath, newPath);
+            utils.log(`Renamed macOS app to: ${newPath}`);
+        }
+    });
 }
