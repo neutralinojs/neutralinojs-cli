@@ -141,15 +141,17 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
 }
 
 function renameMacApp(outputDir, appName) {
-    const architectures = ['mac_x64', 'mac_arm64', 'mac_universal'];
+    const architectures = Object.keys(constants.files.binaries.darwin);
 
     architectures.forEach((arch) => {
-        const oldPath = path.join(outputDir, `${appName}-${arch}`);
-        const newPath = path.join(outputDir, `${appName}-${arch}.app`);
+
+        const binaryFile = constants.files.binaries.darwin[arch].replace('neutralino', appName);
+        const oldPath = path.join(outputDir, binaryFile);
+        const newPath = path.join(outputDir, `${binaryFile}.app`);
 
         if (fs.existsSync(oldPath)) {
             fs.renameSync(oldPath, newPath);
-            utils.log(`Renamed macOS app to: ${newPath}`);
+            utils.log(`Renamed macOS app to: ${binaryFile}.app`);
         }
     });
 }
