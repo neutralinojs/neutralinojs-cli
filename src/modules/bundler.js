@@ -25,10 +25,9 @@ async function createAsarFile() {
     await fse.copy(`./${resourcesDir}`, `.tmp/${resourcesDir}`, {
         overwrite: true,
         filter: configObj.cli.resourcesExclude
-            && ((src) =>
-                (!new RegExp(configObj.cli.resourcesExclude).test(src))
-            )
-    });
+          ? (src) => !new RegExp(configObj.cli.resourcesExclude).test(src)
+          : undefined
+      });
 
     if (extensionsDir && fs.existsSync(extensionsDir)) {
         await fse.copy(`./${extensionsDir}`, `${buildDir}/${binaryName}/${extensionsDir}`, {
