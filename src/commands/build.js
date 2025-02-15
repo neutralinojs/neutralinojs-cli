@@ -13,7 +13,7 @@ module.exports.register = (program) => {
         .option('--clean')
         .action(async (command) => {
             if(command.configFile) {
-              utils.log(`Using config file file: ${command.configFile}`);
+              utils.log(`Using config file: ${command.configFile}`);
               constants.files.configFile = command.neuJson;
             }
 
