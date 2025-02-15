@@ -14,7 +14,7 @@ module.exports.register = (program) => {
         .action(async (command) => {
             if(command.configFile) {
               utils.log(`Using config file: ${command.configFile}`);
-              constants.files.configFile = command.neuJson;
+              constants.files.configFile = command.configFile;
             }
 
             utils.checkCurrentProject();
