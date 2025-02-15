@@ -125,6 +125,8 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             fse.copySync(utils.trimPath(hostProjectConfig.buildPath), `${buildDir}/${binaryName}/`);
         }
 
+        await copyItems();
+
         if (isRelease) {
             utils.log('Making app bundle ZIP file...');
             await zl.archiveFolder(`${buildDir}/${binaryName}`, `${buildDir}/${binaryName}-release.zip`);
@@ -133,5 +135,18 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
     }
     catch (e) {
         utils.error(e);
+    }
+}
+
+async function copyItems() {
+
+    let configObj = config.get();
+    let binaryName = configObj.cli.binaryName;
+    const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
+
+    if(configObj.cli.copyItems && Array.isArray(configObj.cli.copyItems)){
+        for(let item of configObj.cli.copyItems){
+            await fse.copy(`./${item}`, `${buildDir}/${binaryName}/${item}`);
+        }
     }
 }
