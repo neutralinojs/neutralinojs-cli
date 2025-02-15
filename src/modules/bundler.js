@@ -40,7 +40,8 @@ async function createAsarFile() {
         });
     }
 
-    await fse.copy(`${constants.files.configFile}`, `.tmp/${constants.files.configFile}`, { overwrite: true });
+    await fse.copy(`${constants.files.configFile}`, `.tmp/neutralino.config.json`, { overwrite: true });
+    
     if (clientLibrary) {
         let typesFile = clientLibrary.replace(/.js$/, '.d.ts');
         await fse.copy(`./${clientLibrary}`, `.tmp/${clientLibrary}`, { overwrite: true });
