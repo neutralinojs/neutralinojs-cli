@@ -61,7 +61,7 @@ async function createAsarFile() {
     await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${resourceFile}`);
 }
 
-module.exports.bundleApp = async (isRelease, copyStorage) => {
+module.exports.bundleApp = async (options = {}) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
     const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
@@ -110,7 +110,7 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             fse.copySync(`bin/${dependency}`, `${buildDir}/${binaryName}/${dependency}`);
         }
 
-        if (copyStorage) {
+        if (options.copyStorage) {
             utils.log('Copying storage data...');
             try {
                 fse.copySync('.storage', `${buildDir}/${binaryName}/.storage`);
@@ -126,11 +126,15 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
             fse.copySync(utils.trimPath(hostProjectConfig.buildPath), `${buildDir}/${binaryName}/`);
         }
 
-        if(configObj.cli.macOutputAsAppBundle){
-            renameMacApp(`${buildDir}/${binaryName}/`, binaryName);
+        if(options.macosBundle){
+            utils.log('Creating MacOS app bundles...');
+            for(let macBinary of Object.values(constants.files.binaries.darwin)) {
+                macBinary = hostproject.hasHostProject() ? `bin/${macBinary}` : macBinary.replace('neutralino', binaryName);
+                fs.renameSync(`${buildDir}/${binaryName}/${macBinary}`, `${buildDir}/${binaryName}/${macBinary}.app`);
+            }
         }
 
-        if (isRelease) {
+        if (options.release) {
             utils.log('Making app bundle ZIP file...');
             await zl.archiveFolder(`${buildDir}/${binaryName}`, `${buildDir}/${binaryName}-release.zip`);
         }
@@ -139,20 +143,4 @@ module.exports.bundleApp = async (isRelease, copyStorage) => {
     catch (e) {
         utils.error(e);
     }
-}
-
-function renameMacApp(outputDir, appName) {
-    const architectures = Object.keys(constants.files.binaries.darwin);
-
-    architectures.forEach((arch) => {
-
-        const binaryFile = constants.files.binaries.darwin[arch].replace('neutralino', appName);
-        const oldPath = path.join(outputDir, binaryFile);
-        const newPath = path.join(outputDir, `${binaryFile}.app`);
-
-        if (fs.existsSync(oldPath)) {
-            fs.renameSync(oldPath, newPath);
-            utils.log(`Renamed macOS app to: ${binaryFile}.app`);
-        }
-    });
 }
