@@ -126,6 +126,8 @@ module.exports.bundleApp = async (options = {}) => {
             fse.copySync(utils.trimPath(hostProjectConfig.buildPath), `${buildDir}/${binaryName}/`);
         }
 
+        await copyItems();
+
         if(options.macosBundle){
             utils.log('Creating MacOS app bundles...');
             for(let macBinary of Object.values(constants.files.binaries.darwin)) {
@@ -138,9 +140,23 @@ module.exports.bundleApp = async (options = {}) => {
             utils.log('Making app bundle ZIP file...');
             await zl.archiveFolder(`${buildDir}/${binaryName}`, `${buildDir}/${binaryName}-release.zip`);
         }
+      
         utils.clearDirectory('.tmp');
     }
     catch (e) {
         utils.error(e);
+    }
+}
+
+async function copyItems() {
+
+    let configObj = config.get();
+    let binaryName = configObj.cli.binaryName;
+    const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
+
+    if(configObj.cli.copyItems && Array.isArray(configObj.cli.copyItems)){
+        for(let item of configObj.cli.copyItems){
+            await fse.copy(`./${item}`, `${buildDir}/${binaryName}/${item}`);
+        }
     }
 }
