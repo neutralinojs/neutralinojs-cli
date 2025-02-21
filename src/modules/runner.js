@@ -1,4 +1,4 @@
-const { spawn } = require('child_process');
+const spawnCommand = require('spawn-command');
 const fs = require('fs');
 const path = require('path');
 const frontendlib = require('./frontendlib');
@@ -36,7 +36,7 @@ module.exports.runApp = async (options = {}) => {
 
         utils.log(`Starting process: ${binaryName} ${args}`);
 
-        const neuProcess = spawn(binaryPath, args.split(` `), { stdio: 'inherit' })
+        const neuProcess = spawnCommand(binaryPath + args, { stdio: 'inherit' })
 
         neuProcess.on('exit', function (code) {
             let statusCodeMsg = code ? `error code ${code}` : `success code 0`;

@@ -1,6 +1,6 @@
 {
   "name": "@neutralinojs/neu",
-  "version": "11.3.0",
+  "version": "11.3.1",
   "description": "neu CLI for Neutralinojs",
   "main": "./bin/neu.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "png2icons": "^2.0.1",
     "recursive-readdir": "^2.2.2",
     "resedit": "^2.0.2",
-    "spawn-command": "^0.0.2-1",
+    "spawn-command": "^1.0.0",
     "tcp-port-used": "^1.0.2",
     "uuid": "^8.3.2",
     "websocket": "^1.0.34",
