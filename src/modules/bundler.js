@@ -61,6 +61,16 @@ async function createAsarFile() {
     await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${resourceFile}`);
 }
 
+async function copyItems(buildDir, binaryName) {
+    const configObj = config.get();
+    if(configObj.cli.copyItems && Array.isArray(configObj.cli.copyItems)){
+        utils.log('Copying additional app package items...');
+        for(let item of configObj.cli.copyItems){
+            await fse.copy(`./${item}`, `${buildDir}/${binaryName}/${item}`);
+        }
+    }
+}
+
 module.exports.bundleApp = async (options = {}) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
@@ -126,7 +136,7 @@ module.exports.bundleApp = async (options = {}) => {
             fse.copySync(utils.trimPath(hostProjectConfig.buildPath), `${buildDir}/${binaryName}/`);
         }
 
-        await copyItems();
+        await copyItems(buildDir, binaryName);
 
         if(options.macosBundle){
             utils.log('Creating MacOS app bundles...');
@@ -145,18 +155,5 @@ module.exports.bundleApp = async (options = {}) => {
     }
     catch (e) {
         utils.error(e);
-    }
-}
-
-async function copyItems() {
-
-    let configObj = config.get();
-    let binaryName = configObj.cli.binaryName;
-    const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
-
-    if(configObj.cli.copyItems && Array.isArray(configObj.cli.copyItems)){
-        for(let item of configObj.cli.copyItems){
-            await fse.copy(`./${item}`, `${buildDir}/${binaryName}/${item}`);
-        }
     }
 }
