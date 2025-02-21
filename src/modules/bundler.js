@@ -61,16 +61,6 @@ async function createAsarFile() {
     await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${resourceFile}`);
 }
 
-async function copyItems(buildDir, binaryName) {
-    const configObj = config.get();
-    if(configObj.cli.copyItems && Array.isArray(configObj.cli.copyItems)){
-        utils.log('Copying additional app package items...');
-        for(let item of configObj.cli.copyItems){
-            await fse.copy(`./${item}`, `${buildDir}/${binaryName}/${item}`);
-        }
-    }
-}
-
 module.exports.bundleApp = async (options = {}) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
@@ -136,7 +126,13 @@ module.exports.bundleApp = async (options = {}) => {
             fse.copySync(utils.trimPath(hostProjectConfig.buildPath), `${buildDir}/${binaryName}/`);
         }
 
-        await copyItems(buildDir, binaryName);
+
+        if(configObj.cli.copyItems && Array.isArray(configObj.cli.copyItems)){
+            utils.log('Copying additional app package items...');
+            for(let item of configObj.cli.copyItems){
+                await fse.copy(`./${item}`, `${buildDir}/${binaryName}/${item}`);
+            }
+        }
 
         if(options.macosBundle){
             utils.log('Creating MacOS app bundles...');
