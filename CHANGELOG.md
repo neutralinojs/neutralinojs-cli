@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v11.4.0
+
 ### Core: Bundler
 - Let developers copy additional non-resource files like configuration files to the final app bundle using `cli.copyItems` array.
 - Add the `--macos-bundle` flag to the `build` command to rename MacOS binary to a `*.app` file.
