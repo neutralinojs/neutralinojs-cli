@@ -30,6 +30,7 @@ function cleanup() {
     try {
         fs.rmSync('./test-app',{ recursive: true});
         fs.rmSync('./test-template-app',{ recursive: true});
+        fs.rmSync('./test-current-dir', { recursive: true });
     }
     catch(err) {
         // ignore
