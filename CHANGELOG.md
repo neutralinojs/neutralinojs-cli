@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Core: Creator
+- Support using a specific directory with the `neu create` command, e.g., `neu create .`, `neu create myapps/myapp`, `neu create ../myapp`, etc. 
+
 ## v11.4.0
 
 ### Core: Bundler
