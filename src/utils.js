@@ -12,8 +12,8 @@ let error = (message) => {
     console.error(`neu: ${chalk.bgRed.black('ERRR')} ${message}`);
 }
 
-let isNeutralinojsProject = () => {
-    return fs.existsSync(CONFIG_FILE);
+let isNeutralinojsProject = (parent = '.') => {
+    return fs.existsSync(parent + '/' +  CONFIG_FILE);
 }
 
 let getFiglet = () => {

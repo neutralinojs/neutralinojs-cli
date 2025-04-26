@@ -7,13 +7,12 @@ const downloader = require('./downloader');
 const frontendlib = require('../modules/frontendlib');
 const hostproject = require('../modules/hostproject');
 const utils = require('../utils');
-const constants = require('../constants');
 
 module.exports.createApp = async (appPath, template) => {
     const binaryName = path.basename(path.resolve(appPath));
 
-    if (fs.existsSync(`${appPath}/${constants.files.configFile}`)) {
-        utils.error('App name already exists');
+    if (utils.isNeutralinojsProject(appPath)) {
+        utils.error(`${appPath} directory already contains a Neutralinojs project.`);
         process.exit(1);
     }
 
