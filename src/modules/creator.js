@@ -1,4 +1,5 @@
 const process = require('process');
+const path = require('path');
 const fs = require('fs');
 const fse = require('fs-extra');
 const config = require('../modules/config');
@@ -6,12 +7,16 @@ const downloader = require('./downloader');
 const frontendlib = require('../modules/frontendlib');
 const hostproject = require('../modules/hostproject');
 const utils = require('../utils');
+const constants = require('../constants');
 
-module.exports.createApp = async (binaryName, template) => {
-    if (fs.existsSync(`./${binaryName}`)) {
+module.exports.createApp = async (appPath, template) => {
+    const binaryName = path.basename(path.resolve(appPath));
+
+    if (fs.existsSync(`${appPath}/${constants.files.configFile}`)) {
         utils.error('App name already exists');
         process.exit(1);
     }
+
     if(!template) {
         template = 'neutralinojs/neutralinojs-minimal';
     }
@@ -26,8 +31,8 @@ module.exports.createApp = async (binaryName, template) => {
 
     utils.log(`Downloading ${template} template to ${binaryName} directory...`);
 
-    fs.mkdirSync(binaryName, { recursive: true });
-    process.chdir(binaryName); // Change the path context for the following methods
+    fs.mkdirSync(appPath, { recursive: true });
+    process.chdir(appPath); // Change the path context for the following methods
 
     try {
         await downloader.downloadTemplate(template);
@@ -37,7 +42,6 @@ module.exports.createApp = async (binaryName, template) => {
     catch(err) {
         utils.error('Unable to download resources from internet.' +
                     ' Please check your internet connection and template URLs.');
-        fse.removeSync(`../${binaryName}`);
         process.exit(1);
     }
 
@@ -53,5 +57,5 @@ module.exports.createApp = async (binaryName, template) => {
     }
 
     console.log('-------');
-    utils.log(`Enter 'cd ${binaryName} && neu run' to run your application.`);
+    utils.log(`Enter 'cd ${appPath} && neu run' to run your application.`);
 }
