@@ -30,6 +30,16 @@ describe('Run neu create command and its options', () => {
             assert.ok(output.data.includes('neu: INFO Enter \'cd test-template-app && neu run\' to run your application'));
         });
     });
+    describe('Test app creation in the current directory', () => {
+        it('returns with successfully creating neutralinojs app in the current directory', async() => {
+            let output = runner.run('neu create .');
+            
+            assert.equal(output.error, null);
+            assert.equal(output.status, 0);
+            assert.ok(typeof output.data == 'string');
+            assert.ok(output.data.includes('Enter \'cd . && neu run\' to run your application.'));
+        });
+    });
     after(() => {
         runner.cleanup();
     });
