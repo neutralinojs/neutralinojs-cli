@@ -9,6 +9,7 @@ const hostproject = require('./hostproject');
 const utils = require('../utils');
 const {patchWindowsExecutable} = require('./exepatch');
 const path = require('path');
+const {inject} = require('postject');
 
 async function createAsarFile() {
     utils.log(`Generating ${constants.files.resourceFile}...`);
@@ -61,6 +62,58 @@ async function createAsarFile() {
     await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${resourceFile}`);
 }
 
+function patchMachoUniversalSentinel(binaryPath, isBeforeInjection) {
+    try {
+        const sentinelFuse = constants.embedded.options.sentinelFuse;
+        const fixSentinelFuse = constants.embedded.fixSentinelFuse;
+
+        const binaryFile = fs.readFileSync(binaryPath);
+        const buffer = Buffer.from(binaryFile.buffer);
+
+        const firstSentinel = buffer.indexOf(
+            isBeforeInjection ? sentinelFuse : fixSentinelFuse,
+        );
+        const lastSentinel = buffer.lastIndexOf(sentinelFuse);
+
+        if (isBeforeInjection) {
+            if (firstSentinel === -1 || lastSentinel === -1) {
+                throw new Error('Two Sentinels are needed. None were found.');
+            }
+            if (firstSentinel === lastSentinel) {
+                throw new Error('Two Sentinels are needed. Only one was found.');
+            }
+            buffer[firstSentinel] = fixSentinelFuse[0].charCodeAt(0);
+        } else {
+            buffer[firstSentinel] = sentinelFuse[0].charCodeAt(0);
+            const colonIndex = firstSentinel + fixSentinelFuse.length;
+            if (buffer[colonIndex] !== ':'.charCodeAt(0)) {
+                throw new Error(
+                    `Value at index ${colonIndex} must be ':' but '${buffer[colonIndex].charCodeAt(0)}' was found`,
+                );
+            }
+
+            const hasResourceIndex = colonIndex + 1;
+            const hasResourceValue = buffer[hasResourceIndex];
+            if (
+                hasResourceValue !== '0'.charCodeAt(0) &&
+                hasResourceValue !== '1'.charCodeAt(0)
+            ) {
+                throw new Error(
+                    `Value at index ${hasResourceIndex} must be '0' or '1' but '${hasResourceValue.charCodeAt(0)}' was found`,
+                );
+            }
+
+            buffer[hasResourceIndex] = '1'.charCodeAt(0);
+        }
+
+        fse.writeFileSync(binaryPath, buffer);
+    } catch (error) {
+        throw new Error(
+            'Error patching Mach-O universal sentinel: ' + error.message,
+        );
+    }
+}
+
 module.exports.bundleApp = async (options = {}) => {
     let configObj = config.get();
     let binaryName = configObj.cli.binaryName;
@@ -79,12 +132,31 @@ module.exports.bundleApp = async (options = {}) => {
         await createAsarFile();
         utils.log('Copying binaries...');
 
+        const resourceData = fse.readFileSync(
+          `${buildDir}/${binaryName}/${constants.files.resourceFile}`,
+        );
+
         for (let platform in constants.files.binaries) {
             for (let arch in constants.files.binaries[platform]) {
                 let originalBinaryFile = constants.files.binaries[platform][arch];
                 let destinationBinaryFile = hostproject.hasHostProject() ? `bin/${originalBinaryFile}` : originalBinaryFile.replace('neutralino', binaryName);
+                let destinationFullPath = `${buildDir}/${binaryName}/${destinationBinaryFile}`;
                 if (fse.existsSync(`bin/${originalBinaryFile}`)) {
-                    fse.copySync(`bin/${originalBinaryFile}`, `${buildDir}/${binaryName}/${destinationBinaryFile}`);
+                    fse.copySync(`bin/${originalBinaryFile}`, destinationFullPath);
+                    if (options.embedResources) {
+                        if (platform === 'darwin' && arch === 'universal') {
+                            patchMachoUniversalSentinel(destinationFullPath, true);
+                        }
+                        await inject(
+                            destinationFullPath,
+                            constants.embedded.resourceName,
+                            resourceData,
+                            constants.embedded.options,
+                        );
+                        if (platform === 'darwin' && arch === 'universal') {
+                            patchMachoUniversalSentinel(destinationFullPath, false);
+                        }
+                    }
                 }
             }
         }
@@ -148,6 +220,9 @@ module.exports.bundleApp = async (options = {}) => {
         }
       
         utils.clearDirectory('.tmp');
+        if (options.embedResources) {
+            utils.clearDirectory(`${buildDir}/${binaryName}/${constants.files.resourceFile}`);
+        }
     }
     catch (e) {
         utils.error(e);

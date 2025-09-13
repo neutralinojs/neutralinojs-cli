@@ -28,6 +28,14 @@ module.exports = {
     },
     dependencies: []
   },
+  embedded: {
+    resourceName: "NEUTRALINOJS_RESOURCES_NEU",
+    fixSentinelFuse: "XOSTJECT_SENTINEL_fce680ab2cc467b6e072b8b5df1996b2",
+    options: {
+      overwrite: true,
+      sentinelFuse: "POSTJECT_SENTINEL_fce680ab2cc467b6e072b8b5df1996b2"
+    }
+  },
   misc: {
     hotReloadLibPatchRegex: /(<script.*src=")(.*neutralino.js)(".*><\/script>)/g,
     hotReloadGlobPatchRegex: /(<script.*src=")(.*__neutralino_globals.js)(".*><\/script>)/g

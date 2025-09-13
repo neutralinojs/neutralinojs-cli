@@ -8,6 +8,7 @@ module.exports.register = (program) => {
         .command('build')
         .description('builds binaries for all supported platforms and resources.neu file')
         .option('-r, --release')
+        .option('--embed-resources', 'embed resources in the binary')
         .option('--config-file <path>', 'specify the *.config.json file')
         .option('--copy-storage')
         .option('--clean')
@@ -28,6 +29,7 @@ module.exports.register = (program) => {
             utils.log('Bundling app...');
             await bundler.bundleApp({
                 release: command.release, 
+                embedResources: command.embedResources,
                 copyStorage: command.copyStorage,
                 macosBundle: command.macosBundle
             });
