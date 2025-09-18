@@ -147,6 +147,9 @@ module.exports.bundleApp = async (options = {}) => {
                         if (platform === 'darwin' && arch === 'universal') {
                             patchMachoUniversalSentinel(destinationFullPath, true);
                         }
+
+                        utils.log(`Embedding resources to ${destinationBinaryFile}...`);
+
                         await inject(
                             destinationFullPath,
                             constants.embedded.resourceName,
@@ -225,6 +228,6 @@ module.exports.bundleApp = async (options = {}) => {
         }
     }
     catch (e) {
-        utils.error(e);
+        utils.error(e.message.replace(/^Error: /g, ''));
     }
 }

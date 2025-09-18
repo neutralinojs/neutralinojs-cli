@@ -30,7 +30,7 @@ module.exports = {
   },
   embedded: {
     resourceName: "NEUTRALINOJS_RESOURCES_NEU",
-    fixSentinelFuse: "XOSTJECT_SENTINEL_fce680ab2cc467b6e072b8b5df1996b2",
+    fixSentinelFuse: "pOSTJECT_SENTINEL_fce680ab2cc467b6e072b8b5df1996b2",
     options: {
       overwrite: true,
       sentinelFuse: "POSTJECT_SENTINEL_fce680ab2cc467b6e072b8b5df1996b2"
