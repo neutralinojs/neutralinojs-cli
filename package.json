@@ -36,6 +36,7 @@
     "fs-extra": "^9.0.1",
     "pe-library": "^1.0.1",
     "png2icons": "^2.0.1",
+    "postject": "1.0.0-alpha.6",
     "recursive-readdir": "^2.2.2",
     "resedit": "^2.0.2",
     "spawn-command": "^1.0.0",
