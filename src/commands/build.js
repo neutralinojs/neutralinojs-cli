@@ -15,8 +15,8 @@ module.exports.register = (program) => {
         .option('--macos-bundle')
         .action(async (command) => {
             if(command.configFile) {
-              utils.log(`Using config file: ${command.configFile}`);
-              constants.files.configFile = command.configFile;
+             constants.files.configFile = command.configFile;
+             utils.log(`Using config file: ${constants.files.configFile}`);
             }
 
             utils.checkCurrentProject();
