@@ -11,6 +11,7 @@ const HOT_REL_LIB_PATCH_REGEX = constants.misc.hotReloadLibPatchRegex;
 const HOT_REL_GLOB_PATCH_REGEX = constants.misc.hotReloadGlobPatchRegex;
 let originalClientLib = null;
 let originalGlobals = null;
+let devServerProcess = null;
 
 async function makeClientLibUrl(port) {
     let configObj = config.get();
@@ -97,11 +98,20 @@ module.exports.runCommand = (commandKey) => {
             let cmd = frontendLib[commandKey];
 
             utils.log(`Running ${commandKey}: ${cmd}...`);
-            const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
-            proc.on('exit', (code) => {
-                utils.log(`frontendlib: ${commandKey} completed with exit code: ${code}`);
-                resolve();
+            devServerProcess = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
+            
+            
+            devServerProcess.on('error', (err) => {
+                utils.error(`frontendlib: ${commandKey} failed: ${err.message}`);
+                devServerProcess = null;
             });
+
+            devServerProcess.on('exit', (code) => {
+                utils.log(`frontendlib: ${commandKey} completed with exit code: ${code}`);
+                devServerProcess = null;
+            });
+
+            resolve();
         });
     }
 }
@@ -136,3 +146,10 @@ module.exports.waitForFrontendLibApp = async () => {
     }
     clearInterval(inter);
 }
+module.exports.stopDevServer = () => {
+    if (devServerProcess) {
+        utils.log('Stopping frontend dev server...');
+        devServerProcess.kill();
+        devServerProcess = null;
+    }
+};
