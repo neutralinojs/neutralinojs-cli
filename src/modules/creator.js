@@ -19,7 +19,10 @@ module.exports.createApp = async (appPath, template) => {
     if(!template) {
         template = 'neutralinojs/neutralinojs-minimal';
     }
+    const isDefaultTemplate = template === 'neutralinojs/neutralinojs-minimal';
 
+
+    if(!isDefaultTemplate) {
     utils.log(`Checking if ${template} is a valid Neutralinojs app template...`);
 
     const isValidTemplate = await downloader.isValidTemplate(template);
@@ -27,12 +30,23 @@ module.exports.createApp = async (appPath, template) => {
         utils.error(`${template} is not a valid Neutralinojs app template.`);
         process.exit(1);
     }
+}
 
+
+    if(!isDefaultTemplate) {
     utils.log(`Downloading ${template} template to ${binaryName} directory...`);
+}
+
 
     fs.mkdirSync(appPath, { recursive: true });
-    process.chdir(appPath); // Change the path context for the following methods
+    process.chdir(appPath);
 
+   if(isDefaultTemplate) {
+    const templatePath = path.join(__dirname, '../../templates/minimal');
+    fse.copySync(templatePath, appPath);
+    
+}
+else {
     try {
         await downloader.downloadTemplate(template);
         await downloader.downloadAndUpdateBinaries();
@@ -43,6 +57,10 @@ module.exports.createApp = async (appPath, template) => {
                     ' Please check your internet connection and template URLs.');
         process.exit(1);
     }
+}
+
+
+
 
     config.update('cli.binaryName', binaryName);
     config.update('modes.window.title', binaryName);
