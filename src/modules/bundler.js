@@ -131,10 +131,9 @@ module.exports.bundleApp = async (options = {}) => {
 
         await createAsarFile();
         utils.log('Copying binaries...');
-
-        const resourceData = fse.readFileSync(
-          `${buildDir}/${binaryName}/${constants.files.resourceFile}`,
-        );
+        
+        const resourcePath = hostproject.hasHostProject() ? `${buildDir}/${binaryName}/bin/${constants.files.resourceFile}` : `${buildDir}/${binaryName}/${constants.files.resourceFile}`;
+        const resourceData = fse.readFileSync(resourcePath);
 
         for (let platform in constants.files.binaries) {
             for (let arch in constants.files.binaries[platform]) {
