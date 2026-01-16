@@ -1,5 +1,6 @@
 const fs = require('fs');
 const process = require('process');
+const kill = require('tree-kill');
 const spawnCommand = require('spawn-command');
 const recursive = require('recursive-readdir');
 const tpu = require('tcp-port-used');
@@ -147,9 +148,15 @@ module.exports.waitForFrontendLibApp = async () => {
     clearInterval(inter);
 }
 module.exports.stopDevServer = () => {
-    if (devServerProcess) {
+    if (devServerProcess && devServerProcess.pid) {
         utils.log('Stopping frontend dev server...');
-        devServerProcess.kill();
+
+        kill(devServerProcess.pid, 'SIGTERM', (err) => {
+            if (err) {
+                // Fail silently if the process was already closed
+            }
+        });
+
         devServerProcess = null;
     }
 };
