@@ -45,9 +45,6 @@
     "websocket": "^1.0.35",
     "zip-lib": "^1.0.4"
   },
-  "overrides": {
-    "glob": "^10.3.3"
-  },
   "bin": {
     "neu": "./bin/neu.js"
   },
