@@ -13,6 +13,8 @@ const HOT_REL_GLOB_PATCH_REGEX = constants.misc.hotReloadGlobPatchRegex;
 let originalClientLib = null;
 let originalGlobals = null;
 let devServerProcess = null;
+let isBuildRunning = false;
+
 
 async function makeClientLibUrl(port) {
     let configObj = config.get();
@@ -88,31 +90,52 @@ module.exports.cleanup = () => {
     utils.log('Global variables patch was reverted.');
 }
 
-
-module.exports.runCommand = (commandKey) => {
+module.exports.runCommand = (commandKey, wait = false) => {
     let configObj = config.get();
     let frontendLib = configObj.cli ? configObj.cli.frontendLibrary : undefined;
-
+        if (commandKey === 'buildCommand') {
+        if (isBuildRunning) {
+            utils.warn('frontendlib: buildCommand already running, skipping duplicate execution.');
+            return Promise.resolve();
+        }
+        isBuildRunning = true;
+    }
     if(frontendLib && frontendLib.projectPath && frontendLib[commandKey]) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => { // Added reject for build failures
             let projectPath = utils.trimPath(frontendLib.projectPath);
             let cmd = frontendLib[commandKey];
 
             utils.log(`Running ${commandKey}: ${cmd}...`);
             devServerProcess = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
             
-            
             devServerProcess.on('error', (err) => {
-                utils.error(`frontendlib: ${commandKey} failed: ${err.message}`);
-                devServerProcess = null;
+              utils.error(`frontendlib: ${commandKey} failed: ${err.message}`);
+              devServerProcess = null;
+
+            if (commandKey === 'buildCommand') {
+               isBuildRunning = false;
+            }
+
+            if (wait) reject(err);
             });
 
-            devServerProcess.on('exit', (code) => {
-                utils.log(`frontendlib: ${commandKey} completed with exit code: ${code}`);
-                devServerProcess = null;
-            });
 
-            resolve();
+             devServerProcess.on('exit', (code) => {
+              utils.log(`frontendlib: ${commandKey} completed with exit code: ${code}`);
+             devServerProcess = null;
+
+                 if (commandKey === 'buildCommand') {
+                isBuildRunning = false;
+                }
+
+               if (wait) {
+                 if (code === 0) resolve();
+                 else reject(new Error(`Process exited with code ${code}`));
+             }
+           });
+           if (!wait) {
+             resolve();
+            }
         });
     }
 }

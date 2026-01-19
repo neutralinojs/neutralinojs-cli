@@ -2,6 +2,7 @@ const utils = require('../utils');
 const bundler = require('../modules/bundler');
 const config = require('../modules/config');
 const constants = require('../constants');
+const frontendlib = require('../modules/frontendlib');
 
 module.exports.register = (program) => {
     program
@@ -20,6 +21,9 @@ module.exports.register = (program) => {
             }
 
             utils.checkCurrentProject();
+            if(frontendlib.containsFrontendLibApp()) {
+                await frontendlib.runCommand('buildCommand', true);
+            }
             const configObj = config.get()
             const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
             if(command.clean) {
