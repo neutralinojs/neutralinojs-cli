@@ -31,7 +31,7 @@ module.exports.register = (program) => {
             let argsOpt = "";
 
             websocket.start({
-                frontendLibDev: containsFrontendLibApp
+                frontendLibDev: containsFrontendLibApp && configObj.cli.frontendLibrary.patchFile
             });
             
             if(containsFrontendLibApp) {
