@@ -28,7 +28,7 @@
   "dependencies": {
     "@electron/asar": "^3.0.3",
     "chalk": "^4.1.0",
-    "chokidar": "^3.5.1",
+    "chokidar": "^4.0.3",
     "commander": "^7.2.0",
     "configstore": "^5.0.1",
     "edit-json-file": "^1.6.2",
@@ -43,7 +43,7 @@
     "tcp-port-used": "^1.0.2",
     "tree-kill": "^1.2.2",
     "uuid": "^8.3.2",
-    "websocket": "^1.0.34",
+    "websocket": "^1.0.35",
     "zip-lib": "^1.0.4"
   },
   "bin": {
