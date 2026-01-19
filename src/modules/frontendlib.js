@@ -13,8 +13,6 @@ const HOT_REL_GLOB_PATCH_REGEX = constants.misc.hotReloadGlobPatchRegex;
 let originalClientLib = null;
 let originalGlobals = null;
 let devServerProcess = null;
-let isBuildRunning = false;
-
 
 async function makeClientLibUrl(port) {
     let configObj = config.get();
@@ -90,55 +88,18 @@ module.exports.cleanup = () => {
     utils.log('Global variables patch was reverted.');
 }
 
-module.exports.runCommand = (commandKey, wait = false) => {
-    let configObj = config.get();
-    let frontendLib = configObj.cli ? configObj.cli.frontendLibrary : undefined;
-        if (commandKey === 'buildCommand') {
-        if (isBuildRunning) {
-            utils.warn('frontendlib: buildCommand already running, skipping duplicate execution.');
-            return Promise.resolve();
-        }
-        isBuildRunning = true;
-    }
+
+module.exports.runCommand = (commandKey) => {
+    let cli = config.get().cli;
+    let frontendLib = cli && cli.frontendLibrary;
     if(frontendLib && frontendLib.projectPath && frontendLib[commandKey]) {
-        return new Promise((resolve, reject) => { // Added reject for build failures
-            let projectPath = utils.trimPath(frontendLib.projectPath);
-            let cmd = frontendLib[commandKey];
-
-            utils.log(`Running ${commandKey}: ${cmd}...`);
-            devServerProcess = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
-            
-            devServerProcess.on('error', (err) => {
-              utils.error(`frontendlib: ${commandKey} failed: ${err.message}`);
-              devServerProcess = null;
-
-            if (commandKey === 'buildCommand') {
-               isBuildRunning = false;
-            }
-
-            if (wait) reject(err);
-            });
-
-
-             devServerProcess.on('exit', (code) => {
-              utils.log(`frontendlib: ${commandKey} completed with exit code: ${code}`);
-             devServerProcess = null;
-
-                 if (commandKey === 'buildCommand') {
-                isBuildRunning = false;
-                }
-
-               if (wait) {
-                 if (code === 0) resolve();
-                 else reject(new Error(`Process exited with code ${code}`));
-             }
-           });
-           if (!wait) {
-             resolve();
-            }
-        });
+        const projectPath = utils.trimPath(frontendLib.projectPath);
+        const cmd = frontendLib[commandKey];
+        utils.log(`Running ${commandKey}: ${cmd}...`);
+        devServerProcess = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
+        return devServerProcess;  // return the process instead of Promise
     }
-}
+};
 
 module.exports.containsFrontendLibApp = () => {
     let configObj = config.get();
@@ -170,16 +131,14 @@ module.exports.waitForFrontendLibApp = async () => {
     }
     clearInterval(inter);
 }
-module.exports.stopDevServer = () => {
+process.on('exit', () => {
     if (devServerProcess && devServerProcess.pid) {
-        utils.log('Stopping frontend dev server...');
-
-        kill(devServerProcess.pid, 'SIGTERM', (err) => {
-            if (err) {
-                // Fail silently if the process was already closed
-            }
-        });
-
+        utils.log('Cleaning up dev server on exit...');
+        kill(devServerProcess.pid, 'SIGTERM');
         devServerProcess = null;
     }
-};
+});
+
+process.on('SIGINT', () => {
+    process.exit();
+});
