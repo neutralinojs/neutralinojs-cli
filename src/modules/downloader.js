@@ -106,14 +106,27 @@ let downloadBinariesFromRelease = (latest) => {
         getBinaryDownloadUrl(latest)
             .then((url) => {
                 https.get(url, function (response) {
+                
+                    const totalSize = parseInt(response.headers['content-length'], 10);
+                    let downloadedSize = 0;
+
+                    response.on('data', (chunk) => {
+                        downloadedSize += chunk.length;
+                        if (totalSize && process.stdout.isTTY) {
+                            const percentage = ((downloadedSize / totalSize) * 100).toFixed(1);
+                            process.stdout.write(`\r    Progress: ${percentage}% (${(downloadedSize / 1024 / 1024).toFixed(2)} MB)`);
+                        }
+                    });
+
                     response.pipe(file);
                     response.on('end', () => {
+                        if (process.stdout.isTTY) process.stdout.write('\n');
                         utils.log('Extracting binaries.zip file...');
                         zl.extract(zipFilename, '.tmp/')
                             .then(() => resolve())
                             .catch((e) => reject(e));
                     });
-                });
+                }).on('error', (err) => reject(err));
             });
     });
 }
