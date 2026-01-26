@@ -6,8 +6,6 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
-## v11.7.0
-
 ### Bugfixes/improvements
 - Display the zipped binaries package size while downloading pre-built Neutralinojs binaries from GitHub releases.
 - Use the correct resources path for host projects
