@@ -26,7 +26,7 @@
   },
   "homepage": "https://neutralino.js.org/docs/cli/neu-cli",
   "dependencies": {
-    "@electron/asar": "^3.0.3",
+    "@electron/asar": "^4.0.1",
     "chalk": "^4.1.0",
     "chokidar": "^4.0.3",
     "commander": "^7.2.0",
@@ -37,7 +37,6 @@
     "pe-library": "^1.0.1",
     "png2icons": "^2.0.1",
     "postject": "1.0.0-alpha.6",
-    "recursive-readdir": "^2.2.2",
     "resedit": "^2.0.2",
     "spawn-command": "^1.0.0",
     "tcp-port-used": "^1.0.2",
