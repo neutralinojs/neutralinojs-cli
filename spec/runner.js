@@ -14,9 +14,9 @@ function run(command) {
         err = error;
     }
     finally {
-        return { 
-            error: decodeUTF8(err), 
-            data : decodeUTF8(output), 
+        return {
+            error: decodeUTF8(err),
+            data : decodeUTF8(output),
             status : statusCode
         };
     }
@@ -27,19 +27,37 @@ function decodeUTF8(decode) {
 }
 
 function cleanup() {
-    try {
-        fs.rmSync('./test-app',{ recursive: true});
-        fs.rmSync('./test-template-app',{ recursive: true});
-    }
-    catch(err) {
-        // ignore
-    }
+    const targets = [
+        './test-app',
+        './test-template-app',
+        './empty-dir',
+        './neutralino.config.json',
+        './res',
+				'./resources',
+        './README.md',
+        './LICENSE',
+        './.github',
+        './bin',
+        './dist',
+        './storage',
+        './auth_info.json'
+    ];
+
+    targets.forEach(target => {
+        try {
+            if (fs.existsSync(target)) {
+                fs.rmSync(target, { recursive: true, force: true });
+            }
+        } catch(err) {
+            // ignore
+        }
+    });
 }
 
 function updateVersions(binaryVersion, clientVersion) {
     const file = 'neutralino.config.json';
     const config = JSON.parse(fs.readFileSync(file));
-    
+
     config['cli']['binaryVersion'] = binaryVersion;
     config['cli']['clientVersion'] = clientVersion;
     fs.writeFileSync(file, JSON.stringify(config, null, 2));
