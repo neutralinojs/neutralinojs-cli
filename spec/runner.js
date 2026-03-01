@@ -26,6 +26,23 @@ function decodeUTF8(decode) {
     return decode ? decode.toString('utf8') : null;
 }
 
+let gitignoreBackup = null;
+
+function backupGitignore() {
+    if (fs.existsSync('.gitignore')) {
+        gitignoreBackup = fs.readFileSync('.gitignore');
+    }
+}
+
+function restoreGitignore() {
+    if (gitignoreBackup) {
+        fs.writeFileSync('.gitignore', gitignoreBackup);
+        gitignoreBackup = null;
+    } else if (fs.existsSync('.gitignore')) {
+        fs.unlinkSync('.gitignore');
+    }
+}
+
 function cleanup() {
     const targets = [
         './test-app',
@@ -66,5 +83,7 @@ function updateVersions(binaryVersion, clientVersion) {
 module.exports = {
     cleanup,
     updateVersions,
-    run
+    run,
+		backupGitignore,
+    restoreGitignore
 }
