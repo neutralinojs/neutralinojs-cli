@@ -2,6 +2,7 @@ const utils = require('../utils');
 const bundler = require('../modules/bundler');
 const config = require('../modules/config');
 const constants = require('../constants');
+const path = require('path');
 
 module.exports.register = (program) => {
     program
@@ -20,8 +21,23 @@ module.exports.register = (program) => {
             }
 
             utils.checkCurrentProject();
-            const configObj = config.get()
+            const configObj = config.get();
+            const illegalChars = /[<>:"/\\|?*]/;
+            if (configObj.cli && illegalChars.test(configObj.cli.binaryName)) {
+                throw new Error(
+                    `Invalid binaryName: "${configObj.cli.binaryName}". ` +
+                    `Filenames cannot contain: < > : " / \\ | ? *`
+                );
+            }
+
+            const projectRoot = process.cwd();
             const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
+            const absoluteBuildDir = path.resolve(projectRoot, buildDir);
+            const relativePath = path.relative(projectRoot, absoluteBuildDir);
+
+            if (absoluteBuildDir === projectRoot || relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+                throw new Error(`Invalid distributionPath: "${buildDir}". It must be a sub-directory inside the project.`);
+            }
             if(command.clean) {
                 utils.log(`Cleaning previous build files from ${buildDir}...`);
                 utils.clearDirectory(buildDir);
