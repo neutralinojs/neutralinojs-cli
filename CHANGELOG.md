@@ -5,8 +5,8 @@ the next release. Once the changes are released,
 rename `Unreleased` topic with the new version tag. Finally, create a new `Unreleased` topic for future changes.
 
 ## Unreleased
-
-## v11.7.0
+### Features
+- Add `--browser` flag support to the run command
 
 ### Bugfixes/improvements
 - Display the zipped binaries package size while downloading pre-built Neutralinojs binaries from GitHub releases.
