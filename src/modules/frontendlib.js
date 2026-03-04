@@ -22,9 +22,9 @@ async function makeClientLibUrl(port) {
     }
     let url = `http://localhost:${port}`;
 
-    if(clientLib) {
+    if (clientLib) {
         clientLib = '/' + clientLib;
-        if(configObj.documentRoot) {
+        if (configObj.documentRoot) {
             clientLib = clientLib.replace(configObj.documentRoot, '/');
         }
         url += clientLib;
@@ -41,7 +41,7 @@ function patchHTMLFile(scriptFile, regex) {
     let patchFile = configObj.cli.frontendLibrary.patchFile.replace(/^\//, '');
     let html = fs.readFileSync(patchFile, 'utf8');
     let matches = regex.exec(html);
-    if(matches) {
+    if (matches) {
         html = html.replace(regex, `$1${scriptFile}$3`);
         fs.writeFileSync(patchFile, html);
         return matches[2];
@@ -52,19 +52,19 @@ function patchHTMLFile(scriptFile, regex) {
 function getPortByProtocol(protocol) {
     switch (protocol) {
         case 'http:':
-          return 80;
+            return 80;
         case 'https:':
             return 443;
         case 'ftp:':
-          return 21;
+            return 21;
         default:
             return -1;
-      }
+    }
 }
 
 module.exports.bootstrap = async (port) => {
     let configObj = config.get();
-    if(configObj.cli.clientLibrary) {
+    if (configObj.cli.clientLibrary) {
         let clientLibUrl = await makeClientLibUrl(port);
         originalClientLib = patchHTMLFile(clientLibUrl, HOT_REL_LIB_PATCH_REGEX);
     }
@@ -77,10 +77,10 @@ module.exports.bootstrap = async (port) => {
 }
 
 module.exports.cleanup = () => {
-    if(originalClientLib) {
+    if (originalClientLib) {
         patchHTMLFile(originalClientLib, HOT_REL_LIB_PATCH_REGEX);
     }
-    if(originalGlobals) {
+    if (originalGlobals) {
         patchHTMLFile(originalGlobals, HOT_REL_GLOB_PATCH_REGEX);
     }
     utils.log('Global variables patch was reverted.');
@@ -91,7 +91,7 @@ module.exports.runCommand = (commandKey) => {
     let configObj = config.get();
     let frontendLib = configObj.cli ? configObj.cli.frontendLibrary : undefined;
 
-    if(frontendLib && frontendLib.projectPath && frontendLib[commandKey]) {
+    if (frontendLib && frontendLib.projectPath && frontendLib[commandKey]) {
         return new Promise((resolve) => {
             let projectPath = utils.trimPath(frontendLib.projectPath);
             let cmd = frontendLib[commandKey];
@@ -109,6 +109,10 @@ module.exports.runCommand = (commandKey) => {
 module.exports.containsFrontendLibApp = () => {
     let configObj = config.get();
     return !!(configObj.cli && configObj.cli.frontendLibrary);
+}
+
+module.exports.build = (configObj, options) => {
+    return module.exports.runCommand('buildCommand');
 }
 
 module.exports.waitForFrontendLibApp = async () => {
@@ -130,7 +134,7 @@ module.exports.waitForFrontendLibApp = async () => {
     try {
         await tpu.waitUntilUsedOnHost(port, url.hostname, 200, timeout);
     }
-    catch(e) {
+    catch (e) {
         utils.error(`Timeout exceeded while waiting till local TCP port: ${port}`);
         process.exit(1);
     }

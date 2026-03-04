@@ -7,6 +7,10 @@ module.exports.hasHostProject = () => {
   return !!(configObj.cli && configObj.cli.hostProject);
 }
 
+module.exports.build = (configObj, options) => {
+  return module.exports.runCommand('buildCommand');
+}
+
 module.exports.runCommand = async (commandKey) => {
   let configObj = config.get();
   let hostProject = configObj.cli ? configObj.cli.hostProject : undefined;
