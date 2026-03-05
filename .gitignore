@@ -69,6 +69,8 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
+.env
+.env.test
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -105,4 +107,3 @@ dist
 .DS_Store
 settings.json
 .vscode
-config.bat
