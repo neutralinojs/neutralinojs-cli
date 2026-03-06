@@ -1,11 +1,12 @@
 const fs = require('fs');
 const process = require('process');
 const spawnCommand = require('spawn-command');
-const recursive = require('recursive-readdir');
+let { glob } = require("glob")
 const tpu = require('tcp-port-used');
 const config = require('./config');
 const constants = require('../constants');
 const utils = require('../utils');
+const path = require('path');
 
 const HOT_REL_LIB_PATCH_REGEX = constants.misc.hotReloadLibPatchRegex;
 const HOT_REL_GLOB_PATCH_REGEX = constants.misc.hotReloadGlobPatchRegex;
@@ -15,7 +16,12 @@ let originalGlobals = null;
 async function makeClientLibUrl(port) {
     let configObj = config.get();
     let resourcesPath = configObj.cli.resourcesPath.replace(/^\//, '');
-    let files = await recursive(resourcesPath);
+    let files = await glob("**/*", {
+        cwd: resourcesPath,
+        nodir: true,
+        dot: true
+    })
+    files = files.map(file => path.join(resourcesPath, file));
     let clientLib = files.find((file) => /neutralino\.js$/.test(file));
     if (clientLib) {
         clientLib = clientLib.replace(/\\/g, '/'); // Fix path on Windows
