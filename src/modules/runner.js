@@ -41,6 +41,7 @@ module.exports.runApp = async (options = {}) => {
         neuProcess.on('exit', function (code) {
             let statusCodeMsg = code ? `error code ${code}` : `success code 0`;
             let runnerMsg = `${binaryName} was stopped with ${statusCodeMsg}`;
+            frontendlib.stopDevServer();
 
             if(code) {
                 utils.warn(runnerMsg);
@@ -53,3 +54,7 @@ module.exports.runApp = async (options = {}) => {
         });
     });
 }
+    process.on('SIGINT', () => {
+    frontendlib.stopDevServer();
+    process.exit();
+});
