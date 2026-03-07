@@ -8,7 +8,6 @@ const frontendlib = require('./frontendlib');
 const hostproject = require('./hostproject');
 const utils = require('../utils');
 const {patchWindowsExecutable} = require('./exepatch');
-const path = require('path');
 const {inject} = require('postject');
 
 async function createAsarFile() {
@@ -42,7 +41,7 @@ async function createAsarFile() {
     }
 
     await fse.copy(`${constants.files.configFile}`, `.tmp/neutralino.config.json`, { overwrite: true });
-    
+
     if (clientLibrary) {
         let typesFile = clientLibrary.replace(/.js$/, '.d.ts');
         await fse.copy(`./${clientLibrary}`, `.tmp/${clientLibrary}`, { overwrite: true });
@@ -120,6 +119,12 @@ module.exports.bundleApp = async (options = {}) => {
     const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
     const hostProjectConfig = configObj.cli ? configObj.cli.hostProject : undefined;
 
+    const platformMap = {
+        'linux': 'linux',
+        'windows': 'win32',
+        'mac': 'darwin'
+    };
+
     try {
         if (frontendlib.containsFrontendLibApp()) {
             await frontendlib.runCommand('buildCommand');
@@ -131,15 +136,21 @@ module.exports.bundleApp = async (options = {}) => {
 
         await createAsarFile();
         utils.log('Copying binaries...');
-        
+
         const resourcePath = hostproject.hasHostProject() ? `${buildDir}/${binaryName}/bin/${constants.files.resourceFile}` : `${buildDir}/${binaryName}/${constants.files.resourceFile}`;
         const resourceData = fse.readFileSync(resourcePath);
 
-        for (let platform in constants.files.binaries) {
+        let targetPlatforms = Object.keys(constants.files.binaries);
+        if (options.platform && platformMap[options.platform]) {
+            targetPlatforms = [platformMap[options.platform]];
+        }
+
+        for (let platform of targetPlatforms) {
             for (let arch in constants.files.binaries[platform]) {
                 let originalBinaryFile = constants.files.binaries[platform][arch];
                 let destinationBinaryFile = hostproject.hasHostProject() ? `bin/${originalBinaryFile}` : originalBinaryFile.replace('neutralino', binaryName);
                 let destinationFullPath = `${buildDir}/${binaryName}/${destinationBinaryFile}`;
+
                 if (fse.existsSync(`bin/${originalBinaryFile}`)) {
                     fse.copySync(`bin/${originalBinaryFile}`, destinationFullPath);
                     if (options.embedResources) {
@@ -163,21 +174,23 @@ module.exports.bundleApp = async (options = {}) => {
             }
         }
 
-        utils.log('Patching windows executables...');
-        try {
-            await Promise.all(Object.keys(constants.files.binaries.win32).map(async (arch) => {
-                const origBinaryName = constants.files.binaries.win32[arch];
-                const filepath = hostproject.hasHostProject() ? `bin/${origBinaryName}` : origBinaryName.replace('neutralino', binaryName);
-                const winPath = `${buildDir}/${binaryName}/${filepath}`;
-                if (await fse.exists(winPath)) {
-                    await patchWindowsExecutable(winPath);
-                }
-            }))
-        }
-        catch (err) {
-            console.error(err);
-            utils.error('Could not patch windows executable');
-            process.exit(1);
+        if (!options.platform || options.platform === 'windows') {
+            utils.log('Patching windows executables...');
+            try {
+                await Promise.all(Object.keys(constants.files.binaries.win32).map(async (arch) => {
+                    const origBinaryName = constants.files.binaries.win32[arch];
+                    const filepath = hostproject.hasHostProject() ? `bin/${origBinaryName}` : origBinaryName.replace('neutralino', binaryName);
+                    const winPath = `${buildDir}/${binaryName}/${filepath}`;
+                    if (await fse.exists(winPath)) {
+                        await patchWindowsExecutable(winPath);
+                    }
+                }))
+            }
+            catch (err) {
+                console.error(err);
+                utils.error('Could not patch windows executable');
+                process.exit(1);
+            }
         }
 
         for (let dependency of constants.files.dependencies) {
@@ -208,11 +221,14 @@ module.exports.bundleApp = async (options = {}) => {
             }
         }
 
-        if(options.macosBundle){
+        if (options.macosBundle && (!options.platform || options.platform === 'mac')) {
             utils.log('Creating MacOS app bundles...');
             for(let macBinary of Object.values(constants.files.binaries.darwin)) {
                 macBinary = hostproject.hasHostProject() ? `bin/${macBinary}` : macBinary.replace('neutralino', binaryName);
-                fs.renameSync(`${buildDir}/${binaryName}/${macBinary}`, `${buildDir}/${binaryName}/${macBinary}.app`);
+                const macAppPath = `${buildDir}/${binaryName}/${macBinary}`;
+                if (fse.existsSync(macAppPath)) {
+                    fs.renameSync(macAppPath, `${macAppPath}.app`);
+                }
             }
         }
 
@@ -220,10 +236,13 @@ module.exports.bundleApp = async (options = {}) => {
             utils.log('Making app bundle ZIP file...');
             await zl.archiveFolder(`${buildDir}/${binaryName}`, `${buildDir}/${binaryName}-release.zip`);
         }
-      
+
         utils.clearDirectory('.tmp');
         if (options.embedResources) {
-            utils.clearDirectory(`${buildDir}/${binaryName}/${constants.files.resourceFile}`);
+            const resourceFileInDist = `${buildDir}/${binaryName}/${constants.files.resourceFile}`;
+            if (fse.existsSync(resourceFileInDist)) {
+                fse.removeSync(resourceFileInDist);
+            }
         }
     }
     catch (e) {
