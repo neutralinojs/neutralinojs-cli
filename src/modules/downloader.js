@@ -5,6 +5,7 @@ const constants = require('../constants');
 const config = require('./config');
 const utils = require('../utils');
 const zl = require('zip-lib');
+const crypto = require('crypto');
 
 let cachedLatestClientVersion = null;
 
@@ -50,6 +51,16 @@ let getLatestVersion = (repo) => {
             .catch((error) => fallback());
     });
 }
+
+let getFileHash = (filePath) => {
+    return new Promise((resolve, reject) => {
+        const hash = crypto.createHash('sha256');
+        const stream = fs.createReadStream(filePath);
+        stream.on('data', (data) => hash.update(data));
+        stream.on('end', () => resolve(hash.digest('hex')));
+        stream.on('error', (err) => reject(err));
+    });
+};
 
 let getScriptExtension = () => {
     const configObj = config.get();
@@ -106,7 +117,7 @@ let downloadBinariesFromRelease = (latest) => {
         getBinaryDownloadUrl(latest)
             .then((url) => {
                 https.get(url, function (response) {
-                
+
                     const totalSize = parseInt(response.headers['content-length'], 10);
                     const totalSizeMB = (totalSize / 1024 / 1024).toFixed(2);
                     let downloadedSize = 0;
@@ -117,17 +128,25 @@ let downloadBinariesFromRelease = (latest) => {
                             const percentage = ((downloadedSize / totalSize) * 100).toFixed(1);
                             const downloadSizeMB = (downloadedSize / 1024 / 1024).toFixed(2);
                             process.stdout.write(`\r    Downloading binaries: ${percentage}% (${downloadSizeMB} of ${totalSizeMB}MB)`);
-                        }
+												}
                     });
 
                     response.pipe(file);
-                    response.on('end', () => {
-                        if (process.stdout.isTTY) process.stdout.write('\n');
-                        utils.log('Extracting binaries.zip file...');
-                        zl.extract(zipFilename, '.tmp/')
-                            .then(() => resolve())
-                            .catch((e) => reject(e));
-                    });
+                    response.on('end', async () => {
+												if (process.stdout.isTTY) process.stdout.write('\n');
+
+												try {
+														const actualHash = await getFileHash(zipFilename);
+														utils.log(`File integrity (SHA-256): ${actualHash}`);
+
+														utils.log('Extracting binaries.zip file...');
+														await zl.extract(zipFilename, '.tmp/');
+														resolve();
+												} catch (err) {
+														utils.error(`Integrity check or extraction failed: ${err.message}`);
+														reject(err);
+												}
+										});
                 }).on('error', (err) => reject(err));
             });
     });
