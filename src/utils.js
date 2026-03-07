@@ -34,13 +34,18 @@ let showArt = () => {
 
 let checkCurrentProject = () => {
     if (!isNeutralinojsProject()) {
-        error(`Unable to find ${CONFIG_FILE}. ` +
-            `Please check whether the current directory has a Neutralinojs project.`);
+        error(
+            `This command must be run inside Neutralino project.\n` +
+            `${CONFIG_FILE} file not found in this directory.\n` +
+            `If you have not created a project yet, run:\n` +
+            `  neu create <app-name>`
+        );
         process.exit(1);
     }
-    const configObj =  config.get();
-    if(Object.keys(configObj).length == 0) {
-        error(`${CONFIG_FILE} is not a valid Neutralinojs configuration JSON file.`);
+
+    const configObj = config.get();
+    if (Object.keys(configObj).length === 0) {
+        error(`${CONFIG_FILE} is not a valid Neutralino configuration file.`);
         process.exit(1);
     }
 }
