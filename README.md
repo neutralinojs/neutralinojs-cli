@@ -8,9 +8,14 @@
 
 The official CLI of Neutralinojs. See neu CLI [documentation](https://neutralino.js.org/docs/cli/neu-cli/) for more details. Release notes are available at [this page](https://neutralino.js.org/docs/release-notes/cli).
 
+### Installation
+
+Install the Neutralinojs CLI globally using npm:
+
 ```bash
-npm i -g @neutralinojs/neu
+npm install -g @neutralinojs/neu
 ```
+
 ### Requirements
 
 - Node.js v12 or later version.
