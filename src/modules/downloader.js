@@ -135,27 +135,18 @@ let downloadBinariesFromRelease = (latest) => {
                     response.on('end', async () => {
 												if (process.stdout.isTTY) process.stdout.write('\n');
 
-													try {
-															const actualHash = await getFileHash(zipFilename);
+												try {
+														const actualHash = await getFileHash(zipFilename);
+														utils.log(`File integrity (SHA-256): ${actualHash}`);
 
-															// Log the SHA-256 hash so users can manually verify the integrity.
-        											// This addresses the security concern raised in issue #198.
-															utils.log(`File integrity (SHA-256): ${actualHash}`);
-
-															/* TODO: Implement strict integrity enforcement.
-																 Once the Neutralinojs release manifest includes official checksums,
-																 we should compare actualHash with the expected hash and
-																 abort the installation if they don't match.
-															*/
-
-															utils.log('Extracting binaries.zip file...');
-															await zl.extract(zipFilename, '.tmp/');
-															resolve();
-													} catch (err) {
-															utils.error(`Integrity check or extraction failed: ${err.message}`);
-															reject(err);
-													}
-											});
+														utils.log('Extracting binaries.zip file...');
+														await zl.extract(zipFilename, '.tmp/');
+														resolve();
+												} catch (err) {
+														utils.error(`Integrity check or extraction failed: ${err.message}`);
+														reject(err);
+												}
+										});
                 }).on('error', (err) => reject(err));
             });
     });
