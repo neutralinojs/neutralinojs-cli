@@ -5,7 +5,8 @@
   "main": "./bin/neu.js",
   "scripts": {
     "start": "node ./bin/neu.js",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "test": "cd spec && npm test"
   },
   "repository": {
     "type": "git",
