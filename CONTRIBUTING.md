@@ -7,11 +7,59 @@ The following is a set of guidelines for contributing to neutralinojs-cli, which
 ## Table Of Contents
 
 - [Code of Conduct](#code-of-conduct)
+- [Local Development](#local-development)
 - [Making a PR](#making-a-pr)
 
 ## Code of Conduct
 
 This project encourages each and everyone to contribute to it. By participating, you are expected to uphold the spirits of open source culture.
+
+## Local Development
+
+Follow these steps to set up the project locally for development:
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/neutralinojs/neutralinojs-cli.git
+cd neutralinojs-cli
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Build the CLI
+
+The source code needs to be compiled before running the CLI
+
+```bash
+npm run build
+```
+
+### 4. Run the CLI locally
+
+You can run the generated CLI directly using Node.js:
+
+```bash
+node ./bin/neu.js --help
+```
+
+Or link it globally to use the neu command system-wide during development:
+
+```bash
+npm link
+neu --version
+```
+
+### Useful Scripts
+
+- `npm start`: Runs the CLI using the entry point.
+- `npm run build`: Compiles the source code into the `./bin` directory.
+- `npm test`: Runs the Mocha test suite to ensure stability.
+- `npm run lint`: Checks the code for style and formatting issues.
 
 ## Making a PR
 
