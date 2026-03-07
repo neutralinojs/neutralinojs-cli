@@ -5,7 +5,8 @@
   "main": "./bin/neu.js",
   "scripts": {
     "start": "node ./bin/neu.js",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "test": "mocha \"spec/**/*.spec.js\" --timeout 50000"
   },
   "repository": {
     "type": "git",
@@ -64,6 +65,7 @@
     "codezri"
   ],
   "devDependencies": {
+    "mocha": "^11.7.5",
     "prettier": "^3.2.5"
   }
 }
