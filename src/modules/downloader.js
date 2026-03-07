@@ -8,29 +8,34 @@ const zl = require('zip-lib');
 
 let cachedLatestClientVersion = null;
 
-
 let getRemoteLatestVersion = (repo) => {
     return new Promise((resolve, reject) => {
         let opt = {
             headers: { 'User-Agent': 'Neutralinojs CLI' }
         };
-        https.get(constants.remote.releasesApiUrl.replace('{repo}', repo), opt, function (response) {
+
+        const request = https.get(constants.remote.releasesApiUrl.replace('{repo}', repo), opt, function (response) {
             let body = '';
             response.on('data', (data) => body += data);
             response.on('end', () => {
                 if (response.statusCode != 200) {
                     return reject();
                 }
-                let apiRes = JSON.parse(body);
-                let version = apiRes.tag_name.replace('v', '');
-                resolve(version);
+                try {
+                    let apiRes = JSON.parse(body);
+                    let version = apiRes.tag_name.replace('v', '');
+                    resolve(version);
+                } catch (e) {
+                    reject();
+                }
             });
-            response.on('error', () => {
-                reject();
-            });
-        })
-        .on('error', () => {
-            reject();
+        });
+
+        request.on('error', () => reject());
+        
+        request.setTimeout(5000, () => { // 5 seconds
+            request.destroy();
+            reject(new Error('timeout'));
         });
     });
 }
