@@ -148,12 +148,15 @@ let downloadClientFromRelease = (latest) => {
 
                     const statusCode = response.statusCode;
 
-                    if (statusCode !== 200) {
-                        file.close();
-                        fs.unlink(tempFile, () => {});
-                        return reject(new Error(`Failed to download client: HTTP ${statusCode}`));
-                    }
+                   if (statusCode !== 200) {
+                    response.resume();
 
+                    file.close(() => {
+                        fs.unlink(tempFile, () => {});
+                    });
+
+                    return reject(new Error(`Failed to download client: HTTP ${statusCode}`));
+                }
                     response.pipe(file);
 
                     file.on('finish', () => {
@@ -185,8 +188,12 @@ let downloadTypesFromRelease = (latest) => {
                     const statusCode = response.statusCode;
 
                     if (statusCode !== 200) {
-                        file.close();
-                        fs.unlink(tempFile, () => {});
+                        response.resume();
+
+                        file.close(() => {
+                            fs.unlink(tempFile, () => {});
+                        });
+
                         return reject(new Error(`Failed to download types: HTTP ${statusCode}`));
                     }
 
@@ -219,15 +226,21 @@ module.exports.downloadTemplate = (template) => {
 
             const statusCode = response.statusCode;
 
-            if (statusCode !== 200) {
-                file.close();
-                fs.unlink(zipFilename, () => {});
-                return reject(new Error(`Failed to download template: HTTP ${statusCode}`));
-            }
+           if (statusCode !== 200) {
+                    response.resume(); // drain response so socket is released
+
+                    file.close(() => {
+                        fs.unlink(zipFilename, () => {});
+                    });
+
+                    return reject(new Error(`Failed to download template: HTTP ${statusCode}`));
+                }
 
             response.pipe(file);
 
-            response.on('end', () => {
+            file.on('finish', () => {
+                file.close();
+
                 utils.log('Extracting template zip file...');
 
                 zl.extract(zipFilename, '.tmp/')
