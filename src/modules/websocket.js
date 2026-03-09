@@ -9,6 +9,8 @@ let ws = null;
 let authInfo = null;
 let reconnecting = false;
 let retryHandler = null;
+let retryCount = 0;
+const MAX_RETRIES = 10;
 
 module.exports.start = (options = {}) => {
     authInfo = getAuthInfo();
@@ -27,6 +29,7 @@ module.exports.start = (options = {}) => {
 
     ws.onopen = () => {
         utils.log('neu CLI connected with the application.');
+        retryCount = 0;
         if(options.frontendLibDev) {
             frontendlib.bootstrap(authInfo.nlPort);
         }
@@ -78,15 +81,24 @@ function getAuthInfo() {
         authInfo = JSON.parse(authInfo);
     }
     catch(err) {
-        // ignore
     }
     return authInfo;
 }
 
 function retryLater(options) {
+    if (retryCount >= MAX_RETRIES) {
+        utils.error(`Could not connect to the Neutralino runtime after ${MAX_RETRIES} attempts.`);
+        utils.log('Please ensure the application is running and check for runtime errors.');
+        return; // Stops the infinite loop
+    }
+
+    retryCount++;
     reconnecting = true;
+    // Performance improvement: Start with a 200ms delay, increase slowly to 1000ms
+    const delay = Math.min(retryCount * 200, 1000); 
+
     retryHandler = setTimeout(() => {
         reconnecting = false;
         module.exports.start(options);
-    }, 1000);
+    }, delay);
 }
