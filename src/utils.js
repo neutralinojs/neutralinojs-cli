@@ -9,7 +9,7 @@ const config = require('./modules/config')
 const package = require('../package.json')
 
 let error = (message) => {
-    console.error(`neu: ${chalk.bgRed.black('ERRR')} ${message}`);
+    console.error(chalk.red("✗ " + message));
 }
 
 let isNeutralinojsProject = (parent = '.') => {
@@ -61,11 +61,11 @@ let checkLatestVersion = () => {
 
 
 let log = (message) => {
-    console.log(`neu: ${chalk.bgGreen.black('INFO')} ${message}`);
+    console.log(chalk.green("✓ " + message));
 }
 
 let warn = (message) => {
-    console.warn(`neu: ${chalk.bgYellow.black('WARN')} ${message}`);
+    console.warn(chalk.yellow("⚠ " + message));
 }
 
 let trimPath = (path) => {
