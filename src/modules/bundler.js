@@ -7,9 +7,9 @@ const constants = require('../constants');
 const frontendlib = require('./frontendlib');
 const hostproject = require('./hostproject');
 const utils = require('../utils');
-const {patchWindowsExecutable} = require('./exepatch');
+const { patchWindowsExecutable } = require('./exepatch');
 const path = require('path');
-const {inject} = require('postject');
+const { inject } = require('postject');
 
 async function createAsarFile() {
     utils.log(`Generating ${constants.files.resourceFile}...`);
@@ -42,7 +42,7 @@ async function createAsarFile() {
     }
 
     await fse.copy(`${constants.files.configFile}`, `.tmp/neutralino.config.json`, { overwrite: true });
-    
+
     if (clientLibrary) {
         let typesFile = clientLibrary.replace(/.js$/, '.d.ts');
         await fse.copy(`./${clientLibrary}`, `.tmp/${clientLibrary}`, { overwrite: true });
@@ -51,12 +51,12 @@ async function createAsarFile() {
         }
     }
 
-    if(icon) {
-        await fse.copy(`./${icon}`, `.tmp/${icon}`, {overwrite: true});
+    if (icon) {
+        await fse.copy(`./${icon}`, `.tmp/${icon}`, { overwrite: true });
     }
 
     let resourceFile = constants.files.resourceFile;
-    if(hostproject.hasHostProject()) {
+    if (hostproject.hasHostProject()) {
         resourceFile = `bin/${resourceFile}`;
     }
     await asar.createPackage('.tmp', `${buildDir}/${binaryName}/${resourceFile}`);
@@ -121,17 +121,51 @@ module.exports.bundleApp = async (options = {}) => {
     const hostProjectConfig = configObj.cli ? configObj.cli.hostProject : undefined;
 
     try {
-        if (frontendlib.containsFrontendLibApp()) {
-            await frontendlib.runCommand('buildCommand');
+        let buildProvider = null;
+        let isCustomProvider = false;
+        if (configObj.cli && configObj.cli.buildProvider) {
+            let providerPath = configObj.cli.buildProvider;
+            let resolvedPath;
+            try {
+                if (path.isAbsolute(providerPath)) {
+                    resolvedPath = providerPath;
+                } else if (providerPath.startsWith('.')) {
+                    resolvedPath = path.resolve(process.cwd(), providerPath);
+                } else {
+                    resolvedPath = require.resolve(providerPath, { paths: [process.cwd()] });
+                }
+
+                buildProvider = require(resolvedPath);
+                isCustomProvider = true;
+                utils.log(`Using custom build provider: ${providerPath}`);
+            }
+            catch (err) {
+                utils.error(`Unable to load build provider ${providerPath}: ${err.message}`);
+                process.exit(1);
+            }
+        }
+        else if (frontendlib.containsFrontendLibApp()) {
+            buildProvider = frontendlib;
+        }
+        else if (hostproject.hasHostProject()) {
+            buildProvider = hostproject;
         }
 
-        if(hostproject.hasHostProject()) {
-            await hostproject.runCommand('buildCommand');
+        if (buildProvider) {
+            if (typeof buildProvider.build === 'function') {
+                await buildProvider.build(configObj, options);
+            }
+            else if (typeof buildProvider.runCommand === 'function') {
+                await buildProvider.runCommand('buildCommand');
+            }
+            else if (isCustomProvider) {
+                utils.warn(`Build provider ${configObj.cli.buildProvider} does not export a 'build' function.`);
+            }
         }
 
         await createAsarFile();
         utils.log('Copying binaries...');
-        
+
         const resourcePath = hostproject.hasHostProject() ? `${buildDir}/${binaryName}/bin/${constants.files.resourceFile}` : `${buildDir}/${binaryName}/${constants.files.resourceFile}`;
         const resourceData = fse.readFileSync(resourcePath);
 
@@ -195,22 +229,22 @@ module.exports.bundleApp = async (options = {}) => {
             }
         }
 
-        if(hostproject.hasHostProject() && hostProjectConfig && hostProjectConfig.buildPath){
+        if (hostproject.hasHostProject() && hostProjectConfig && hostProjectConfig.buildPath) {
             utils.log('Copying host project files...');
             fse.copySync(utils.trimPath(hostProjectConfig.buildPath), `${buildDir}/${binaryName}/`);
         }
 
 
-        if(configObj.cli.copyItems && Array.isArray(configObj.cli.copyItems)){
+        if (configObj.cli.copyItems && Array.isArray(configObj.cli.copyItems)) {
             utils.log('Copying additional app package items...');
-            for(let item of configObj.cli.copyItems){
+            for (let item of configObj.cli.copyItems) {
                 await fse.copy(`./${item}`, `${buildDir}/${binaryName}/${item}`);
             }
         }
 
-        if(options.macosBundle){
+        if (options.macosBundle) {
             utils.log('Creating MacOS app bundles...');
-            for(let macBinary of Object.values(constants.files.binaries.darwin)) {
+            for (let macBinary of Object.values(constants.files.binaries.darwin)) {
                 macBinary = hostproject.hasHostProject() ? `bin/${macBinary}` : macBinary.replace('neutralino', binaryName);
                 fs.renameSync(`${buildDir}/${binaryName}/${macBinary}`, `${buildDir}/${binaryName}/${macBinary}.app`);
             }
@@ -220,7 +254,7 @@ module.exports.bundleApp = async (options = {}) => {
             utils.log('Making app bundle ZIP file...');
             await zl.archiveFolder(`${buildDir}/${binaryName}`, `${buildDir}/${binaryName}-release.zip`);
         }
-      
+
         utils.clearDirectory('.tmp');
         if (options.embedResources) {
             utils.clearDirectory(`${buildDir}/${binaryName}/${constants.files.resourceFile}`);
