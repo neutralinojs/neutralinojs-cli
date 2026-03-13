@@ -23,7 +23,7 @@ module.exports.runApp = async (options = {}) => {
         let binaryName = getBinaryName(arch);
 
         if(!binaryName) {
-            return reject(`Unsupported platform or CPU architecture: ${process.platform}_${arch}`);
+            return reject(new Error(`Unsupported platform or CPU architecture: ${process.platform}_${arch}`));
         }
 
         let binaryPath = `bin${path.sep}${binaryName}`;
@@ -41,15 +41,14 @@ module.exports.runApp = async (options = {}) => {
         neuProcess.on('exit', function (code) {
             let statusCodeMsg = code ? `error code ${code}` : `success code 0`;
             let runnerMsg = `${binaryName} was stopped with ${statusCodeMsg}`;
-
             if(code) {
-                utils.warn(runnerMsg);
+                utils.error(runnerMsg);
+                return reject(new Error(runnerMsg));
             }
             else {
                 utils.log(runnerMsg);
+                resolve();
             }
-
-            resolve();
         });
     });
 }
