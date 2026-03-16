@@ -15,9 +15,10 @@ This project encourages each and everyone to contribute to it. By participating,
 
 ## Making a PR
 
-1. Fork the latest state of the repo using git.
-2. Clone the forked repo and pull it to have latest code locally. Also, add a Git remote for the original repository.
-3. Create a feature branch in which you place your changes. Make sure all your code changes are made in your respective branch.
-4. Add proper commit messages to help others understand what you are trying to implement via your branch. Refer [this](https://www.conventionalcommits.org/en/v1.0.0/) for reference.
-5. Push the branch to GitHub. Open a pull request from the new branch to the original repo. Clean up after your pull request is merged.
-6. Once everything is reviewed, your PR will be merged. Congratulations :tada::tada: The Neutralinojs team thanks you :sparkles: Hope to send you more such :sparkles:
+1. **Pick an Issue:** You are welcome to work on any unassigned issue without waiting for explicit confirmation from maintainers. To avoid duplicate work, please leave a comment like _"I am working on this"_ in the issue thread.
+2. Fork the latest state of the repo using git.
+3. Clone the forked repo and pull it to have latest code locally. Also, add a Git remote for the original repository.
+4. Create a feature branch in which you place your changes. Make sure all your code changes are made in your respective branch.
+5. Add proper commit messages to help others understand what you are trying to implement via your branch. Refer [this](https://www.conventionalcommits.org/en/v1.0.0/) for reference.
+6. Push the branch to GitHub. Open a pull request from the new branch to the original repo. Clean up after your pull request is merged.
+7. Once everything is reviewed, your PR will be merged. Congratulations :tada::tada: The Neutralinojs team thanks you :sparkles: Hope to send you more such :sparkles:
