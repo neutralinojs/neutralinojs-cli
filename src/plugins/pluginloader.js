@@ -123,33 +123,36 @@ module.exports.removeTest = async (pluginPath) => {
     pluginName = pluginPath;
   }
 
-  if (!pluginName && (!statsObj || !statsObj.isDirectory() || !fs.existsSync(pluginPath))) {
-    utils.error(`${pluginPath} is not a valid file path`);
-    process.exit(1);
-  } else {
-    packageJson = require(path.join(pluginPath, 'package.json'));
-    if (!packageJson) {
-      utils.error('Cannot find package.json file');
-      process.exit(1);
-    }
-
-    pluginName = packageJson.name;
-    if (!pluginName) {
-      utils.error('Your plugin has no name. Please add name in package.json');
-      process.exit(1);
-    }
-  }
-
   let plugins = [];
   if (config.has('plugins')) plugins = config.get('plugins');
 
+  if (!pluginName && (!statsObj || !statsObj.isDirectory() || !fs.existsSync(pluginPath))) {
+    utils.error(`${pluginPath} is not a valid file path`);
+    process.exit(1);
+  } else if(statsObj) {
+    try {
+        const packageJson = require(path.join(pluginPath, 'package.json'));
+        pluginName = packageJson.name;
+    } catch(e) {
+        utils.error('Cannot find package.json file');
+        process.exit(1);
+    }
+  }
+
+  if (!pluginName) {
+    utils.error('Your plugin has no name. Please add name in package.json');
+    process.exit(1);
+  }
+
   if (!plugins.includes(pluginName)) {
-    throw `Unable to find ${pluginName}!`;
+    utils.error(`Unable to find plugin: ${pluginName}`);
+    process.exit(1);
   }
 
   try {
-    
-    await execAsync(`npm rm -g ${pluginName}`);
+    if (isPluginInstalled(pluginName)) {
+        await execAsync(`npm unlink ${pluginName}`);
+    }
 
     await execAsync(`cd ${NEU_ROOT} && npm uninstall ${pluginName}`);
 
