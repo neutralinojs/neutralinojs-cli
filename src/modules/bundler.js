@@ -228,5 +228,6 @@ module.exports.bundleApp = async (options = {}) => {
     }
     catch (e) {
         utils.error(e.message.replace(/^Error: /g, ''));
+        process.exit(1);
     }
 }
