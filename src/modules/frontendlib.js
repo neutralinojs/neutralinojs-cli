@@ -18,7 +18,7 @@ async function makeClientLibUrl(port) {
     let resourcesPath = (configObj.cli && configObj.cli.resourcesPath) ? configObj.cli.resourcesPath.replace(/^\//, '') : 'resources';
     let clientLib = null;
 
-    // 1. Try to use path from config first (Fast Path)
+
     if (configObj.cli && configObj.cli.clientLibrary) {
         let configClientLib = configObj.cli.clientLibrary.replace(/^\//, '');
         if (fs.existsSync(configClientLib)) {
@@ -26,7 +26,7 @@ async function makeClientLibUrl(port) {
         }
     }
 
-    // 2. Fallback to shallow search in resources root (Smart Path)
+
     if (!clientLib && fs.existsSync(resourcesPath)) {
         let topFiles = fs.readdirSync(resourcesPath);
         if (topFiles.includes('neutralino.js')) {
@@ -34,7 +34,7 @@ async function makeClientLibUrl(port) {
         }
     }
 
-    // 3. Last resort: Recursive search with ignores (Safe Path)
+
     if (!clientLib && fs.existsSync(resourcesPath)) {
         utils.log('Searching for neutralino.js...');
         const skipFiles = ['node_modules', '.git', 'dist', 'build', 'bower_components'];
@@ -43,7 +43,7 @@ async function makeClientLibUrl(port) {
     }
 
     if (clientLib) {
-        clientLib = clientLib.replace(/\\/g, '/'); // Fix path on Windows
+        clientLib = clientLib.replace(/\\/g, '/');
     }
     let url = `http://localhost:${port}`;
 
