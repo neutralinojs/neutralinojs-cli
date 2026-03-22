@@ -53,8 +53,9 @@ async function makeClientLibUrl(port) {
             clientLib = clientLib.replace(configObj.documentRoot, '/');
         }
         url += clientLib;
+        return url;
     }
-    return url;
+    return null;
 }
 
 function makeGlobalsUrl(port) {
@@ -90,7 +91,9 @@ function getPortByProtocol(protocol) {
 module.exports.bootstrap = async (port) => {
     let configObj = config.get();
     let clientLibUrl = await makeClientLibUrl(port);
-    originalClientLib = patchHTMLFile(clientLibUrl, HOT_REL_LIB_PATCH_REGEX);
+    if (clientLibUrl) {
+        originalClientLib = patchHTMLFile(clientLibUrl, HOT_REL_LIB_PATCH_REGEX);
+    }
 
     let globalsUrl = await makeGlobalsUrl(port);
     originalGlobals = patchHTMLFile(globalsUrl, HOT_REL_GLOB_PATCH_REGEX);
