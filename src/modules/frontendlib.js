@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const process = require('process');
 const spawnCommand = require('spawn-command');
 const recursive = require('recursive-readdir');
@@ -14,9 +15,33 @@ let originalGlobals = null;
 
 async function makeClientLibUrl(port) {
     let configObj = config.get();
-    let resourcesPath = configObj.cli.resourcesPath.replace(/^\//, '');
-    let files = await recursive(resourcesPath);
-    let clientLib = files.find((file) => /neutralino\.js$/.test(file));
+    let resourcesPath = (configObj.cli && configObj.cli.resourcesPath) ? configObj.cli.resourcesPath.replace(/^\//, '') : 'resources';
+    let clientLib = null;
+
+    // 1. Try to use path from config first (Fast Path)
+    if (configObj.cli && configObj.cli.clientLibrary) {
+        let configClientLib = configObj.cli.clientLibrary.replace(/^\//, '');
+        if (fs.existsSync(configClientLib)) {
+            clientLib = configClientLib;
+        }
+    }
+
+    // 2. Fallback to shallow search in resources root (Smart Path)
+    if (!clientLib && fs.existsSync(resourcesPath)) {
+        let topFiles = fs.readdirSync(resourcesPath);
+        if (topFiles.includes('neutralino.js')) {
+            clientLib = path.join(resourcesPath, 'neutralino.js');
+        }
+    }
+
+    // 3. Last resort: Recursive search with ignores (Safe Path)
+    if (!clientLib && fs.existsSync(resourcesPath)) {
+        utils.log('Searching for neutralino.js...');
+        const skipFiles = ['node_modules', '.git', 'dist', 'build', 'bower_components'];
+        let files = await recursive(resourcesPath, skipFiles);
+        clientLib = files.find((file) => /neutralino\.js$/.test(file));
+    }
+
     if (clientLib) {
         clientLib = clientLib.replace(/\\/g, '/'); // Fix path on Windows
     }
@@ -64,10 +89,9 @@ function getPortByProtocol(protocol) {
 
 module.exports.bootstrap = async (port) => {
     let configObj = config.get();
-    if(configObj.cli.clientLibrary) {
-        let clientLibUrl = await makeClientLibUrl(port);
-        originalClientLib = patchHTMLFile(clientLibUrl, HOT_REL_LIB_PATCH_REGEX);
-    }
+    let clientLibUrl = await makeClientLibUrl(port);
+    originalClientLib = patchHTMLFile(clientLibUrl, HOT_REL_LIB_PATCH_REGEX);
+
     let globalsUrl = await makeGlobalsUrl(port);
     originalGlobals = patchHTMLFile(globalsUrl, HOT_REL_GLOB_PATCH_REGEX);
     utils.warn('Global variables patch was applied successfully. ' +
