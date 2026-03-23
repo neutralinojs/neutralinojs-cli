@@ -10,6 +10,7 @@ const utils = require('../utils');
 const {patchWindowsExecutable} = require('./exepatch');
 const path = require('path');
 const {inject} = require('postject');
+const SENSITIVE_STORAGE_ITEMS = ['auth_info.json', 'tokens.json', '.env'];
 
 async function createAsarFile() {
     utils.log(`Generating ${constants.files.resourceFile}...`);
@@ -185,9 +186,19 @@ module.exports.bundleApp = async (options = {}) => {
         }
 
         if (options.copyStorage) {
+            utils.warn('Copying .storage directory. Please ensure that it does not contain any sensitive data.');
             utils.log('Copying storage data...');
             try {
-                fse.copySync('.storage', `${buildDir}/${binaryName}/.storage`);
+                fse.copySync('.storage', `${buildDir}/${binaryName}/.storage`, {
+                    filter: (src) => {
+                        const filename = path.basename(src);
+                        if (SENSITIVE_STORAGE_ITEMS.includes(filename)) {
+                            utils.warn(`Skipping sensitive file: ${filename}`);
+                            return false;
+                        }
+                        return true;
+                    }
+                });
             }
             catch (err) {
                 utils.error('Unable to copy storage data from the .storage directory. Please check if the directory exists');
