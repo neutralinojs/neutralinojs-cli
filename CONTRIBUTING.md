@@ -7,11 +7,55 @@ The following is a set of guidelines for contributing to neutralinojs-cli, which
 ## Table Of Contents
 
 - [Code of Conduct](#code-of-conduct)
+- [Local Development Setup](#local-development-setup)
 - [Making a PR](#making-a-pr)
 
 ## Code of Conduct
 
 This project encourages each and everyone to contribute to it. By participating, you are expected to uphold the spirits of open source culture.
+
+## Local Development Setup
+
+1. Fork and clone the repository:
+
+```bash
+git clone https://github.com/<your-github-username>/neutralinojs-cli.git
+cd neutralinojs-cli
+```
+
+2. Install the project dependencies:
+
+```bash
+npm install
+```
+
+3. Run the CLI locally:
+
+```bash
+npm start -- --help
+```
+
+The CLI entry point is available at `./bin/neu.js`, so you can also run commands directly with:
+
+```bash
+node ./bin/neu.js --help
+```
+
+4. Optionally link the local CLI binary if you want to use `neu` directly in your shell or run the current test suite:
+
+```bash
+npm link
+```
+
+5. Install the test dependencies and run the tests from the `spec/` directory:
+
+```bash
+cd spec
+npm install
+npm test
+```
+
+The current test suite executes `neu` as a shell command, so linking the local CLI with `npm link` first makes the tests available in a fresh clone.
 
 ## Making a PR
 
