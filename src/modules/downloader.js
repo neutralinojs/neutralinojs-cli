@@ -29,9 +29,9 @@ let getRemoteLatestVersion = (repo) => {
                 reject();
             });
         })
-        .on('error', () => {
-            reject();
-        });
+            .on('error', () => {
+                reject();
+            });
     });
 }
 
@@ -106,7 +106,7 @@ let downloadBinariesFromRelease = (latest) => {
         getBinaryDownloadUrl(latest)
             .then((url) => {
                 https.get(url, function (response) {
-                
+
                     const totalSize = parseInt(response.headers['content-length'], 10);
                     const totalSizeMB = (totalSize / 1024 / 1024).toFixed(2);
                     let downloadedSize = 0;
@@ -140,13 +140,14 @@ let downloadClientFromRelease = (latest) => {
         utils.log('Downloading the Neutralinojs client..');
         getClientDownloadUrl(latest)
             .then((url) => {
+                // Reject on network error to avoid unhandled promise rejections
                 https.get(url, function (response) {
                     response.pipe(file);
                     file.on('finish', () => {
                         file.close();
                         resolve();
                     });
-                });
+                }).on('error', (err) => reject(err));
             });
     });
 }
@@ -159,13 +160,14 @@ let downloadTypesFromRelease = (latest) => {
 
         getTypesDownloadUrl(latest)
             .then((url) => {
+                // Reject on network error to avoid unhandled promise rejections
                 https.get(url, function (response) {
                     response.pipe(file);
                     file.on('finish', () => {
                         file.close();
                         resolve();
                     });
-                });
+                }).on('error', (err) => reject(err));
             });
     });
 }
@@ -248,21 +250,21 @@ module.exports.isValidTemplate = (template) => {
         }
 
         https.get(constants.remote.templateCheckUrl.replace('{template}', template), opt,
-        function (response) {
-            response.req.abort();
-            if(response.statusCode == 200) {
-                resolve(true);
-            }
-            else if(response.statusCode == 404) {
-                resolve(false);
-            }
-            else {
+            function (response) {
+                response.req.abort();
+                if (response.statusCode == 200) {
+                    resolve(true);
+                }
+                else if (response.statusCode == 404) {
+                    resolve(false);
+                }
+                else {
+                    fallback();
+                }
+            })
+            .on('error', (e) => {
                 fallback();
-            }
-        })
-        .on('error', (e) => {
-            fallback();
-        });
+            });
     });
 
 }
