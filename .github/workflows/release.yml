@@ -31,7 +31,7 @@ jobs:
       run: |
         echo "VERSION: $VERSION"
         echo "VERSION_WITH_V: $VERSION_WITH_V"
-        echo "inputs.publish_nightly_npm: ${{inputs.publish_nightly_npm}}"
+        echo "inputs.publish_nightly_npm: ${{ inputs.publish_nightly_npm }}"
         
   create-release:
     needs: [release-info]
