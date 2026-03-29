@@ -12,6 +12,9 @@ const HOT_REL_GLOB_PATCH_REGEX = constants.misc.hotReloadGlobPatchRegex;
 let originalClientLib = null;
 let originalGlobals = null;
 
+// Store devCommand process reference for cleanup
+let devCommandProc = null;
+
 async function makeClientLibUrl(port) {
     let configObj = config.get();
     let resourcesPath = configObj.cli.resourcesPath.replace(/^\//, '');
@@ -98,11 +101,36 @@ module.exports.runCommand = (commandKey) => {
 
             utils.log(`Running ${commandKey}: ${cmd}...`);
             const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
+
+            // Store devCommand process reference for cleanup
+            if(commandKey === 'devCommand') {
+                devCommandProc = proc;
+            }
+
             proc.on('exit', (code) => {
                 utils.log(`frontendlib: ${commandKey} completed with exit code: ${code}`);
+                if(commandKey === 'devCommand') {
+                    devCommandProc = null;
+                }
                 resolve();
             });
         });
+    }
+}
+
+// Kill the devCommand process on exit
+module.exports.stopCommand = () => {
+    if(devCommandProc) {
+        utils.log('Terminating devCommand process...');
+        devCommandProc.kill('SIGTERM');
+
+        // Force kill after 3 seconds if SIGTERM is ignored
+        setTimeout(() => {
+            if(devCommandProc) {
+                devCommandProc.kill('SIGKILL');
+                devCommandProc = null;
+            }
+        }, 3000);
     }
 }
 
