@@ -32,7 +32,7 @@ jobs:
       run: |
         echo "VERSION: $VERSION"
         echo "VERSION_WITH_V: $VERSION_WITH_V"
-        echo "NIGHTLY_NPM: $NIGHTLY_NPM
+        echo "NIGHTLY_NPM: $NIGHTLY_NPM"
         
   create-release:
     needs: [release-info]
