@@ -15,6 +15,7 @@ on:
         type: boolean
         required: false
         default: false
+        description: "Publish nightly NPM package"
   schedule:
     - cron: 0 0 * * *
 
