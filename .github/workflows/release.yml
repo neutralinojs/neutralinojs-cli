@@ -79,12 +79,10 @@ jobs:
       run: |
           if [[ "$VERSION" != "nightly" ]]; then
             gh release create $VERSION_WITH_V \
-              dist/*.* \
               --title "Neutralinojs CLI $VERSION_WITH_V released!" \
               --notes-file .tmprz/release_notes.md
           else
             gh release create nightly \
-              dist/*.* \
               --title "Neutralinojs CLI nightly release" \
               --notes-file .tmprz/release_notes.md \
               --prerelease
