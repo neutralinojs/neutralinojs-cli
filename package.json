@@ -29,7 +29,7 @@
     "@electron/asar": "^3.0.3",
     "chalk": "^4.1.0",
     "chokidar": "^4.0.3",
-    "commander": "^7.2.0",
+    "commander": "^9.5.0",
     "configstore": "^5.0.1",
     "edit-json-file": "^1.6.2",
     "follow-redirects": "^1.13.1",
