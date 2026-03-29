@@ -1,13 +1,16 @@
+{RZ_TOP}
+
 ## What's new
 {RZ_CHANGELOG}
 
-Install the latest (`v{RZ_VERSION}`) [npm package](https://www.npmjs.com/package/@neutralinojs/neu):
+Install the latest (`{RZ_VERSION}`) [npm package](https://www.npmjs.com/package/@neutralinojs/neu):
 
 ```
-npm i -g @neutralinojs/neu
+npm i -g @neutralinojs/neu@{RZ_VERSION}
 ```
 
 Get started: https://neutralino.js.org/docs/cli/neu-cli
+
 <hr/>
 
 
