@@ -14,23 +14,33 @@ let getRemoteLatestVersion = (repo) => {
         let opt = {
             headers: { 'User-Agent': 'Neutralinojs CLI' }
         };
-        https.get(constants.remote.releasesApiUrl.replace('{repo}', repo), opt, function (response) {
+        const req = https.get(constants.remote.releasesApiUrl.replace('{repo}', repo), opt, function (response) {
             let body = '';
             response.on('data', (data) => body += data);
             response.on('end', () => {
                 if (response.statusCode != 200) {
-                    return reject();
+                    return reject(new Error(`API responded with status code: ${response.statusCode}`));
                 }
-                let apiRes = JSON.parse(body);
-                let version = apiRes.tag_name.replace('v', '');
-                resolve(version);
+                try {
+                    let apiRes = JSON.parse(body);
+                    let version = apiRes.tag_name.replace('v', '');
+                    resolve(version);
+                } catch (e) {
+                    reject(e);
+                }
             });
-            response.on('error', () => {
-                reject();
+            response.on('error', (err) => {
+                reject(err);
             });
-        })
-        .on('error', () => {
-            reject();
+        });
+
+        req.on('error', (err) => {
+            reject(err);
+        });
+
+        req.setTimeout(2000, () => {
+            req.destroy();
+            reject(new Error('Request timeout'));
         });
     });
 }
