@@ -2,9 +2,12 @@
   "name": "@neutralinojs/neu",
   "version": "11.7.0",
   "description": "neu CLI for Neutralinojs",
-  "main": "./bin/neu.js",
+  "main": "./dist/bin/neu.js",
   "scripts": {
-    "start": "node ./bin/neu.js",
+    "start": "node ./dist/bin/neu.js",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "prepublishOnly": "npm run build",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
   },
   "repository": {
@@ -46,7 +49,7 @@
     "zip-lib": "^1.0.4"
   },
   "bin": {
-    "neu": "./bin/neu.js"
+    "neu": "./dist/bin/neu.js"
   },
   "keywords": [
     "neutralinojs",
@@ -64,6 +67,15 @@
     "codezri"
   ],
   "devDependencies": {
-    "prettier": "^3.2.5"
+    "@types/configstore": "^6.0.2",
+    "@types/follow-redirects": "^1.14.4",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^25.5.0",
+    "@types/recursive-readdir": "^2.2.4",
+    "@types/tcp-port-used": "^1.0.4",
+    "@types/uuid": "^10.0.0",
+    "@types/websocket": "^1.0.10",
+    "prettier": "^3.2.5",
+    "typescript": "^5.9.3"
   }
 }

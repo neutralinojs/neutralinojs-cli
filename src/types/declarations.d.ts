@@ -1,0 +1,7 @@
+declare module 'postject'
+declare module 'configstore'
+declare module 'zip-lib'
+declare module '@electron/asar'
+declare module 'edit-json-file'
+declare module '../modules/*'
+declare module 'spawn-command'
