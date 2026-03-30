@@ -47,12 +47,19 @@ let checkCurrentProject = () => {
 
 let checkLatestVersion = () => {
     return new Promise((resolve) => {
+        const timer = setTimeout(() => resolve(true), 5000);
         exec(`npm view ${package.name} version`, (err, versionInfo) => {
+            clearTimeout(timer);
+            if (err || !versionInfo) {
+                resolve(true);
+                return;
+            }
             let latestVersion = versionInfo.trim();
-            if (!err && package.version !== latestVersion) {
+            if (package.version !== latestVersion) {
                 warn(`You are using an older neu CLI version. Install the latest version ` +
                     `by entering 'npm install -g ${package.name}'`);
                 resolve(false);
+                return;
             }
             resolve(true);
         });
