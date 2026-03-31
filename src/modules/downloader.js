@@ -136,59 +136,125 @@ let downloadBinariesFromRelease = (latest) => {
 let downloadClientFromRelease = (latest) => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
-        const file = fs.createWriteStream('.tmp/neutralino.' + getScriptExtension());
+
+        const tempFile = '.tmp/neutralino.' + getScriptExtension();
+        const file = fs.createWriteStream(tempFile);
+
         utils.log('Downloading the Neutralinojs client..');
+
         getClientDownloadUrl(latest)
             .then((url) => {
                 https.get(url, function (response) {
+
+                    const statusCode = response.statusCode;
+
+                   if (statusCode !== 200) {
+                    response.resume();
+
+                    file.close(() => {
+                        fs.unlink(tempFile, () => {});
+                    });
+
+                    return reject(new Error(`Failed to download client: HTTP ${statusCode}`));
+                }
                     response.pipe(file);
+
                     file.on('finish', () => {
                         file.close();
                         resolve();
                     });
-                });
-            });
+
+                    response.on('error', reject);
+
+                }).on('error', reject);
+            })
+            .catch(reject);
     });
 }
 
 let downloadTypesFromRelease = (latest) => {
     return new Promise((resolve, reject) => {
         fs.mkdirSync('.tmp', { recursive: true });
-        const file = fs.createWriteStream('.tmp/neutralino.d.ts');
+
+        const tempFile = '.tmp/neutralino.d.ts';
+        const file = fs.createWriteStream(tempFile);
+
         utils.log('Downloading the Neutralinojs types..');
 
         getTypesDownloadUrl(latest)
             .then((url) => {
                 https.get(url, function (response) {
+
+                    const statusCode = response.statusCode;
+
+                    if (statusCode !== 200) {
+                        response.resume();
+
+                        file.close(() => {
+                            fs.unlink(tempFile, () => {});
+                        });
+
+                        return reject(new Error(`Failed to download types: HTTP ${statusCode}`));
+                    }
+
                     response.pipe(file);
+
                     file.on('finish', () => {
                         file.close();
                         resolve();
                     });
-                });
-            });
+
+                    response.on('error', reject);
+
+                }).on('error', reject);
+            })
+            .catch(reject);
     });
 }
 
 module.exports.downloadTemplate = (template) => {
     return new Promise((resolve, reject) => {
+
         let templateUrl = constants.remote.templateUrl.replace('{template}', template);
+
         fs.mkdirSync('.tmp', { recursive: true });
+
         const zipFilename = '.tmp/template.zip';
         const file = fs.createWriteStream(zipFilename);
+
         https.get(templateUrl, function (response) {
+
+            const statusCode = response.statusCode;
+
+           if (statusCode !== 200) {
+                    response.resume(); // drain response so socket is released
+
+                    file.close(() => {
+                        fs.unlink(zipFilename, () => {});
+                    });
+
+                    return reject(new Error(`Failed to download template: HTTP ${statusCode}`));
+                }
+
             response.pipe(file);
-            response.on('end', () => {
+
+            file.on('finish', () => {
+                file.close();
+
                 utils.log('Extracting template zip file...');
+
                 zl.extract(zipFilename, '.tmp/')
                     .then(() => {
                         fse.copySync(`.tmp/${getRepoNameFromTemplate(template)}-main`, '.');
                         utils.clearDirectory('.tmp');
                         resolve();
                     })
-                    .catch((e) => reject(e));
+                    .catch(reject);
             });
-        });
+
+            response.on('error', reject);
+
+        }).on('error', reject);
     });
 }
 
