@@ -3,6 +3,7 @@ const fse = require('fs-extra');
 const process = require('process');
 const exec = require('child_process').exec;
 const chalk = require('chalk');
+const https = require('https');
 const constants = require('./constants');
 const CONFIG_FILE = constants.files.configFile;
 const config = require('./modules/config')
@@ -47,18 +48,42 @@ let checkCurrentProject = () => {
 
 let checkLatestVersion = () => {
     return new Promise((resolve) => {
-        exec(`npm view ${package.name} version`, (err, versionInfo) => {
-            let latestVersion = versionInfo.trim();
-            if (!err && package.version !== latestVersion) {
-                warn(`You are using an older neu CLI version. Install the latest version ` +
-                    `by entering 'npm install -g ${package.name}'`);
-                resolve(false);
+        const req = https.get(`https://registry.npmjs.org/${package.name}/latest`, (res) => {
+            if (res.statusCode !== 200) {
+                return resolve(null);
             }
-            resolve(true);
+            
+            let body = '';
+            res.on('data', (chunk) => body += chunk);
+            
+            res.on('end', () => {
+                try {
+                    const data = JSON.parse(body);
+                    const latestVersion = data.version;
+                    
+                    if (package.version !== latestVersion) {
+                        warn(`You are using an older neu CLI version. Install the latest version ` +
+                            `by entering 'npm install -g ${package.name}'`);
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                } catch (e) {
+                    resolve(null);
+                }
+            });
+        });
+
+        req.on('error', () => {
+            resolve(null);
+        });
+        
+        req.setTimeout(2000, () => {
+            req.destroy();
+            resolve(null);
         });
     });
 }
-
 
 let log = (message) => {
     console.log(`neu: ${chalk.bgGreen.black('INFO')} ${message}`);
