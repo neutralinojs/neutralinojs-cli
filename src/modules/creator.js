@@ -19,12 +19,29 @@ module.exports.createApp = async (appPath, template) => {
     if(!template) {
         template = 'neutralinojs/neutralinojs-minimal';
     }
+    if (
+        template.includes("http") ||
+        template.includes("github.com") ||
+        template.split('/').length !== 2
+    ) {
+    utils.error(`
+Invalid template format.
+
+Expected format:username/repository
+Example:neutralinojs/neutralinojs-zero
+
+`);
+    process.exit(1);
+}
 
     utils.log(`Checking if ${template} is a valid Neutralinojs app template...`);
 
     const isValidTemplate = await downloader.isValidTemplate(template);
     if(!isValidTemplate) {
-        utils.error(`${template} is not a valid Neutralinojs app template.`);
+        utils.error(`${template} is not a valid Neutralinojs app template.
+The repository must contain a 'neutralino.config.json' file at the root level.            
+            
+            `);
         process.exit(1);
     }
 
