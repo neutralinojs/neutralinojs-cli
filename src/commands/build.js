@@ -13,6 +13,8 @@ module.exports.register = (program) => {
         .option('--copy-storage')
         .option('--clean')
         .option('--macos-bundle')
+        .option('--plan', 'preview build process without executing')
+        .option('--platform <platform>', 'target specific platform (windows, linux, mac)')
         .action(async (command) => {
             if(command.configFile) {
               utils.log(`Using config file: ${command.configFile}`);
@@ -20,22 +22,34 @@ module.exports.register = (program) => {
             }
 
             utils.checkCurrentProject();
-            const configObj = config.get()
+            const configObj = config.get();
             const buildDir = configObj.cli.distributionPath ? utils.trimPath(configObj.cli.distributionPath) : 'dist';
+
+            if (command.plan) {
+                utils.log('--- Build Plan ---');
+                utils.log(`Distribution Path: ${buildDir}`);
+                utils.log(`Release Mode: ${command.release ? 'Yes' : 'No'}`);
+                utils.log(`Target Platform: ${command.platform || 'all'}`);
+                utils.log(`Embed Resources: ${command.embedResources ? 'Yes' : 'No'}`);
+                return;
+            }
+
             if(command.clean) {
                 utils.log(`Cleaning previous build files from ${buildDir}...`);
                 utils.clearDirectory(buildDir);
             }
+
             utils.log('Bundling app...');
             await bundler.bundleApp({
-                release: command.release, 
+                release: command.release,
                 embedResources: command.embedResources,
                 copyStorage: command.copyStorage,
-                macosBundle: command.macosBundle
+                macosBundle: command.macosBundle,
+                platform: command.platform
             });
+
             utils.showArt();
             utils.log(`Application package was generated at the ${buildDir} directory!`);
             utils.log('Distribution guide: https://neutralino.js.org/docs/distribution/overview');
         });
 }
-
