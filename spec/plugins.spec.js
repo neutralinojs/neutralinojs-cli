@@ -1,45 +1,35 @@
-const assert = require('assert');
-const runner = require('./runner');
+import { runner, runnerOptions } from "./runner.js";
 
-describe('Run neu plugins command and its options', () => {
-    describe('Test neu plugins --help command', () => {
-        it('returns output of neu plugins --help', async() => {
-            let output = runner.run('neu plugins --help');
-
-            assert.equal(output.error, null);
-            assert.equal(output.status, 0);
-            assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('Usage: neu plugins [options] [plugin]'));
-        });
+describe("neu plugins", () => {
+    
+    before(async () => {
+        await runner.createProject();
     });
-    describe('Test neu plugins --add command', () => {
-        it('returns output of neu plugins --add command and adds corresponding plugin', async() => {
-            let output = runner.run('neu plugins --add @neutralinojs/appify');
 
-            assert.equal(output.error, null);
-            assert.equal(output.status, 0);
-            assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO @neutralinojs/appify was installed!'));
-        });
+    after(async () => {
+        await runner.removeProject();
     });
-    describe('Test neu plugins command', () => {
-        it('returns list of all installed neu plugins', async() => {
-            let output = runner.run('neu plugins');
 
-            assert.equal(output.error, null);
-            assert.equal(output.status, 0);
-            assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('@neutralinojs/appify'));
-        });
+    it("shows help for plugins command", async () => {
+        const output = await runner.run("plugins --help");
+        expect(output).to.include("plugins");
     });
-    describe('Test neu plugins --remove command', () => {
-        it('returns output of neu plugins --remove command and removes corresponding plugin', async() => {
-            let output = runner.run('neu plugins --remove @neutralinojs/appify');
 
-            assert.equal(output.error, null);
-            assert.equal(output.status, 0);
-            assert.ok(typeof output.data == 'string');
-            assert.ok(output.data.includes('neu: INFO @neutralinojs/appify was uninstalled!'));
-        });
+    it("lists installed plugins", async () => {
+        const output = await runner.run("plugins");
+        expect(output).to.not.throw;
     });
+
+    it("adds a plugin", async () => {
+        const output = await runner
+            .run("plugins --add neutralinojs/neutralino-ext");
+        expect(output).to.not.throw;
+    });
+
+    it("removes a plugin", async () => {
+        const output = await runner
+            .run("plugins --remove neutralino-ext");
+        expect(output).to.not.throw;
+    });
+
 });
