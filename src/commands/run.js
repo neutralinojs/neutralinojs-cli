@@ -19,6 +19,7 @@ module.exports.register = (program) => {
         .description('fetches config from neutralino.config.json & runs the app')
         .option('--disable-auto-reload')
         .option('--arch <arch>')
+        .option('--browser')
         .action(async (command) => {
             utils.checkCurrentProject();
             let configObj = config.get();
@@ -55,6 +56,10 @@ module.exports.register = (program) => {
 
             if(containsFrontendLibApp && configObj.cli.frontendLibrary.devUrl) {
                 argsOpt += ` --url=${configObj.cli.frontendLibrary.devUrl}`
+            }
+            
+            if(command.browser) {
+                argsOpt += " --mode=browser";
             }
 
             try {
