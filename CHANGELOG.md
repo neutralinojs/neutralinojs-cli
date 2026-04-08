@@ -5,6 +5,8 @@ the next release. Once the changes are released,
 rename `Unreleased` topic with the new version tag. Finally, create a new `Unreleased` topic for future changes.
 
 ## Unreleased
+### Features
+- Add `--browser` flag support to the run command
 
 ## v11.7.1
 
