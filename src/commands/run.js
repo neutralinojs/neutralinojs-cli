@@ -57,6 +57,18 @@ module.exports.register = (program) => {
                 argsOpt += ` --url=${configObj.cli.frontendLibrary.devUrl}`
             }
 
+            // Cleanup function to kill devCommand process on exit
+            const cleanup = () => {
+                frontendlib.stopCommand();
+                filewatcher.stop();
+                websocket.stop();
+            };
+
+            // Handle all exit scenarios
+            process.on('SIGINT', cleanup);   // Ctrl+C
+            process.on('SIGTERM', cleanup);  // kill command
+            process.on('exit', cleanup);     // normal exit
+
             try {
                 await runner.runApp({argsOpt,
                                     arch: command.arch});
@@ -65,7 +77,6 @@ module.exports.register = (program) => {
                 utils.log(error);
             }
 
-            filewatcher.stop();
-            websocket.stop();
+            cleanup();
         });
 }
