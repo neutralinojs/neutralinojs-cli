@@ -5,6 +5,8 @@ const utils = require('../utils');
 const config = require('../modules/config');
 const frontendlib = require('../modules/frontendlib');
 const hostproject = require('../modules/hostproject');
+const path = require('path');
+const fs = require('fs');
 
 function wrapWithQuotes(arg) {
     if (arg.includes(' ') && !arg.startsWith('"') && !arg.endsWith('"')) {
@@ -12,6 +14,38 @@ function wrapWithQuotes(arg) {
     }
     return arg;
 }
+
+function warnIfResourcesMissing() {
+    const resourcesPath = path.join(process.cwd(), 'resources');
+
+    if (!fs.existsSync(resourcesPath)) {
+        utils.warn(
+            'No `resources/` directory found. ' +
+            'Some runtime resource warnings may appear during `neu run`.\n' +
+            'This is usually safe for new projects. ' +
+            'If the app does not load correctly, try running `neu build`.'
+        );
+        return;
+    }
+
+    const expectedFiles = [
+        path.join(resourcesPath, 'favicon.ico'),
+        path.join(resourcesPath, '.well-known', 'appspecific', 'com.chrome.devtools.json')
+    ];
+
+    const missing = expectedFiles.filter(p => !fs.existsSync(p));
+
+    if (missing.length > 0) {
+       utils.warn(
+    'Some common application resources are missing.\n' +
+    'You may see runtime warnings during `neu run`.\n' +
+    'If the app does not load correctly, check the `resources/` directory ' +
+    'or try running `neu build`.'
+);
+
+    }
+}
+
 
 module.exports.register = (program) => {
     program
@@ -57,13 +91,18 @@ module.exports.register = (program) => {
                 argsOpt += ` --url=${configObj.cli.frontendLibrary.devUrl}`
             }
 
-            try {
-                await runner.runApp({argsOpt,
-                                    arch: command.arch});
-            }
-            catch(error) {
-                utils.log(error);
-            }
+           warnIfResourcesMissing();
+
+try {
+    await runner.runApp({
+        argsOpt,
+        arch: command.arch
+    });
+}
+catch(error) {
+    utils.log(error);
+}
+
 
             filewatcher.stop();
             websocket.stop();
