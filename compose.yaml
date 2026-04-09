@@ -1,0 +1,21 @@
+# Docker Compose configuration for Neutralino CLI development
+
+services:
+  neutralino-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: neutralino-cli
+
+    # Mount local repository for live development
+    volumes:
+      - .:/usr/src/app
+
+    working_dir: /usr/src/app
+
+    # Keep interactive shell open
+    stdin_open: true
+    tty: true
+
+    command: sh
