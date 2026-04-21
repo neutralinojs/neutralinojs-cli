@@ -62,9 +62,11 @@ module.exports.register = (program) => {
                                     arch: command.arch});
             }
             catch(error) {
-                utils.log(error);
+                utils.error(error);
+                filewatcher.stop();
+                websocket.stop();
+                process.exit(1);
             }
-
             filewatcher.stop();
             websocket.stop();
         });
