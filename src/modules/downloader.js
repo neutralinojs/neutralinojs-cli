@@ -141,12 +141,20 @@ let downloadClientFromRelease = (latest) => {
         getClientDownloadUrl(latest)
             .then((url) => {
                 https.get(url, function (response) {
+                    if(response.statusCode !== 200){
+                        file.close();
+                        reject(new Error(`Failed to download client: HTTP ${response.statusCode}`));
+                        return;
+                    }
                     response.pipe(file);
                     file.on('finish', () => {
                         file.close();
                         resolve();
                     });
-                });
+                }).on('error', (err) => {
+                    file.close();
+                    reject(err);
+                })
             });
     });
 }
@@ -160,12 +168,20 @@ let downloadTypesFromRelease = (latest) => {
         getTypesDownloadUrl(latest)
             .then((url) => {
                 https.get(url, function (response) {
+                    if(response.statusCode !== 200){
+                        file.close();
+                        reject(new Error(`Failed to download types: HTTP ${response.statusCode}`));
+                        return;
+                    }
                     response.pipe(file);
                     file.on('finish', () => {
                         file.close();
                         resolve();
                     });
-                });
+                }).on('error', (err) => {
+                    file.close();
+                    reject(err);
+                })
             });
     });
 }
