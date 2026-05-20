@@ -4,7 +4,7 @@ const process = require('process');
 const exec = require('child_process').exec;
 const chalk = require('chalk');
 const constants = require('./constants');
-const CONFIG_FILE = constants.files.configFile;
+let getConfigFile = () => constants.files.configFile;
 const config = require('./modules/config')
 const package = require('../package.json')
 
@@ -13,7 +13,7 @@ let error = (message) => {
 }
 
 let isNeutralinojsProject = (parent = '.') => {
-    return fs.existsSync(parent + '/' +  CONFIG_FILE);
+    return fs.existsSync(parent + '/' + getConfigFile());
 }
 
 let getFiglet = () => {
@@ -34,13 +34,13 @@ let showArt = () => {
 
 let checkCurrentProject = () => {
     if (!isNeutralinojsProject()) {
-        error(`Unable to find ${CONFIG_FILE}. ` +
+        error(`Unable to find ${getConfigFile()}. ` +
             `Please check whether the current directory has a Neutralinojs project.`);
         process.exit(1);
     }
-    const configObj =  config.get();
+    const configObj = config.get();
     if(Object.keys(configObj).length == 0) {
-        error(`${CONFIG_FILE} is not a valid Neutralinojs configuration JSON file.`);
+        error(`${getConfigFile()} is not a valid Neutralinojs configuration JSON file.`);
         process.exit(1);
     }
 }
