@@ -6,6 +6,12 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Bugfixes/improvements
+- Fix custom configuration file handling within the `build` command.
+- Handle HTTP call failures and display errors accordingly on download failures.
+- Improve local plugin testing commands implementations
+- Updating several project dependencies.
+
 ## v11.7.1
 
 ### DevOps
