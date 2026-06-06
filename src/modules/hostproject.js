@@ -12,7 +12,7 @@ module.exports.runCommand = async (commandKey) => {
   let hostProject = configObj.cli ? configObj.cli.hostProject : undefined;
 
   if(hostProject && hostProject.projectPath && hostProject[commandKey]) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
           let projectPath = utils.trimPath(hostProject.projectPath);
           let cmd = hostProject[commandKey];
 
@@ -20,6 +20,11 @@ module.exports.runCommand = async (commandKey) => {
 
           const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath});
           proc.on('exit', (code) => {
+              if(code !== 0) {
+                  utils.error(`hostproject: ${commandKey} failed with exit code: ${code}`);
+                  reject(new Error(`Command failed with exit code ${code}`));
+                  return;
+              }
               utils.log(`hostproject: ${commandKey} completed with exit code: ${code}`);
               resolve();
           });
