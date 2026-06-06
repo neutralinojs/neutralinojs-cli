@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Bugfixes/improvements
+- Properly reject promises when frontendLibrary or hostProject commands fail with a non-zero exit code.
+
 ## v11.7.2
 
 ### Bugfixes/improvements

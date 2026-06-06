@@ -92,13 +92,18 @@ module.exports.runCommand = (commandKey) => {
     let frontendLib = configObj.cli ? configObj.cli.frontendLibrary : undefined;
 
     if(frontendLib && frontendLib.projectPath && frontendLib[commandKey]) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             let projectPath = utils.trimPath(frontendLib.projectPath);
             let cmd = frontendLib[commandKey];
 
             utils.log(`Running ${commandKey}: ${cmd}...`);
             const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
             proc.on('exit', (code) => {
+                if(code !== 0) {
+                    utils.error(`frontendlib: ${commandKey} failed with exit code: ${code}`);
+                    reject(new Error(`Command failed with exit code ${code}`));
+                    return;
+                }
                 utils.log(`frontendlib: ${commandKey} completed with exit code: ${code}`);
                 resolve();
             });
