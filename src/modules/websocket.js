@@ -18,8 +18,7 @@ module.exports.start = (options = {}) => {
         return;
     }
 
-    ws = new WS(`ws://127.0.0.1:${authInfo.nlPort}?extensionId=js.neutralino.devtools
-                    &connectToken=${authInfo.nlConnectToken}`);
+    ws = new WS(`ws://127.0.0.1:${authInfo.nlPort}?extensionId=js.neutralino.devtools&connectToken=${authInfo.nlConnectToken}`);
 
     ws.onerror = () => {
         retryLater(options);
