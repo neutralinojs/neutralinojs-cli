@@ -6,6 +6,9 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Bugfixes/improvements
+- Validate HTTP status code in `downloadTemplate` to reject non-200 responses instead of silently treating failures as success.
+
 ## v11.7.2
 
 ### Bugfixes/improvements
