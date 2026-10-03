@@ -35,7 +35,8 @@ module.exports.register = (program) => {
             });
             utils.showArt();
             utils.log(`Application package was generated at the ${buildDir} directory!`);
+            utils.log('To create an installer, install the Neutralinojs Builder plugin:');
+            utils.log('neu plugins --add @neutralinojs-contrib/builder\n');
             utils.log('Distribution guide: https://neutralino.js.org/docs/distribution/overview');
         });
 }
-
