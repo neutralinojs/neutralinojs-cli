@@ -195,8 +195,7 @@ module.exports.downloadTemplate = (template) => {
         https.get(templateUrl, function (response) {
             if(response.statusCode !== 200) {
                 file.close();
-                reject(new Error(`Failed to download template: HTTP ${response.statusCode}`));
-                return;
+                return reject(new Error(`Failed to download template: HTTP ${response.statusCode}`));
             }
             response.pipe(file);
             response.on('end', () => {
