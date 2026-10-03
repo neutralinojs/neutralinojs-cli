@@ -7,7 +7,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ## Unreleased
 
 ### Bugfixes/improvements
-- Validate HTTP status code in `downloadTemplate` to reject non-200 responses instead of silently treating failures as success.
+- Handle template downloading failures.
+- Fix whitespace injection in WebSocket URL's extensionId query parameter.
 
 ## v11.7.2
 
