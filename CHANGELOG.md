@@ -7,6 +7,7 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 ## Unreleased
 
 ### Bugfixes/improvements
+- Handle template downloading failures.
 - Fix whitespace injection in WebSocket URL's extensionId query parameter.
 
 ## v11.7.2

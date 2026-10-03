@@ -193,6 +193,10 @@ module.exports.downloadTemplate = (template) => {
         const zipFilename = '.tmp/template.zip';
         const file = fs.createWriteStream(zipFilename);
         https.get(templateUrl, function (response) {
+            if(response.statusCode !== 200) {
+                file.close();
+                return reject(new Error(`Failed to download template: HTTP ${response.statusCode}`));
+            }
             response.pipe(file);
             response.on('end', () => {
                 utils.log('Extracting template zip file...');
@@ -204,7 +208,7 @@ module.exports.downloadTemplate = (template) => {
                     })
                     .catch((e) => reject(e));
             });
-        });
+        }).on('error', (err) => reject(err));
     });
 }
 
