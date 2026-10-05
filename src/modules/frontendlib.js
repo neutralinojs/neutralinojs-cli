@@ -12,7 +12,8 @@ const HOT_REL_LIB_PATCH_REGEX = constants.misc.hotReloadLibPatchRegex;
 const HOT_REL_GLOB_PATCH_REGEX = constants.misc.hotReloadGlobPatchRegex;
 let originalClientLib = null;
 let originalGlobals = null;
-let spawnedCommands = [];
+let spawnedCommands = new Set();
+let initiated = false;
 
 async function makeClientLibUrl(port) {
     let configObj = config.get();
@@ -80,12 +81,16 @@ module.exports.bootstrap = async (port) => {
     }
     utils.log(`You are working with your frontend library's development environment. ` +
         'Your frontend-library-based app will run with Neutralino and be able to use the Neutralinojs API.');
+    initiated = true;
 }
 
 module.exports.cleanup = () => {
+    if(!initiated) return;
     for(let spawnedCommand of spawnedCommands) {
+        spawnedCommands.delete(spawnedCommand)
         kill(spawnedCommand.pid);
     }
+
     if(!originalClientLib && !originalGlobals) return;
     if(originalClientLib) {
         patchHTMLFile(originalClientLib, HOT_REL_LIB_PATCH_REGEX);
@@ -108,13 +113,10 @@ module.exports.runCommand = (commandKey) => {
 
             utils.log(`Running ${commandKey}: ${cmd}...`);
             const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
-            spawnedCommands.push(proc);
+            spawnedCommands.add(proc);
             proc.on('exit', (code) => {
                 utils.log(`frontendlib: ${commandKey} completed ${code != null ? ('with exit code: ' + code): ''}`);
-                let commandIndex = spawnedCommands.indexOf(proc);
-                if(commandIndex != -1) {
-                    spawnedCommands.splice(commandIndex, 1);
-                }
+                spawnedCommands.delete(proc)
                 resolve();
             });
         });
