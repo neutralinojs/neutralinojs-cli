@@ -3,6 +3,7 @@ const process = require('process');
 const spawnCommand = require('spawn-command');
 const recursive = require('recursive-readdir');
 const tpu = require('tcp-port-used');
+const kill = require('tree-kill');
 const config = require('./config');
 const constants = require('../constants');
 const utils = require('../utils');
@@ -11,6 +12,7 @@ const HOT_REL_LIB_PATCH_REGEX = constants.misc.hotReloadLibPatchRegex;
 const HOT_REL_GLOB_PATCH_REGEX = constants.misc.hotReloadGlobPatchRegex;
 let originalClientLib = null;
 let originalGlobals = null;
+let spawnedCommands = [];
 
 async function makeClientLibUrl(port) {
     let configObj = config.get();
@@ -68,15 +70,23 @@ module.exports.bootstrap = async (port) => {
         let clientLibUrl = await makeClientLibUrl(port);
         originalClientLib = patchHTMLFile(clientLibUrl, HOT_REL_LIB_PATCH_REGEX);
     }
-    let globalsUrl = await makeGlobalsUrl(port);
-    originalGlobals = patchHTMLFile(globalsUrl, HOT_REL_GLOB_PATCH_REGEX);
-    utils.warn('Global variables patch was applied successfully. ' +
-        'Please avoid sending keyboard interrupts.');
+    else if(!(configObj.modes && configObj.modes.window && 
+        (configObj.modes.window.injectGlobals || configObj.modes.window.injectClientLibrary))) {
+        // if globals are injected, no need to patch
+        let globalsUrl = await makeGlobalsUrl(port);
+        originalGlobals = patchHTMLFile(globalsUrl, HOT_REL_GLOB_PATCH_REGEX);
+        utils.warn('Global variables patch was applied successfully. ' +
+            'Please avoid sending keyboard interrupts.');
+    }
     utils.log(`You are working with your frontend library's development environment. ` +
         'Your frontend-library-based app will run with Neutralino and be able to use the Neutralinojs API.');
 }
 
 module.exports.cleanup = () => {
+    for(let spawnedCommand of spawnedCommands) {
+        kill(spawnedCommand.pid);
+    }
+    if(!originalClientLib && !originalGlobals) return;
     if(originalClientLib) {
         patchHTMLFile(originalClientLib, HOT_REL_LIB_PATCH_REGEX);
     }
@@ -98,8 +108,13 @@ module.exports.runCommand = (commandKey) => {
 
             utils.log(`Running ${commandKey}: ${cmd}...`);
             const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
+            spawnedCommands.push(proc);
             proc.on('exit', (code) => {
-                utils.log(`frontendlib: ${commandKey} completed with exit code: ${code}`);
+                utils.log(`frontendlib: ${commandKey} completed ${code != null ? ('with exit code: ' + code): ''}`);
+                let commandIndex = spawnedCommands.indexOf(proc);
+                if(commandIndex != -1) {
+                    spawnedCommands.splice(commandIndex, 1);
+                }
                 resolve();
             });
         });
@@ -114,7 +129,7 @@ module.exports.containsFrontendLibApp = () => {
 module.exports.waitForFrontendLibApp = async () => {
     let configObj = config.get();
     let devUrlString = configObj.cli && configObj.cli.frontendLibrary ? configObj.cli.frontendLibrary.devUrl : undefined;
-    let timeout = (configObj.cli && configObj.cli.frontendLibrary && configObj.cli.frontendLibrary.waitTimeout) || 20000;
+    let timeout = (configObj.cli && configObj.cli.frontendLibrary && configObj.cli.frontendLibrary.waitTimeout) || 30000;
     let url = new URL(devUrlString);
     let portString = url.port;
     let port = portString ? Number.parseInt(portString) : getPortByProtocol(url.protocol)
