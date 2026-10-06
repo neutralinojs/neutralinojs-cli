@@ -6,6 +6,8 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+## v11.8.0
+
 ### Core: Runner
 - Automatically closing all frontend library development commands after closing the Neutralinojs app
 - Avoid patching HTML files if `window.injectGlobals` or `window.injectClientLibrary` is set to `true`
