@@ -39,7 +39,7 @@ let add = (pluginName) => {
         if(config.has('plugins'))
             plugins = config.get('plugins');
         if(!isPluginInstalled(pluginName)) {
-            exec(`cd ${NEU_ROOT} && npm install ${pluginName}`, (err, stdout, stderr) => {
+            exec(`npm install ${pluginName}`, { cwd: NEU_ROOT }, (err, stdout, stderr) => {
                 if(err) {
                     return reject(stderr);
                 }
@@ -167,7 +167,7 @@ module.exports.remove = (pluginName, uninstallSuccessCallback) => {
         if(config.has('plugins'))
             plugins = config.get('plugins');
         if(plugins.includes(pluginName)) {
-            exec(`cd ${NEU_ROOT} && npm uninstall --save ${pluginName}`, (err, stdout, stderr) => {
+            exec(`npm uninstall --save ${pluginName}`, { cwd: NEU_ROOT }, (err, stdout, stderr) => {
                 if (err) {
                     reject(stderr);
                 }
