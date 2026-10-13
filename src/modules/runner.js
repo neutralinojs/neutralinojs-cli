@@ -38,18 +38,19 @@ module.exports.runApp = async (options = {}) => {
 
         const neuProcess = spawnCommand(binaryPath + args, { stdio: 'inherit' })
 
-        neuProcess.on('exit', function (code) {
-            let statusCodeMsg = code ? `error code ${code}` : `success code 0`;
+        neuProcess.on('exit', function (code, signal) {
+            let statusCodeMsg = signal ? `signal ${signal}` :
+                code !== 0 ? `error code ${code}` : `success code 0`;
             let runnerMsg = `${binaryName} was stopped with ${statusCodeMsg}`;
 
-            if(code) {
-                utils.warn(runnerMsg);
+            if(code !== 0) {
+                reject(runnerMsg);
             }
             else {
                 utils.log(runnerMsg);
+                resolve();
             }
 
-            resolve();
         });
     });
 }
