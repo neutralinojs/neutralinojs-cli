@@ -9,29 +9,43 @@ const zl = require('zip-lib');
 let cachedLatestClientVersion = null;
 
 
-let getRemoteLatestVersion = (repo) => {
+let getRemoteLatestVersion = (repo, timeoutMs = 0) => {
     return new Promise((resolve, reject) => {
         let opt = {
             headers: { 'User-Agent': 'Neutralinojs CLI' }
         };
-        https.get(constants.remote.releasesApiUrl.replace('{repo}', repo), opt, function (response) {
+        let timeout;
+        const request = https.get(constants.remote.releasesApiUrl.replace('{repo}', repo), opt, function (response) {
             let body = '';
             response.on('data', (data) => body += data);
             response.on('end', () => {
+                clearTimeout(timeout);
                 if (response.statusCode != 200) {
-                    return reject();
+                    return reject(new Error(`Release check failed with HTTP ${response.statusCode}`));
                 }
-                let apiRes = JSON.parse(body);
-                let version = apiRes.tag_name.replace('v', '');
-                resolve(version);
+                try {
+                    let apiRes = JSON.parse(body);
+                    let version = apiRes.tag_name.replace('v', '');
+                    resolve(version);
+                }
+                catch(error) {
+                    reject(error);
+                }
             });
-            response.on('error', () => {
-                reject();
+            response.on('error', error => {
+                clearTimeout(timeout);
+                reject(error);
             });
         })
-        .on('error', () => {
-            reject();
+        .on('error', error => {
+            clearTimeout(timeout);
+            reject(error);
         });
+        if(timeoutMs > 0) {
+            timeout = setTimeout(() => {
+                request.destroy(new Error('Release version check timed out'));
+            }, timeoutMs);
+        }
     });
 }
 
