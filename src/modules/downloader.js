@@ -102,11 +102,27 @@ let downloadBinariesFromRelease = (latest) => {
         fs.mkdirSync('.tmp', { recursive: true });
         const zipFilename = '.tmp/binaries.zip';
         const file = fs.createWriteStream(zipFilename);
+        let hasError = false;
+        const cleanupAndReject = (error) => {
+            if (hasError) return;
+            hasError = true;
+            if (typeof file.close === 'function') {
+                file.close(() => fs.unlink(zipFilename, () => {}));
+            } else {
+                file.destroy();
+                fs.unlink(zipFilename, () => {});
+            }
+            reject(error);
+        };
+        file.on('error', cleanupAndReject);
         utils.log('Downloading Neutralinojs binaries..');
         getBinaryDownloadUrl(latest)
             .then((url) => {
                 https.get(url, function (response) {
-                
+                    if (response.statusCode !== 200) {
+                        response.resume();
+                        return cleanupAndReject(new Error(`Failed to download binaries: HTTP ${response.statusCode}`));
+                    }
                     const totalSize = parseInt(response.headers['content-length'], 10);
                     const totalSizeMB = (totalSize / 1024 / 1024).toFixed(2);
                     let downloadedSize = 0;
@@ -121,15 +137,21 @@ let downloadBinariesFromRelease = (latest) => {
                     });
 
                     response.pipe(file);
-                    response.on('end', () => {
+                    response.on('error', cleanupAndReject);
+                    file.on('finish', () => {
+                        if (hasError) return;
+                        if (totalSize && downloadedSize < totalSize) {
+                            return cleanupAndReject(new Error('Failed to download binaries: Incomplete download'));
+                        }
                         if (process.stdout.isTTY) process.stdout.write('\n');
                         utils.log('Extracting binaries.zip file...');
                         zl.extract(zipFilename, '.tmp/')
                             .then(() => resolve())
-                            .catch((e) => reject(e));
+                            .catch((e) => cleanupAndReject(e));
                     });
-                }).on('error', (err) => reject(err));
-            });
+                }).on('error', cleanupAndReject);
+            })
+            .catch(cleanupAndReject);
     });
 }
 
@@ -288,3 +310,5 @@ module.exports.isValidTemplate = (template) => {
 }
 
 module.exports.getRemoteLatestVersion = getRemoteLatestVersion;
+
+module.exports.downloadBinariesFromRelease = downloadBinariesFromRelease;
