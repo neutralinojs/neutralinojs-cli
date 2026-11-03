@@ -43,8 +43,8 @@ describe('Run misc neu commands', () => {
             assert.ok(output.data.includes('Global') &&
                 output.data.includes('neu CLI: v'));
             assert.ok(output.data.includes('Project') &&
-                output.data.includes('Neutralinojs binaries: v') &&
-                output.data.includes('Neutralinojs client: v') &&
+                /Neutralinojs binaries: (?:v\d+\.\d+\.\d+|nightly)/.test(output.data) &&
+                /Neutralinojs client: (?:v\d+\.\d+\.\d+|nightly)/.test(output.data) &&
                 output.data.includes('Project version'));
         });
     });

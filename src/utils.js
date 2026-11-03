@@ -2,6 +2,7 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const process = require('process');
 const exec = require('child_process').exec;
+const kill = require('tree-kill');
 const chalk = require('chalk');
 const constants = require('./constants');
 let getConfigFile = () => constants.files.configFile;
@@ -47,7 +48,22 @@ let checkCurrentProject = () => {
 
 let checkLatestVersion = () => {
     return new Promise((resolve) => {
-        exec(`npm view ${package.name} version`, (err, versionInfo) => {
+        let finished = false;
+        const timeout = setTimeout(() => {
+            if(finished) return;
+            finished = true;
+            kill(child.pid);
+            warn('Unable to check the latest neu CLI version. Showing the installed version.');
+            resolve(null);
+        }, 5000);
+        const child = exec(`npm view ${package.name} version`, (err, versionInfo) => {
+            if(finished) return;
+            finished = true;
+            clearTimeout(timeout);
+            if(err || typeof versionInfo !== 'string' || !versionInfo.trim()) {
+                warn('Unable to check the latest neu CLI version. Showing the installed version.');
+                return resolve(null);
+            }
             let latestVersion = versionInfo.trim();
             if (!err && package.version !== latestVersion) {
                 warn(`You are using an older neu CLI version. Install the latest version ` +

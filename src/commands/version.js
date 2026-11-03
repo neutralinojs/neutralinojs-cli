@@ -10,22 +10,29 @@ module.exports.register = (program) => {
         .action(async (command) => {
             utils.showArt();
             console.log('--- Global ---');
+            const isProject = utils.isNeutralinojsProject();
+            const projectVersions = isProject ? Promise.all([
+                getRemoteLatestVersion('neutralinojs', 5000).catch(() => null),
+                getRemoteLatestVersion('neutralino.js', 5000).catch(() => null)
+            ]) : null;
             const latest = await utils.checkLatestVersion();
             console.log(`neu CLI: v${package.version} ${latest ? '(latest)' : ''}`);
-            if(utils.isNeutralinojsProject()) {
+            if(isProject) {
                 const configObj = config.get();
-                const latestBinVersion = await getRemoteLatestVersion('neutralinojs');
-                const latestLibVersion = await getRemoteLatestVersion('neutralino.js');
+                const [latestBinVersion, latestLibVersion] = await projectVersions;
+                if(latestBinVersion === null || latestLibVersion === null) {
+                    utils.warn('Unable to check the latest framework versions. Showing installed versions.');
+                }
                 const clientVersion = configObj.cli.clientVersion ? utils.getVersionTag(configObj.cli.clientVersion) :
                         'Installed from a package manager';
-                const latestBin = configObj.cli.binaryVersion == latestBinVersion;
-                const latestLib = configObj.cli.clientVersion ? (configObj.cli.clientVersion == latestLibVersion) : null;
+                const latestBin = latestBinVersion === null ? null : configObj.cli.binaryVersion == latestBinVersion;
+                const latestLib = configObj.cli.clientVersion && latestLibVersion !== null ? (configObj.cli.clientVersion == latestLibVersion) : null;
 
                 console.log(`\n--- Project: ${configObj.cli.binaryName} (${configObj.applicationId}) ---`);
                 console.log(`Neutralinojs binaries: ${utils.getVersionTag(configObj.cli.binaryVersion)} ${latestBin ? '(latest)' : ''}`);
                 console.log(`Neutralinojs client: ${clientVersion} ${latestLib ? '(latest)' : ''}`);
 
-                if(!latestBin || latestLib === false) {
+                if(latestBin === false || latestLib === false) {
                     utils.warn(`This project doesn't use the latest Neutralinojs framework. Run ` +
                         `'neu update --latest' to download the latest framework binaries and the client library.`);
                 }
@@ -41,4 +48,3 @@ module.exports.register = (program) => {
             }
         });
 }
-
