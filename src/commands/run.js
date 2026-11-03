@@ -62,7 +62,8 @@ module.exports.register = (program) => {
                                     arch: command.arch});
             }
             catch(error) {
-                utils.log(error);
+                utils.error(error);
+                process.exitCode = 1;
             }
 
             filewatcher.stop();
