@@ -47,11 +47,17 @@ node ./bin/neu.js --help
 npm link
 ```
 
-5. Install the test dependencies and run the tests from the `spec/` directory:
+5. Install the test dependencies in the `spec/` directory:
 
 ```bash
 cd spec
 npm install
+cd ..
+```
+
+After installing the spec dependencies, run `npm test` from the repository root:
+
+```bash
 npm test
 ```
 
