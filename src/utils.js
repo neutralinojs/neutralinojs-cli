@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const fse = require('fs-extra');
 const process = require('process');
 const exec = require('child_process').exec;
@@ -87,6 +88,44 @@ let filterFiles = (src, pattern) => {
     return !found;
 }
 
+let validateProjectPath = (projectPath, projectRoot = '.') => {
+    try {
+        let rawPath = trimPath(projectPath) || '.';
+        let rootPath = path.resolve(projectRoot);
+        if (!fs.existsSync(rootPath)) {
+            return { valid: false, error: `Project directory '${rootPath}' does not exist.` };
+        }
+        let realRoot = fs.realpathSync(rootPath);
+        let targetPath = path.resolve(rootPath, rawPath);
+
+        // First check logical path resolution (catches relative escapes like ../.. even if target doesn't exist)
+        let checkRoot = process.platform === 'win32' ? rootPath.toLowerCase() : rootPath;
+        let checkTarget = process.platform === 'win32' ? targetPath.toLowerCase() : targetPath;
+        let sep = path.sep;
+        let isLogicallyInside = checkTarget === checkRoot || checkTarget.startsWith(checkRoot + sep);
+        if (!isLogicallyInside) {
+            return { valid: false, error: `Security error: projectPath '${projectPath}' resolves outside the project directory.` };
+        }
+
+        if (!fs.existsSync(targetPath)) {
+            return { valid: false, error: `Directory '${rawPath}' does not exist.` };
+        }
+
+        // Second check real paths with fs.realpathSync (catches symlink escapes)
+        let realTarget = fs.realpathSync(targetPath);
+        let realCheckRoot = process.platform === 'win32' ? realRoot.toLowerCase() : realRoot;
+        let realCheckTarget = process.platform === 'win32' ? realTarget.toLowerCase() : realTarget;
+        let isRealInside = realCheckTarget === realCheckRoot || realCheckTarget.startsWith(realCheckRoot + sep);
+        if (!isRealInside) {
+            return { valid: false, error: `Security error: projectPath '${projectPath}' resolves outside the project directory.` };
+        }
+
+        return { valid: true, targetDir: realTarget };
+    } catch (e) {
+        return { valid: false, error: `Invalid project path: ${e.message}` };
+    }
+};
+
 module.exports = {
     error,
     isNeutralinojsProject,
@@ -99,5 +138,6 @@ module.exports = {
     trimPath,
     getVersionTag,
     clearDirectory,
-    filterFiles
+    filterFiles,
+    validateProjectPath
 }

@@ -6,6 +6,17 @@ rename `Unreleased` topic with the new version tag. Finally, create a new `Unrel
 
 ## Unreleased
 
+### Security
+- Fix security issue #471: Require explicit user consent before executing template-defined `initCommand` (`cli.frontendLibrary.initCommand` and `cli.hostProject.initCommand`). Prevents arbitrary command execution on developer machines from untrusted third-party templates.
+- Trust official templates: Skip confirmation prompt for official `neutralinojs/*` templates where owner and repository identifiers are strictly verified.
+- Harden execution: Verify canonical paths using `fs.realpathSync` to prevent directory traversal and symlink escapes outside the newly created project directory. No user-supplied or path values are interpolated into the template command string, and working directory is passed via spawn options.
+
+### Core: Creator
+- Add `--run-init` / `--yes` / `-y` flags to `neu create` to execute template initialization commands without confirmation prompts (for CI and trusted templates).
+- Add `--no-init` flag to `neu create` to skip template initialization commands without prompting (takes precedence if passed alongside `--run-init` or `--yes`).
+- In non-interactive environments (CI, no TTY), template initialization commands are skipped by default unless `--run-init` or `--yes` is passed explicitly.
+- Allow local directory paths for `--template` option.
+
 ## v11.8.0
 
 ### Core: Runner

@@ -1,0 +1,19 @@
+{
+  "applicationId": "js.neutralino.fixture.chained",
+  "version": "1.0.0",
+  "defaultMode": "window",
+  "documentRoot": "/resources/",
+  "url": "/",
+  "modes": {
+    "window": {
+      "title": "fixture-chained"
+    }
+  },
+  "cli": {
+    "binaryName": "fixture-chained-app",
+    "frontendLibrary": {
+      "projectPath": "/",
+      "initCommand": "node -e \"require('fs').writeFileSync('marker1.txt', '1')\" && node -e \"require('fs').writeFileSync('marker2.txt', '2')\""
+    }
+  }
+}

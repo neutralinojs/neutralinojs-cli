@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const process = require('process');
 const spawnCommand = require('spawn-command');
 const recursive = require('recursive-readdir');
@@ -108,11 +109,15 @@ module.exports.runCommand = (commandKey) => {
 
     if(frontendLib && frontendLib.projectPath && frontendLib[commandKey]) {
         return new Promise((resolve) => {
-            let projectPath = utils.trimPath(frontendLib.projectPath);
             let cmd = frontendLib[commandKey];
+            const validation = utils.validateProjectPath(frontendLib.projectPath, '.');
+            if (!validation.valid) {
+                utils.error(validation.error);
+                return resolve();
+            }
 
             utils.log(`Running ${commandKey}: ${cmd}...`);
-            const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: projectPath });
+            const proc = spawnCommand(cmd, { stdio: 'inherit', cwd: validation.targetDir });
             spawnedCommands.add(proc);
             proc.on('exit', (code) => {
                 utils.log(`frontendlib: ${commandKey} completed ${code != null ? ('with exit code: ' + code): ''}`);

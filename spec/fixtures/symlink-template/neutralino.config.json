@@ -1,0 +1,19 @@
+{
+  "applicationId": "js.neutralino.fixture.symlink",
+  "version": "1.0.0",
+  "defaultMode": "window",
+  "documentRoot": "/resources/",
+  "url": "/",
+  "modes": {
+    "window": {
+      "title": "fixture-symlink"
+    }
+  },
+  "cli": {
+    "binaryName": "fixture-symlink-app",
+    "frontendLibrary": {
+      "projectPath": "/symlink-dir",
+      "initCommand": "node -e \"require('fs').writeFileSync('symlink-marker.txt', 'symlink-escape')\""
+    }
+  }
+}

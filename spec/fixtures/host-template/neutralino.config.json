@@ -1,0 +1,19 @@
+{
+  "applicationId": "js.neutralino.fixture.host",
+  "version": "1.0.0",
+  "defaultMode": "window",
+  "documentRoot": "/resources/",
+  "url": "/",
+  "modes": {
+    "window": {
+      "title": "fixture-host"
+    }
+  },
+  "cli": {
+    "binaryName": "fixture-host-app",
+    "hostProject": {
+      "projectPath": "/",
+      "initCommand": "node -e \"require('fs').writeFileSync('host-marker.txt', 'pwned')\""
+    }
+  }
+}

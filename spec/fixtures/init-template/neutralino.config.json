@@ -1,0 +1,19 @@
+{
+  "applicationId": "js.neutralino.fixture",
+  "version": "1.0.0",
+  "defaultMode": "window",
+  "documentRoot": "/resources/",
+  "url": "/",
+  "modes": {
+    "window": {
+      "title": "fixture"
+    }
+  },
+  "cli": {
+    "binaryName": "fixture-app",
+    "frontendLibrary": {
+      "projectPath": "/",
+      "initCommand": "node -e \"require('fs').writeFileSync('marker.txt', 'pwned')\""
+    }
+  }
+}
