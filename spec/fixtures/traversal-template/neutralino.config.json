@@ -1,0 +1,19 @@
+{
+  "applicationId": "js.neutralino.fixture.traversal",
+  "version": "1.0.0",
+  "defaultMode": "window",
+  "documentRoot": "/resources/",
+  "url": "/",
+  "modes": {
+    "window": {
+      "title": "fixture-traversal"
+    }
+  },
+  "cli": {
+    "binaryName": "fixture-traversal-app",
+    "frontendLibrary": {
+      "projectPath": "../../outside",
+      "initCommand": "node -e \"require('fs').writeFileSync('outside-marker.txt', 'traversal')\""
+    }
+  }
+}

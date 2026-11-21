@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const fse = require('fs-extra');
 const { https } = require('follow-redirects');
 const constants = require('../constants');
@@ -19,11 +20,15 @@ let getRemoteLatestVersion = (repo) => {
             response.on('data', (data) => body += data);
             response.on('end', () => {
                 if (response.statusCode != 200) {
-                    return reject();
+                    return reject(new Error(`GitHub API HTTP ${response.statusCode}`));
                 }
-                let apiRes = JSON.parse(body);
-                let version = apiRes.tag_name.replace('v', '');
-                resolve(version);
+                try {
+                    let apiRes = JSON.parse(body);
+                    let version = apiRes.tag_name ? apiRes.tag_name.replace('v', '') : '';
+                    resolve(version);
+                } catch(e) {
+                    reject(e);
+                }
             });
             response.on('error', () => {
                 reject();
@@ -106,7 +111,11 @@ let downloadBinariesFromRelease = (latest) => {
         getBinaryDownloadUrl(latest)
             .then((url) => {
                 https.get(url, function (response) {
-                
+                    if (response.statusCode !== 200) {
+                        file.close();
+                        return reject(new Error(`Failed to download binaries: HTTP ${response.statusCode}`));
+                    }
+
                     const totalSize = parseInt(response.headers['content-length'], 10);
                     const totalSizeMB = (totalSize / 1024 / 1024).toFixed(2);
                     let downloadedSize = 0;
@@ -121,15 +130,20 @@ let downloadBinariesFromRelease = (latest) => {
                     });
 
                     response.pipe(file);
-                    response.on('end', () => {
+                    file.on('finish', () => {
+                        file.close();
                         if (process.stdout.isTTY) process.stdout.write('\n');
                         utils.log('Extracting binaries.zip file...');
                         zl.extract(zipFilename, '.tmp/')
                             .then(() => resolve())
                             .catch((e) => reject(e));
                     });
-                }).on('error', (err) => reject(err));
-            });
+                }).on('error', (err) => {
+                    file.close();
+                    reject(err);
+                });
+            })
+            .catch((err) => reject(err));
     });
 }
 
@@ -187,6 +201,10 @@ let downloadTypesFromRelease = (latest) => {
 }
 
 module.exports.downloadTemplate = (template) => {
+    if (fs.existsSync(template)) {
+        fse.copySync(template, '.');
+        return Promise.resolve();
+    }
     return new Promise((resolve, reject) => {
         let templateUrl = constants.remote.templateUrl.replace('{template}', template);
         fs.mkdirSync('.tmp', { recursive: true });
@@ -198,7 +216,8 @@ module.exports.downloadTemplate = (template) => {
                 return reject(new Error(`Failed to download template: HTTP ${response.statusCode}`));
             }
             response.pipe(file);
-            response.on('end', () => {
+            file.on('finish', () => {
+                file.close();
                 utils.log('Extracting template zip file...');
                 zl.extract(zipFilename, '.tmp/')
                     .then(() => {
@@ -208,7 +227,10 @@ module.exports.downloadTemplate = (template) => {
                     })
                     .catch((e) => reject(e));
             });
-        }).on('error', (err) => reject(err));
+        }).on('error', (err) => {
+            file.close();
+            reject(err);
+        });
     });
 }
 
@@ -257,6 +279,10 @@ module.exports.downloadAndUpdateClient = async (latest = false) => {
 }
 
 module.exports.isValidTemplate = (template) => {
+    if (fs.existsSync(template)) {
+        const configFile = path.join(template, constants.files.configFile);
+        return Promise.resolve(fs.existsSync(configFile));
+    }
     return new Promise((resolve) => {
         let opt = {
             headers: { 'User-Agent': 'Neutralinojs CLI' }
